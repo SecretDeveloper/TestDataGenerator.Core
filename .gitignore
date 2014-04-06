@@ -8,6 +8,7 @@
 *.pdb
 *.Resharper*
 *.suo
+*.user
 
 # Packages #
 ############
@@ -41,5 +42,7 @@ Thumbs.db
 bin/
 obj/
 TestResults/
+TestOutput/
+BuildOutput/
 packages/
 _Resharper*/
