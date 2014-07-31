@@ -12,15 +12,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gk.DataGenerator.CommandLine", "gk.DataGenerator.CommandLine\gk.DataGenerator.CommandLine.csproj", "{655F996B-816E-49E7-8226-DEA4F93BF22D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7E0AFB0B-0000-4D8A-A3CC-EADD3BC14298} = {7E0AFB0B-0000-4D8A-A3CC-EADD3BC14298}
-		{496331BD-D9A6-43AA-A5C4-B0E10D2F9C41} = {496331BD-D9A6-43AA-A5C4-B0E10D2F9C41}
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gk.DataGenerator.Template", "gk.DataGenerator.Template\gk.DataGenerator.Template.csproj", "{496331BD-D9A6-43AA-A5C4-B0E10D2F9C41}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gk.DataGeneratorTests", "gk.DataGeneratorTests\gk.DataGeneratorTests.csproj", "{1142072E-6FBE-4496-9356-7862723F40A1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7E0AFB0B-0000-4D8A-A3CC-EADD3BC14298} = {7E0AFB0B-0000-4D8A-A3CC-EADD3BC14298}
-		{496331BD-D9A6-43AA-A5C4-B0E10D2F9C41} = {496331BD-D9A6-43AA-A5C4-B0E10D2F9C41}
 	EndProjectSection
 EndProject
 Global
@@ -40,10 +36,6 @@ Global
 		{655F996B-816E-49E7-8226-DEA4F93BF22D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{655F996B-816E-49E7-8226-DEA4F93BF22D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{655F996B-816E-49E7-8226-DEA4F93BF22D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{496331BD-D9A6-43AA-A5C4-B0E10D2F9C41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{496331BD-D9A6-43AA-A5C4-B0E10D2F9C41}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{496331BD-D9A6-43AA-A5C4-B0E10D2F9C41}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{496331BD-D9A6-43AA-A5C4-B0E10D2F9C41}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1142072E-6FBE-4496-9356-7862723F40A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1142072E-6FBE-4496-9356-7862723F40A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1142072E-6FBE-4496-9356-7862723F40A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
