@@ -36,7 +36,7 @@ namespace gk.DataGenerator.Generators
         /// x - Any number, 0-9.
         /// -------
         /// Patterns can be produced:
-        /// "[*{10}]" will produce a random string 10 characters long.
+        /// "[*]{10}" will produce a random string 10 characters long.
         /// </param>
         /// <returns></returns>
         public static string Generate(string pattern = "[*]{15}")
@@ -149,7 +149,7 @@ namespace gk.DataGenerator.Generators
                     {
                         return GenerateRandomString(AllAllowedCharacters, 1).ToUpper();
                     }
-                    return GenerateRandomString(AllAllowedCharacters, 1).ToUpper();
+                    return GenerateRandomString(AllAllowedCharacters, 1).ToLower();
                 case 'L':
                     return GenerateRandomString(AllCharacters, 1).ToUpper();
                 case 'l':
