@@ -55,9 +55,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="gk.DataGenerator">
-      <HintPath>..\..\BuildOutput\gk.DataGenerator.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -65,7 +62,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NumberTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextTests.cs" />
   </ItemGroup>
@@ -90,6 +86,12 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\gk.DataGenerator\gk.DataGenerator.csproj">
+      <Project>{7e0afb0b-0000-4d8a-a3cc-eadd3bc14298}</Project>
+      <Name>gk.DataGenerator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

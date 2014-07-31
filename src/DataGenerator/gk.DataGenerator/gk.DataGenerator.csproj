@@ -66,15 +66,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Options\NumberRangeGenerationOption.cs" />
-    <Compile Include="Options\AutoIncrementGenerationOption.cs" />
-    <Compile Include="Options\AlphaNumericGenerationOption.cs" />
-    <Compile Include="Generators\AutoIncrementGenerator.cs" />
-    <Compile Include="Generators\NumberRangeGenerator.cs" />
     <Compile Include="Generators\AlphaNumericGenerator.cs" />
-    <Compile Include="Generators\TextReplacementGenerator.cs" />
-    <Compile Include="Interfaces\IDataGenerator.cs" />
-    <Compile Include="Interfaces\IGenerationOption.cs" />
+    <Compile Include="Generators\GenerationException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

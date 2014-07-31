@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Linq;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using gk.DataGenerator;
 using gk.DataGenerator.Generators;
-using gk.DataGenerator.Options;
 
 namespace gk.DataGeneratorTests
 {
@@ -15,67 +13,38 @@ namespace gk.DataGeneratorTests
     public class TextTests
     {
         [TestMethod]
-        public void CanGenerateCorrectNumberOfWords()
-        {
-            var fixedText = new AlphaNumericGenerator();
-            var option = new AlphaNumericGenerationOption();
-            option.NumberOfWords = 5;
-
-            string text = fixedText.GenerateValue(option);
-            Assert.AreEqual(5,(text.Split(' ')).Count());
-
-        }
-
-        [TestMethod]
-        public void CanGenerateRandomWords()
-        {
-            var option = new AlphaNumericGenerationOption();
-            option.NumberOfWords = 5;
-            
-            var alphaNumericGenerator = new AlphaNumericGenerator();
-            string text = alphaNumericGenerator.GenerateValue(option);
-            Assert.AreEqual(5, text.Split(' ').Count());
-            
-            string text2 = alphaNumericGenerator.GenerateValue(option);
-            Assert.AreEqual(5, text2.Split(' ').Count());
-            Assert.AreNotEqual(text,text2);
-        }
-
-        [TestMethod]
         public void CanGenerateAlphaNumeric()
         {
-            var randomText = new AlphaNumericGenerator();
-            var opt = new AlphaNumericGenerationOption();
-            
-            opt.TextFormat = "*LlVvCcXx";
-            string text = randomText.GenerateValue(opt);
+
+            var pattern = "*LlVvCcXx";
+            string text = AlphaNumericGenerator.Generate(pattern);
             Assert.AreEqual(9, text.Length);
             //SGuIeRy76
             StringAssert.Matches(text, new Regex(@".{1}[A-Z]{1}[a-z]{1}[AEIOU]{1}[aeiou]{1}[QWRTYPSDFGHJKLZXCVBNM]{1}[qwrtypsdfghjklzxcvbnm]{1}[0-9]{1}[1-9]{1}"));
 
-            opt.TextFormat = "LLLLLL-LL-LLLLL";
-            text = randomText.GenerateValue(opt);
+            pattern = "LLLLLL-LL-LLLLL";
+            text = AlphaNumericGenerator.Generate(pattern);
             Assert.AreEqual(15, text.Length);
-            StringAssert.Matches(text,new Regex("[A-Z]{6}-[A-Z]{2}-[A-Z]{5}"));
+            StringAssert.Matches(text, new Regex("[A-Z]{6}-[A-Z]{2}-[A-Z]{5}"));
 
-            opt.TextFormat = "llllll";
-            text = randomText.GenerateValue(opt);
+            pattern = "llllll";
+            text = AlphaNumericGenerator.Generate(pattern);
             Assert.AreEqual(6, text.Length);
             StringAssert.Matches(text, new Regex("[a-z]*"));
 
-            opt.TextFormat = "XXXXXXLLLLllll";
-            text = randomText.GenerateValue(opt);
+            pattern = "XXXXXXLLLLllll";
+            text = AlphaNumericGenerator.Generate(pattern);
             Assert.AreEqual(14, text.Length);
             StringAssert.Matches(text, new Regex("[0-9]{6}[A-Z]{4}[a-z]{4}"));
 
-            opt.TextFormat = "XXX-XX-XXXX";
-            text = randomText.GenerateValue(opt);
+            pattern = "XXX-XX-XXXX";
+            text = AlphaNumericGenerator.Generate(pattern);
             Assert.AreEqual(11, text.Length);
             StringAssert.Matches(text, new Regex("[0-9]{3}-[0-9]{2}-[0-9]{4}"));
 
             //Test for escaped characters.
-            opt.TextFormat = @"L\LLLLL";
-            text = randomText.GenerateValue(opt);
+            pattern = @"L\LLLLL";
+            text = AlphaNumericGenerator.Generate(pattern);
             Assert.AreEqual(6, text.Length);
             StringAssert.Matches(text, new Regex("[A-Z]{1}L[A-Z]{4}"));
         }
@@ -83,138 +52,147 @@ namespace gk.DataGeneratorTests
         [TestMethod]
         public void CanGenerateSimplePatterns()
         {
-            var randomText = new AlphaNumericGenerator();
-            var opt = new AlphaNumericGenerationOption();
-
-            opt.TextFormat = "LLLLLL-LL-LLLLL";
-            string text = randomText.GenerateValue(opt);
+            var pattern = "LLLLLL-LL-LLLLL";
+            string text = AlphaNumericGenerator.Generate(pattern);
             Assert.AreEqual(15, text.Length);
             StringAssert.Matches(text, new Regex("[A-Z]{6}-[A-Z]{2}-[A-Z]{5}"));
 
-            opt.TextFormat = "llllll";
-            text = randomText.GenerateValue(opt);
+            pattern = "llllll";
+            text = AlphaNumericGenerator.Generate(pattern);
             Assert.AreEqual(6, text.Length);
             StringAssert.Matches(text, new Regex("[a-z]*"));
 
-            opt.TextFormat = "XXXXXXLLLLllll";
-            text = randomText.GenerateValue(opt);
+            pattern = "XXXXXXLLLLllll";
+            text = AlphaNumericGenerator.Generate(pattern);
             Assert.AreEqual(14, text.Length);
             StringAssert.Matches(text, new Regex("[0-9]{6}[A-Z]{4}[a-z]{4}"));
 
-            opt.TextFormat = "XXX-XX-XXXX";
-            text = randomText.GenerateValue(opt);
+            pattern = "XXX-XX-XXXX";
+            text = AlphaNumericGenerator.Generate(pattern);
             Assert.AreEqual(11, text.Length);
             StringAssert.Matches(text, new Regex("[0-9]{3}-[0-9]{2}-[0-9]{4}"));
 
             //Test for escaped characters.
-            opt.TextFormat = @"L\LLLLL";
-            text = randomText.GenerateValue(opt);
+            pattern = @"L\LLLLL";
+            text = AlphaNumericGenerator.Generate(pattern);
             Assert.AreEqual(6, text.Length);
             StringAssert.Matches(text, new Regex("[A-Z]{1}L[A-Z]{4}"));
-            
+
         }
 
         [TestMethod]
         public void CanGenerateRepeatPattern()
         {
-            var randomText = new AlphaNumericGenerator();
-            var opt = new AlphaNumericGenerationOption();
-
-            opt.TextFormat = "";
-            string text = randomText.GenerateValue(opt);
+            var pattern = "";
+            string text = AlphaNumericGenerator.Generate();
             StringAssert.Matches(text, new Regex(@".{15}")); // Default is 15 chars
 
-            opt.TextFormat = "[LLXX]{3}";
-            text = randomText.GenerateValue(opt);
+            pattern = "[LLXX]{3}";
+            text = AlphaNumericGenerator.Generate(pattern);
             StringAssert.Matches(text, new Regex(@"[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{2}"));
-            
+
         }
 
         [TestMethod]
-        public void CanGenerate_Exceptions()
+        public void CanGenerateMixedPattern()
         {
-            var randomText = new AlphaNumericGenerator();
-            var opt = new AlphaNumericGenerationOption();
+            var pattern = "";
+            pattern = "LL[LLXX]{3}LL[L]{23}";
+            var text = AlphaNumericGenerator.Generate(pattern);
+            StringAssert.Matches(text, new Regex(@"[A-Z]{2}[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{2}[A-Z]{2}[A-Z]{23}"));
 
-            opt.TextFormat = "[LLXX";
-            try
+        }
+
+        [TestMethod]
+        public void CanGenerateRepeatPattern_Long()
+        {
+            var pattern = "[L]{1}[X]{1}[L]{2}[X]{2}[L]{4}[X]{4}[L]{8}[X]{8}[L]{16}[X]{16}[L]{32}[X]{32}[L]{64}[X]{64}[L]{128}[X]{128}[L]{256}[X]{256}[L]{512}[X]{512}[L]{1024}[X]{1024}";
+            var text = AlphaNumericGenerator.Generate(pattern);
+            StringAssert.Matches(text, new Regex(@"[A-Z]{1}[0-9]{1}[A-Z]{2}[0-9]{2}[A-Z]{4}[0-9]{4}[A-Z]{8}[0-9]{8}[A-Z]{16}[0-9]{16}[A-Z]{32}[0-9]{32}[A-Z]{64}[0-9]{64}[A-Z]{128}[0-9]{128}[A-Z]{256}[0-9]{256}[A-Z]{512}[0-9]{512}[A-Z]{1024}[0-9]{1024}"));
+            Assert.AreEqual((1+2+4+8+16+32+64+128+256+512+1024)*2, text.Length);
+        }
+
+        [TestMethod]
+        public void CanGenerateRepeatPattern_Long_Profile()
+        {
+            var pattern = "[L]{1}[X]{1}[L]{2}[X]{2}[L]{4}[X]{4}[L]{8}[X]{8}[L]{16}[X]{16}[L]{32}[X]{32}[L]{64}[X]{64}[L]{128}[X]{128}[L]{256}[X]{256}[L]{512}[X]{512}[L]{1024}[X]{1024}";
+
+            var testLimit = 1000;
+
+            var sw = new System.Diagnostics.Stopwatch();
+
+            sw.Start();
+            for (var i = 0; i < testLimit; i++)
             {
-                randomText.GenerateValue(opt);
-                Assert.Fail("Exception not thrown for invalid pattern.");
+                AlphaNumericGenerator.Generate(pattern);
             }
-            catch{}
+            sw.Stop();
+            
+            Console.WriteLine(string.Format("Executed {0} large generations in {1} milliseconds.", testLimit, sw.ElapsedMilliseconds));
+        }
 
-            opt.TextFormat = "[LLXX]{33";
-            try
-            {
-                randomText.GenerateValue(opt);
-                Assert.Fail("Exception not thrown for invalid pattern.");
-            }
-            catch { }
+        [TestMethod]
+        [ExpectedException(typeof (GenerationException))]
+        public void CanGenerate_Exceptions_IncompletePattern()
+        {
+            var pattern = "[LLXX";
+            AlphaNumericGenerator.Generate(pattern);
+        }
 
-            opt.TextFormat = "[LLXX]33}";
-            try
-            {
-                randomText.GenerateValue(opt);
-                Assert.Fail("Exception not thrown for invalid pattern.");
-            }
-            catch { }
+        [TestMethod]
+        [ExpectedException(typeof (GenerationException))]
+        public void CanGenerate_Exceptions_InvalidCardinality_Start()
+        {
+            var pattern = "[LLXX]{33";
+            AlphaNumericGenerator.Generate(pattern);
+        }
 
+        [TestMethod]
+        [ExpectedException(typeof (GenerationException))]
+        public void CanGenerate_Exceptions_InvalidCardinality_End()
+        {
+            var pattern = "[LLXX]33}";
+            AlphaNumericGenerator.Generate(pattern);
+        }
 
-            opt.TextFormat = "[LLXX]{}";
-            try
-            {
-                randomText.GenerateValue(opt);
-                Assert.Fail("Exception not thrown for invalid pattern.");
-            }
-            catch { }
+        [TestMethod]
+        [ExpectedException(typeof (GenerationException))]
+        public void CanGenerate_Exceptions_InvalidCardinality_Value()
+        {
+            var pattern = "[LLXX]{}";
+            AlphaNumericGenerator.Generate(pattern);
+        }
 
-            opt.TextFormat = "LLXX]{}";
-            try
-            {
-                randomText.GenerateValue(opt);
-                Assert.Fail("Exception not thrown for invalid pattern.");
-            }
-            catch { }
+        [TestMethod]
+        [ExpectedException(typeof (GenerationException))]
+        public void CanGenerate_Exceptions_InvalidPattern_InvalidCardinality()
+        {
+            var pattern = "LLXX]{}";
+            AlphaNumericGenerator.Generate(pattern);
+        }
 
-            opt.TextFormat = "[LLXX]";
-            try
-            {
-                randomText.GenerateValue(opt);
-                Assert.Fail("Exception not thrown for invalid pattern.");
-            }
-            catch { }
+        [TestMethod]
+        [ExpectedException(typeof (GenerationException))]
+        public void CanGenerate_Exceptions_InvalidCardinality_Missing()
+        {
+            var pattern = "[LLXX]";
+            AlphaNumericGenerator.Generate(pattern);
+        }
 
-            opt.TextFormat = "[LLXX]{0}";
-            try
-            {
-                randomText.GenerateValue(opt);
-                Assert.Fail("Exception not thrown for invalid pattern.");
-            }
-            catch { }
+        [TestMethod]
+        [ExpectedException(typeof (GenerationException))]
+        public void CanGenerate_Exceptions_InvalidCardinaliy_Zero()
+        {
+            var pattern = "[LLXX]{0}";
+            AlphaNumericGenerator.Generate(pattern);
+        }
 
-            try
-            {
-                randomText.GenerateValue(null);
-                Assert.Fail("Exception not thrown for invalid pattern.");
-            }
-            catch { }
-
-            try
-            {
-                randomText.GenerateValue(new NumberRangeGenerationOption()); // wrong type
-                Assert.Fail("Exception not thrown for invalid pattern.");
-            }
-            catch { }
-
-            opt.TextFormat = "[LLXX";
-            opt.NumberOfWords = -1;
-            try
-            {
-                randomText.GenerateValue(opt);
-                Assert.Fail("Exception not thrown for invalid pattern.");
-            }
-            catch { }
+        [TestMethod]
+        [ExpectedException(typeof (GenerationException))]
+        public void CanGenerate_Exceptions_InvalidPattern_Null()
+        {
+            AlphaNumericGenerator.Generate(null);
         }
     }
 }
+
