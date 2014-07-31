@@ -21,6 +21,49 @@ namespace gk.DataGenerator.Generators
         }
 
         /// <summary>
+        /// Takes in a string that contains 0 or more &lt;&lt;placeholder&gt;&gt; values and replaces the placeholder item with the expression it defines.
+        /// </summary>
+        /// <param name="template"></param>
+        /// <returns></returns>
+        public static string Process(string template)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            int index = 0;
+            while (index < template.Length)
+            {
+                // Find our next placeholder
+                int start = GetNext(template, index, "((");
+                if (start == -1)
+                {
+                    sb.Append(template.Substring(index));  //add remaining string.
+                    break; // all done!
+                }
+
+                sb.Append(template.Substring(index, start-index)); // Append everything up to start as it is.
+                start = start + 2; // move past '((' to start of expression
+
+                int end = GetNext(template, start, "))"); // find end of placeholder
+                if (end == -1)
+                {
+                    throw new GenerationException("Unable to find closing placeholder after "+start);
+                }
+
+                var pattern = template.Substring(start, end-start); // grab our expression
+                sb.Append(Generate(pattern)); // generate value from expression
+                index = end+2; // update our index.
+            }
+
+            return sb.ToString();
+        }
+
+        private static int GetNext(string template, int index, string toFind)
+        {
+            return template.IndexOf(toFind, index);
+        }
+
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="pattern">

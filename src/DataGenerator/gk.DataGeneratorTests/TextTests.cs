@@ -13,6 +13,37 @@ namespace gk.DataGeneratorTests
     public class TextTests
     {
         [TestMethod]
+        public void CanProduceAlphaNumeric()
+        {
+
+            var template = "Generated ((LL))";
+            string text = AlphaNumericGenerator.Process(template);
+            
+            StringAssert.Matches(text, new Regex(@"Generated [A-Z]{2}"));
+        }
+
+        [TestMethod]
+        public void CanProduceAlphaNumeric_Multiple()
+        {
+
+            var template = "Generated ((LL)) and (([X]{5})) with ((X))";
+            string text = AlphaNumericGenerator.Process(template);
+            
+            StringAssert.Matches(text, new Regex(@"Generated [A-Z]{2} and [0-9]{5} with [0-9]"));
+        }
+
+        [TestMethod]
+        public void CanProduceAlphaNumeric_Harder()
+        {
+
+            var template = "This is a very basic (([l]{10})) which can be used to create ((llll)) of varying ((lllll)). The main purpose is to generate dummy ((Llll)) which can be used for ((lllllll)).";
+            string text = AlphaNumericGenerator.Process(template);
+
+            StringAssert.Matches(text, new Regex(@"This is a very basic [a-z]{10} which can be used to create [a-z]{4} of varying [a-z]{5}. The main purpose is to generate dummy [A-Z][a-z]{3} which can be used for [a-z]{7}."));
+        }
+
+
+        [TestMethod]
         public void CanGenerateAlphaNumeric()
         {
 
