@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using gk.DataGenerator.Generators;
@@ -114,7 +113,7 @@ namespace gk.DataGeneratorTests
         [TestMethod]
         public void CanGenerateRepeatPattern()
         {
-            var pattern = "";
+            string pattern;
             string text = AlphaNumericGenerator.Generate();
             StringAssert.Matches(text, new Regex(@".{15}")); // Default is 15 chars
 
@@ -127,7 +126,7 @@ namespace gk.DataGeneratorTests
         [TestMethod]
         public void CanGenerateMixedPattern()
         {
-            var pattern = "";
+            string pattern;
             pattern = "LL[LLXX]{3}LL[L]{23}";
             var text = AlphaNumericGenerator.Generate(pattern);
             StringAssert.Matches(text, new Regex(@"[A-Z]{2}[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{2}[A-Z]{2}[A-Z]{23}"));

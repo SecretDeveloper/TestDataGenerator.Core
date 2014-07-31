@@ -1,23 +1,23 @@
 ﻿using System;
-using System.Data;
+using System.Globalization;
 using System.Text;
 
 namespace gk.DataGenerator.Generators
 {
     public static class AlphaNumericGenerator 
     {
-        private static Random _random;
+        private static readonly Random Random;
 
-        private static readonly string AllAllowedCharacters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!£$%^&*()-=_+;'#:@~,./<>?\|";
-        private static readonly string AllCharacters = "abcdefghijklmnopqrstuvwxyz";
-        private static readonly string VowelCharacters = "aeiou";
-        private static readonly string ConsonantCharacters = "bcdfghjklmnpqrstvwxyz";
-        private static readonly string Numbers0To9Characters = "0123456789";
-        private static readonly string Numbers1To9Characters = "123456789";
+        private const string AllAllowedCharacters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!£$%^&*()-=_+;'#:@~,./<>?\|";
+        private const string AllCharacters = "abcdefghijklmnopqrstuvwxyz";
+        private const string VowelCharacters = "aeiou";
+        private const string ConsonantCharacters = "bcdfghjklmnpqrstvwxyz";
+        private const string Numbers0To9Characters = "0123456789";
+        private const string Numbers1To9Characters = "123456789";
 
         static AlphaNumericGenerator()
         {
-            _random = new Random(DateTime.Now.Millisecond);
+            Random = new Random(DateTime.Now.Millisecond);
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace gk.DataGenerator.Generators
         /// <returns></returns>
         public static string Process(string template)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             int index = 0;
             while (index < template.Length)
@@ -59,7 +59,7 @@ namespace gk.DataGenerator.Generators
 
         private static int GetNext(string template, int index, string toFind)
         {
-            return template.IndexOf(toFind, index);
+            return template.IndexOf(toFind, index, StringComparison.Ordinal);
         }
 
 
@@ -152,7 +152,7 @@ namespace gk.DataGenerator.Generators
             string pattern = GetRepeatedPartSection(characters, ref i, '[', ']');
             string rs = GetRepeatedPartSection(characters, ref i, '{', '}');
 
-            int repeat = 1;
+            int repeat;
             int.TryParse(rs, out repeat);
             if(repeat < 1)
                 throw new GenerationException("Invalid repeat section, repeat value must be an int greater than 0.");
@@ -180,10 +180,10 @@ namespace gk.DataGenerator.Generators
 
         private static string GenerateStringFromSymbol(char symbol)
         {
-            if(AllAllowedCharacters.Contains(symbol.ToString()) == false)
+            if(AllAllowedCharacters.Contains(symbol.ToString(CultureInfo.InvariantCulture)) == false)
                 throw new GenerationException("Invalid symbol '" + symbol + "' encountered.");
 
-            bool makeUpper = _random.Next(2) > 0;
+            bool makeUpper = Random.Next(2) > 0;
 
             switch (symbol)
             {
@@ -211,7 +211,7 @@ namespace gk.DataGenerator.Generators
                     return GenerateRandomString(Numbers1To9Characters, 1);
                 default:
                     // Just append the character as it is not a symbol.
-                    return symbol.ToString();
+                    return symbol.ToString(CultureInfo.InvariantCulture);
             }
 
         }
@@ -223,7 +223,7 @@ namespace gk.DataGenerator.Generators
 
             for(int i = 0; i < length;i++)
             {
-                sb.Append(allowedCharacters[_random.Next(numberofChars)]);
+                sb.Append(allowedCharacters[Random.Next(numberofChars)]);
             }
             return sb.ToString();
         }
