@@ -22,7 +22,7 @@ Patterns can be repeated a specific number of times using the format "[pattern]{
 - [L]{5} - Will generate 5 random uppercase characters.
 - [LLX]{24}  - Will generate 24 repeating letter-letter-number values.
 
-The 'Produce' method allows you to provide a string containing ((placeholders)) which will be replaced with generated values.  
+The 'Process' method allows you to provide a string containing ((placeholders)) which will be replaced with generated values.  
 For example "This is a ((LL)) string" will produce something similar to "This is a AQ string" where 'AQ' are randomly generated.
 
 Profiling results:
