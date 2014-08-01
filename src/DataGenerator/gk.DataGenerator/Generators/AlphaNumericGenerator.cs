@@ -148,14 +148,9 @@ namespace gk.DataGenerator.Generators
 
         private static string GetRepeatedSymbol(string characters, ref int i)
         {
-            if(i < 0 )
-                throw new GenerationException("Invalid position for Symbol repeating section, it must follow a Symbol e.g. 'L{1,2}'.");
-
-            var start = i+2;
-            var end = GetNext(characters, start, "}", "{");
-
-            var symbol = characters[i];
-            int repeat = GetRepeatValue(characters.Substring(start, end - start));
+            var symbol = characters[i++];
+            string rs = GetRepeatedPartSection(characters, ref i, '{', '}');
+            int repeat = GetRepeatValue(rs);
 
             var sb = new StringBuilder();
             //ok so we have our pattern, lets repeat it
@@ -165,7 +160,7 @@ namespace gk.DataGenerator.Generators
             }
 
             // i = currentposition + '{}' + string in between + move forward 1
-            i = i + 2 + (end - start) +1 ;  // update index
+            //i = i + 2 + (end - start) +1 ;  // update index
             return sb.ToString();
         }
 
