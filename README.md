@@ -36,15 +36,15 @@ You can use the `tdg.exe` application to generate test data from the command lin
 the tool also supports exporting the generated output to either the command line or another file.
 Example usage:
 - Generate 100 SSN like values and output to console window
--- `tdg.exe -t "((Xxx-xx-xxxx))" -c 100`
+  - `tdg.exe -t "((Xxx-xx-xxxx))" -c 100`
 - Generate 100 strings with random name like values and output to file 
--- `tdg.exe -t "Hi there ((Lvlv Lvllvvllv)) how are you doing?" -c 100 -o C:\test1.txt`
+  - `tdg.exe -t "Hi there ((Lvlv Lvllvvllv)) how are you doing?" -c 100 -o C:\test1.txt`
 
 
 ## Profiling results
 Profiling results:
 - It takes 981ms to generate 1000 strings that match the following large pattern:
-- `"[L]{1}[X]{1}[L]{2}[X]{2}[L]{4}[X]{4}[L]{8}[X]{8}[L]{16}[X]{16}[L]{32}[X]{32}[L]{64}[X]{64}[L]{128}[X]{128}[L]{256}[X]{256}[L]{512}[X]{512}[L]{1024}[X]{1024}"`
+  - `"[L]{1}[X]{1}[L]{2}[X]{2}[L]{4}[X]{4}[L]{8}[X]{8}[L]{16}[X]{16}[L]{32}[X]{32}[L]{64}[X]{64}[L]{128}[X]{128}[L]{256}[X]{256}[L]{512}[X]{512}[L]{1024}[X]{1024}"`
 
 
 See the unit tests for other examples.
