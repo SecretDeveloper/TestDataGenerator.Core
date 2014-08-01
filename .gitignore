@@ -46,3 +46,4 @@ TestOutput/
 BuildOutput/
 packages/
 _Resharper*/
+.nuget
