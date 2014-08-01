@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CommandLine")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Test Data Generator")]
+[assembly: AssemblyDescription("Test data generation tool.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Unum Group")]
+[assembly: AssemblyCompany("SecretDeveloper")]
 [assembly: AssemblyProduct("CommandLine")]
-[assembly: AssemblyCopyright("Copyright © Unum Group 2010")]
+[assembly: AssemblyCopyright("SecretDeveloper (Gary Kenneally) [2014]")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
