@@ -170,15 +170,15 @@ namespace gk.DataGenerator.Generators
                 var vals = rs.Split(',');
                 int min = -1, max = -1;
 
-                if (vals.Length < 2 || !int.TryParse(vals[0], out min) || !int.TryParse(vals[1], out max) || min > max)
+                if (vals.Length < 2 || !int.TryParse(vals[0], out min) || !int.TryParse(vals[1], out max) || min > max || min < 0)
                     throw new GenerationException("Invalid repeat section, random length parameters must be in the format {min,max} where min and max are greater than zero and min is less than max.");
 
-                repeat = Random.Next(min, max);
+                repeat = Random.Next(min, max+1);
             }
             else if (!int.TryParse(rs, out repeat)) repeat = -1;
 
-            if(repeat < 1)
-                throw new GenerationException("Invalid repeat section, repeat value must be an int greater than 0.");
+            if(repeat < 0)
+                throw new GenerationException("Invalid repeat section, repeat value must not be less than zero.");
 
             return new Tuple<int, string>(repeat, pattern);
         }

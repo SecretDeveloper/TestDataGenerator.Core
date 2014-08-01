@@ -83,9 +83,6 @@ namespace gk.DataGenerator.tdg
             {
                 Console.WriteLine(ex.Message);
             }
-#if DEBUG
-            Console.ReadKey();
-#endif
         }
     }
 }

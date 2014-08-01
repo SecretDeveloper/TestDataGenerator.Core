@@ -39,9 +39,11 @@ the tool also supports exporting the generated output to either the command line
 
 ####Example usage:
 - Generate 100 SSN like values and output to console window
-  - `tdg.exe -t "((Xxx-xx-xxxx))" -c 100`
+  - `tdg -t "((Xxx-xx-xxxx))" -c 100`
 - Generate 100 strings with random name like values and output to file 
-  - `tdg.exe -t "Hi there ((Lvlv Lvllvvllv)) how are you doing?" -c 100 -o C:\test1.txt`
+  - `tdg -t "Hi there ((Lvlv Lvllvvllv)) how are you doing?" -c 100 -o C:\test1.txt`
+- Combine several placeholders to produce more complicated content
+  - `tdg -t "Hi there ((L[v]{0,2}[l]{0,2}v L[v]{0,2}[l]{0,2}[v]{0,2}[l]{0,2}l)) how are you doing?  Your SSN is ((Xxx-xx-xxxx))." -c 100`
 
 
 ## Profiling results

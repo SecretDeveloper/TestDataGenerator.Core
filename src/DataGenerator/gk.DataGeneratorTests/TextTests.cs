@@ -153,13 +153,13 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [ExpectedException(typeof(GenerationException))]
-        public void Can_Generate_Exception_Less_Than_One_Repeat_Pattern()
+        public void Can_Generate_Exception_Less_Than_Zero_Repeat_Pattern()
         {
             string pattern;
             string text = AlphaNumericGenerator.GenerateFromPattern();
             StringAssert.Matches(text, new Regex(@".{15}")); // Default is 15 chars
 
-            pattern = "[LLXX]{0}";
+            pattern = "[LLXX]{-1}";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
         }
 
@@ -281,9 +281,9 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [ExpectedException(typeof (GenerationException))]
-        public void CanGenerate_Exceptions_InvalidCardinaliy_Zero()
+        public void CanGenerate_Exceptions_Invalid_Cardinaliy_Less_Than_Zero()
         {
-            var pattern = "[LLXX]{0}";
+            var pattern = "[LLXX]{-1}";
             AlphaNumericGenerator.GenerateFromPattern(pattern);
         }
 
