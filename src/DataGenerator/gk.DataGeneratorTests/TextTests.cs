@@ -12,7 +12,7 @@ namespace gk.DataGeneratorTests
     public class TextTests
     {
         [TestMethod]
-        public void CanProduceAlphaNumeric()
+        public void Can_Generate_From_Template()
         {
 
             var template = "Generated ((LL))";
@@ -22,7 +22,7 @@ namespace gk.DataGeneratorTests
         }
 
         [TestMethod]
-        public void CanProduceAlphaNumeric_Multiple()
+        public void Can_Generate_From_Template_Multiple()
         {
 
             var template = "Generated ((LL)) and (([X]{5})) with ((X))";
@@ -32,13 +32,29 @@ namespace gk.DataGeneratorTests
         }
 
         [TestMethod]
-        public void CanProduceAlphaNumeric_Harder()
+        public void Can_Generate_From_Template_Harder()
         {
 
             var template = "This is a very basic (([l]{10})) which can be used to create ((llll)) of varying ((lllll)). The main purpose is to generate dummy ((Llll)) which can be used for ((lllllll)).";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
 
             StringAssert.Matches(text, new Regex(@"This is a very basic [a-z]{10} which can be used to create [a-z]{4} of varying [a-z]{5}. The main purpose is to generate dummy [A-Z][a-z]{3} which can be used for [a-z]{7}."));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(GenerationException))]
+        public void Can_Generate_From_Template_Exception_Missing_Placeholder_End()
+        {
+            var template = "This is a very basic (([l]{10} which can be used to create ((llll)) of varying ((lllll)). The main purpose is to generate dummy ((Llll)) which can be used for ((lllllll)).";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(GenerationException))]
+        public void Can_Generate_From_Template_Exception_Missing_Placeholder_End_End()
+        {
+            var template = "This is a very basic (([l]{10})) which can be used to create ((llll)) of varying ((lllll)). The main purpose is to generate dummy ((Llll)) which can be used for ((lllllll.";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
         }
 
 
@@ -121,6 +137,60 @@ namespace gk.DataGeneratorTests
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             StringAssert.Matches(text, new Regex(@"[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{2}"));
 
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(GenerationException))]
+        public void Can_Generate_Exception_Invalid_Repeat_Pattern()
+        {
+            string pattern;
+            string text = AlphaNumericGenerator.GenerateFromPattern();
+            StringAssert.Matches(text, new Regex(@".{15}")); // Default is 15 chars
+
+            pattern = "[LLXX]{w}";
+            text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(GenerationException))]
+        public void Can_Generate_Exception_Less_Than_One_Repeat_Pattern()
+        {
+            string pattern;
+            string text = AlphaNumericGenerator.GenerateFromPattern();
+            StringAssert.Matches(text, new Regex(@".{15}")); // Default is 15 chars
+
+            pattern = "[LLXX]{0}";
+            text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+        }
+
+        [TestMethod]
+        public void CanGenerate_Mixed_Pattern_With_Random_Length()
+        {
+            string pattern;
+            pattern = "[L]{10,20}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            StringAssert.Matches(text, new Regex(@"[A-Z]{10,20}"));
+
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(GenerationException))]
+        public void CanGenerate_Mixed_Pattern_With_Invalid_Random_Length_Character()
+        {
+            string pattern;
+            pattern = "[L]{10,}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(GenerationException))]
+        public void CanGenerate_Mixed_Pattern_With_Invalid_Random_Length_Min_Max()
+        {
+            string pattern;
+            pattern = "[L]{10,0}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            StringAssert.Matches(text, new Regex(@"[A-Z]{10,20}"));
         }
 
         [TestMethod]

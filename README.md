@@ -22,6 +22,7 @@ Patterns can be repeated a specific number of times using the format "[pattern]{
 ###For example:
 - `[L]{5}` - Will generate 5 random upper-case characters.
 - `[LLX]{24}`  - Will generate 24 repeating letter-letter-number values.
+- `[L]{10,20}` - Will generate a string containing between 10 and 20 characters of random value.
 
 
 ## Placeholders

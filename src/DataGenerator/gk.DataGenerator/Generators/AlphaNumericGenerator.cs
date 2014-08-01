@@ -15,6 +15,10 @@ namespace gk.DataGenerator.Generators
         private const string Numbers0To9Characters = "0123456789";
         private const string Numbers1To9Characters = "123456789";
 
+        private const string Placeholder_Start = "((";
+        private const string Placeholder_End = "))";
+
+
         static AlphaNumericGenerator()
         {
             Random = new Random(DateTime.Now.Millisecond);
@@ -33,7 +37,7 @@ namespace gk.DataGenerator.Generators
             while (index < template.Length)
             {
                 // Find our next placeholder
-                int start = GetNext(template, index, "((");
+                int start = GetNext(template, index, Placeholder_Start, Placeholder_End);
                 if (start == -1)
                 {
                     sb.Append(template.Substring(index));  //add remaining string.
@@ -43,7 +47,7 @@ namespace gk.DataGenerator.Generators
                 sb.Append(template.Substring(index, start-index)); // Append everything up to start as it is.
                 start = start + 2; // move past '((' to start of expression
 
-                int end = GetNext(template, start, "))"); // find end of placeholder
+                int end = GetNext(template, start, Placeholder_End, Placeholder_Start); // find end of placeholder
                 if (end == -1)
                 {
                     throw new GenerationException("Unable to find closing placeholder after "+start);
@@ -57,9 +61,16 @@ namespace gk.DataGenerator.Generators
             return sb.ToString();
         }
 
-        private static int GetNext(string template, int index, string toFind)
+        private static int GetNext(string template, int index, string toFind, string notBefore)
         {
-            return template.IndexOf(toFind, index, StringComparison.Ordinal);
+            var notBeforeNdx = template.IndexOf(notBefore, index, StringComparison.Ordinal);
+            if(notBeforeNdx == -1)
+                return template.IndexOf(toFind, index, StringComparison.Ordinal);
+            
+            var ndx = template.IndexOf(toFind, index, StringComparison.Ordinal);
+            if(notBeforeNdx < ndx)
+                throw new GenerationException("Found start of new section '"+notBefore+"' at index '" + notBeforeNdx + "' when expecting to find '"+toFind+"' first.");
+            return ndx;
         }
 
 
@@ -153,7 +164,19 @@ namespace gk.DataGenerator.Generators
             string rs = GetRepeatedPartSection(characters, ref i, '{', '}');
 
             int repeat;
-            int.TryParse(rs, out repeat);
+            if (rs.Contains(","))
+            {
+                // {min,max} has been provided - parse and get value.
+                var vals = rs.Split(',');
+                int min = -1, max = -1;
+
+                if (vals.Length < 2 || !int.TryParse(vals[0], out min) || !int.TryParse(vals[1], out max) || min > max)
+                    throw new GenerationException("Invalid repeat section, random length parameters must be in the format {min,max} where min and max are greater than zero and min is less than max.");
+
+                repeat = Random.Next(min, max);
+            }
+            else if (!int.TryParse(rs, out repeat)) repeat = -1;
+
             if(repeat < 1)
                 throw new GenerationException("Invalid repeat section, repeat value must be an int greater than 0.");
 
