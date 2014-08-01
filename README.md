@@ -19,22 +19,24 @@ The pattern is as follows:
 
 Patterns can be repeated a specific number of times using the format "[pattern]{repeat}".  
 
-For example:
+###For example:
 - `[L]{5}` - Will generate 5 random upper-case characters.
 - `[LLX]{24}`  - Will generate 24 repeating letter-letter-number values.
 
 
 ## Placeholders
-The 'GenerateFromTemplate' method allows you to provide a string containing ((placeholders)) which will be replaced with generated values.
+The 'GenerateFromTemplate' method allows you to provide a string containing ((placeholders)) which will be replaced with generated values.  Note that placeholders are 
+wrapped in double parenthesis e.g. `Hi ((Lvlv))` where ((Lvlv)) is the placeholder pattern.
 
-For example: 
+###For example: 
 - `"This is a ((LL)) string"` will produce something similar to `"This is a AQ string"` where `'AQ'` is randomly generated.
 - `"This is a (([XX]{19})) string"` will produce something similar to `"This is a 3698145258142562124 string"` where `'3698145258142562124'` is randomly generated.
 
 ## Commandline Tool
 You can use the `tdg.exe` application to generate test data from the command line.  You can provide templates directly from the command line or from a file and 
 the tool also supports exporting the generated output to either the command line or another file.
-Example usage:
+
+###Example usage:
 - Generate 100 SSN like values and output to console window
   - `tdg.exe -t "((Xxx-xx-xxxx))" -c 100`
 - Generate 100 strings with random name like values and output to file 
@@ -47,4 +49,5 @@ Profiling results:
   - `"[L]{1}[X]{1}[L]{2}[X]{2}[L]{4}[X]{4}[L]{8}[X]{8}[L]{16}[X]{16}[L]{32}[X]{32}[L]{64}[X]{64}[L]{128}[X]{128}[L]{256}[X]{256}[L]{512}[X]{512}[L]{1024}[X]{1024}"`
 
 
+##Examples
 See the unit tests for other examples.
