@@ -20,10 +20,14 @@ The pattern is as follows:
 Patterns can be repeated a specific number of times using the format "[pattern]{repeat}".  
 
 ####For example:
-- `[L]{5}` - Will generate 5 random upper-case characters.
-- `[LLX]{24}`  - Will generate 24 repeating letter-letter-number values.
-- `[L]{10,20}` - Will generate a string containing between 10 and 20 characters of random value.
-
+- Repeating patterns containing multiple letters or numbers of random length.
+  - `[L]{5}` - Will generate 5 random upper-case characters.
+  - `[LLX]{24}`  - Will generate 24 repeating letter-letter-number values.
+- Single repeating symbols are also possible using the following syntax
+  - `tdg -t "Letters ((L{20})) and Numbers ((X{12}))" -c 100`
+- Variable length data can be generated also
+  - `[L]{10,20}` - Will generate a string containing between 10 and 20 characters of random value.
+  - `tdg -t "Letters ((L{2,20})) and Numbers ((X{2,12}))" -c 100`
 
 ## Placeholders
 The 'GenerateFromTemplate' method allows you to provide a string containing ((placeholders)) which will be replaced with generated values.  Note that placeholders are 

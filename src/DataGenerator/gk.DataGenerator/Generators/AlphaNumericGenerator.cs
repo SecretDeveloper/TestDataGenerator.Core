@@ -106,6 +106,7 @@ namespace gk.DataGenerator.Generators
             while(i < characters.Length)
             {
                 char ch = characters[i];
+
                 // check for escape chars for next part
                 if (ch == '\\')
                 {
@@ -121,22 +122,55 @@ namespace gk.DataGenerator.Generators
                     i++;
                     continue;
                 }
-                // check are we entering a repeat symbol section
+
+                // check are we entering a repeat pattern section
                 // Format = "LL[xx]{4}" = repeat xx pattern 4 times.
                 if (ch == '[')
                 {
-                    sb.Append(GetRepeatedPart(pattern, ref i));
+                    sb.Append(GetRepeatedPattern(pattern, ref i));
                     continue; // skip to next character - i has already been forwarded to new position
                 }
+
+                // check are we entering a repeat symbol section
+                // Format = "L{4}" = repeat L symbol 4 times.
+                bool repeatSymbol = i < characters.Length -1 && characters[i + 1] == '{';
+                if (repeatSymbol)
+                {
+                    sb.Append(GetRepeatedSymbol(pattern, ref i));
+                    continue; // skip to next character - i has already been forwarded to new position
+                }
+
                 sb.Append(GenerateStringFromSymbol(ch));
                 i++;
             }
             return sb.ToString();
         }
 
+        private static string GetRepeatedSymbol(string characters, ref int i)
+        {
+            if(i < 0 )
+                throw new GenerationException("Invalid position for Symbol repeating section, it must follow a Symbol e.g. 'L{1,2}'.");
+
+            var start = i+2;
+            var end = GetNext(characters, start, "}", "{");
+
+            var symbol = characters[i];
+            int repeat = GetRepeatValue(characters.Substring(start, end - start));
+
+            var sb = new StringBuilder();
+            //ok so we have our pattern, lets repeat it
+            for (int x = 0; x < repeat; x++)
+            {
+                sb.Append(GenerateStringFromSymbol(symbol));
+            }
+
+            // i = currentposition + '{}' + string in between + move forward 1
+            i = i + 2 + (end - start) +1 ;  // update index
+            return sb.ToString();
+        }
 
 
-        private static string GetRepeatedPart(string characters, ref int i)
+        private static string GetRepeatedPattern(string characters, ref int i)
         {
             var tuple = GetRepeatingPatternTuple(characters, ref i);
 
@@ -164,6 +198,14 @@ namespace gk.DataGenerator.Generators
             string rs = GetRepeatedPartSection(characters, ref i, '{', '}');
 
             int repeat;
+            repeat = GetRepeatValue(rs);
+
+            return new Tuple<int, string>(repeat, pattern);
+        }
+
+        private static int GetRepeatValue(string rs)
+        {
+            int repeat;
             if (rs.Contains(","))
             {
                 // {min,max} has been provided - parse and get value.
@@ -173,14 +215,13 @@ namespace gk.DataGenerator.Generators
                 if (vals.Length < 2 || !int.TryParse(vals[0], out min) || !int.TryParse(vals[1], out max) || min > max || min < 0)
                     throw new GenerationException("Invalid repeat section, random length parameters must be in the format {min,max} where min and max are greater than zero and min is less than max.");
 
-                repeat = Random.Next(min, max+1);
+                repeat = Random.Next(min, max + 1);
             }
             else if (!int.TryParse(rs, out repeat)) repeat = -1;
 
-            if(repeat < 0)
+            if (repeat < 0)
                 throw new GenerationException("Invalid repeat section, repeat value must not be less than zero.");
-
-            return new Tuple<int, string>(repeat, pattern);
+            return repeat;
         }
 
 

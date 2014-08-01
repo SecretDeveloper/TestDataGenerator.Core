@@ -140,6 +140,14 @@ namespace gk.DataGeneratorTests
         }
 
         [TestMethod]
+        public void Can_Generate_Repeat_Symbol()
+        {
+            var pattern = "L{3}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            StringAssert.Matches(text, new Regex(@"[A-Z]{3}"));
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(GenerationException))]
         public void Can_Generate_Exception_Invalid_Repeat_Pattern()
         {
