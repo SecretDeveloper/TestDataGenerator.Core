@@ -8,7 +8,7 @@ namespace gk.DataGenerator.Generators
     {
         private static readonly Random Random;
 
-        private const string AllAllowedCharacters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!£$%^&*()-=_+;'#:@~,./<>?\|";
+        private const string AllAllowedCharacters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!£$%^&*()-=_+;'#:@~,./<>?\| ";
         private const string AllCharacters = "abcdefghijklmnopqrstuvwxyz";
         private const string VowelCharacters = "aeiou";
         private const string ConsonantCharacters = "bcdfghjklmnpqrstvwxyz";
@@ -25,7 +25,7 @@ namespace gk.DataGenerator.Generators
         /// </summary>
         /// <param name="template"></param>
         /// <returns></returns>
-        public static string Process(string template)
+        public static string GenerateFromTemplate(string template)
         {
             var sb = new StringBuilder();
 
@@ -50,7 +50,7 @@ namespace gk.DataGenerator.Generators
                 }
 
                 var pattern = template.Substring(start, end-start); // grab our expression
-                sb.Append(Generate(pattern)); // generate value from expression
+                sb.Append(GenerateFromPattern(pattern)); // generate value from expression
                 index = end+2; // update our index.
             }
 
@@ -82,7 +82,7 @@ namespace gk.DataGenerator.Generators
         /// "[*]{10}" will produce a random string 10 characters long.
         /// </param>
         /// <returns></returns>
-        public static string Generate(string pattern = "[*]{15}")
+        public static string GenerateFromPattern(string pattern = "[*]{15}")
         {
             if(pattern == null)
                 throw new GenerationException("Argument 'pattern' cannot be null.");

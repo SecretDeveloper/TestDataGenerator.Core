@@ -25,11 +25,20 @@ For example:
 
 
 ## Placeholders
-The 'Process' method allows you to provide a string containing ((placeholders)) which will be replaced with generated values.
+The 'GenerateFromTemplate' method allows you to provide a string containing ((placeholders)) which will be replaced with generated values.
 
 For example: 
 - `"This is a ((LL)) string"` will produce something similar to `"This is a AQ string"` where `'AQ'` is randomly generated.
 - `"This is a (([XX]{19})) string"` will produce something similar to `"This is a 3698145258142562124 string"` where `'3698145258142562124'` is randomly generated.
+
+## Commandline Tool
+You can use the `tdg.exe` application to generate test data from the command line.  You can provide templates directly from the command line or from a file and 
+the tool also supports exporting the generated output to either the command line or another file.
+Example usage:
+- Generate 100 SSN like values and output to console window
+-- `tdg.exe -t "((Xxx-xx-xxxx))" -c 100`
+- Generate 100 strings with random name like values and output to file 
+-- `tdg.exe -t "Hi there ((Lvlv Lvllvvllv)) how are you doing?" -c 100 -o C:\test1.txt`
 
 
 ## Profiling results
