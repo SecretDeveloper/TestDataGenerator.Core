@@ -60,4 +60,18 @@ Profiling results:
   - `"[L]{1}[X]{1}[L]{2}[X]{2}[L]{4}[X]{4}[L]{8}[X]{8}[L]{16}[X]{16}[L]{32}[X]{32}[L]{64}[X]{64}[L]{128}[X]{128}[L]{256}[X]{256}[L]{512}[X]{512}[L]{1024}[X]{1024}"`
 
 ##Examples
+Executing the following `tdg -t "Letters ((L{2,20})) and Numbers ((X{2,12}))" -c 10` produces the following output:
+```
+Letters JVMZEDPFXWIMVTDNLRS and Numbers 9185231
+Letters VUTSCFFJGTCSPSEDK and Numbers 15824
+Letters KXCJZVNDGMOEIQ and Numbers 824220569208
+Letters OH and Numbers 431608040
+Letters YQHWFYZQRJB and Numbers 989557104
+Letters LCWKTQ and Numbers 2648
+Letters CHEOOZGXXPWXFNGDKXC and Numbers 90788578
+Letters LBXKTHYDBLLNKJAB and Numbers 7682566
+Letters KQKRYJBYPJXSQCGXUGU and Numbers 009796
+Letters GR and Numbers 31805212297
+```
+
 See the unit tests for other examples.
