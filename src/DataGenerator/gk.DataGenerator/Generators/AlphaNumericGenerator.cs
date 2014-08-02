@@ -9,9 +9,13 @@ namespace gk.DataGenerator.Generators
         private static readonly Random Random;
 
         private const string AllAllowedCharacters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!£$%^&*()-=_+;'#:@~,./<>?\| ";
-        private const string AllCharacters = "abcdefghijklmnopqrstuvwxyz";
-        private const string VowelCharacters = "aeiou";
-        private const string ConsonantCharacters = "bcdfghjklmnpqrstvwxyz";
+        private const string AllLowerLetters = "abcdefghijklmnopqrstuvwxyz";
+        private const string AllUpperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private const string AllLetters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private const string VowelUpper = "AEIOU";
+        private const string VowelLower = "aeiou";
+        private const string ConsonantLower = "bcdfghjklmnpqrstvwxyz";
+        private const string ConsonantUpper = "BCDFGHJKLMNPQRSTVWXYZ";
         private const string Numbers0To9Characters = "0123456789";
         private const string Numbers1To9Characters = "123456789";
 
@@ -127,7 +131,7 @@ namespace gk.DataGenerator.Generators
                 // Format = "LL[xx]{4}" = repeat xx pattern 4 times.
                 if (ch == '[')
                 {
-                    sb.Append(GetRepeatedPattern(pattern, ref i));
+                    GetRepeatedPattern(sb, pattern, ref i);
                     continue; // skip to next character - i has already been forwarded to new position
                 }
 
@@ -136,27 +140,28 @@ namespace gk.DataGenerator.Generators
                 bool repeatSymbol = i < characters.Length -1 && characters[i + 1] == '{';
                 if (repeatSymbol)
                 {
-                    sb.Append(GetRepeatedSymbol(pattern, ref i));
+                    GetRepeatedSymbol(sb, pattern, ref i);
                     continue; // skip to next character - i has already been forwarded to new position
                 }
 
-                sb.Append(GenerateStringFromSymbol(ch));
+                GenerateStringFromSymbol(sb, ch);
                 i++;
             }
             return sb.ToString();
         }
 
-        private static string GetRepeatedSymbol(string characters, ref int i)
+        
+        private static string GetRepeatedSymbol(StringBuilder sb, string characters, ref int i)
         {
             var symbol = characters[i++];
             string rs = GetRepeatedPartSection(characters, ref i, '{', '}');
             int repeat = GetRepeatValue(rs);
 
-            var sb = new StringBuilder();
+        
             //ok so we have our pattern, lets repeat it
             for (int x = 0; x < repeat; x++)
             {
-                sb.Append(GenerateStringFromSymbol(symbol));
+                GenerateStringFromSymbol(sb, symbol);
             }
 
             // i = currentposition + '{}' + string in between + move forward 1
@@ -165,20 +170,17 @@ namespace gk.DataGenerator.Generators
         }
 
 
-        private static string GetRepeatedPattern(string characters, ref int i)
+        private static void GetRepeatedPattern(StringBuilder sb, string characters, ref int i)
         {
             var tuple = GetRepeatingPatternTuple(characters, ref i);
 
-            var sb = new StringBuilder();
-            //ok so we have our pattern, lets repeat it
             for (int x = 0; x < tuple.Item1; x++)
             {
                 foreach (var chx in tuple.Item2)
                 {
-                    sb.Append(GenerateStringFromSymbol(chx));
+                    GenerateStringFromSymbol(sb, chx);
                 }
             }
-            return sb.ToString();
         }
 
         /// <summary>
@@ -237,54 +239,50 @@ namespace gk.DataGenerator.Generators
             return characters.Substring(patternStart, patternLength);
         }
 
-        private static string GenerateStringFromSymbol(char symbol)
+        private static void GenerateStringFromSymbol(StringBuilder sb, char symbol)
         {
-            if(AllAllowedCharacters.Contains(symbol.ToString(CultureInfo.InvariantCulture)) == false)
+            if(AllAllowedCharacters.IndexOf(symbol) == -1)
                 throw new GenerationException("Invalid symbol '" + symbol + "' encountered.");
-
-            bool makeUpper = Random.Next(2) > 0;
-
+            
             switch (symbol)
             {
                 case '*':
-                    if (makeUpper)
-                    {
-                        return GenerateRandomString(AllAllowedCharacters, 1).ToUpper();
-                    }
-                    return GenerateRandomString(AllAllowedCharacters, 1).ToLower();
+                    GenerateRandomString(sb, AllLetters);
+                    break;
                 case 'L':
-                    return GenerateRandomString(AllCharacters, 1).ToUpper();
+                    GenerateRandomString(sb, AllUpperLetters);
+                    break;
                 case 'l':
-                    return GenerateRandomString(AllCharacters, 1).ToLower();
+                    GenerateRandomString(sb, AllLowerLetters);
+                    break;
                 case 'V':
-                    return GenerateRandomString(VowelCharacters, 1).ToUpper();
+                    GenerateRandomString(sb, VowelUpper);
+                    break;
                 case 'v':
-                    return GenerateRandomString(VowelCharacters, 1).ToLower();
+                    GenerateRandomString(sb, VowelLower);
+                    break;
                 case 'C':
-                    return GenerateRandomString(ConsonantCharacters, 1).ToUpper();
+                    GenerateRandomString(sb, ConsonantUpper);
+                    break;
                 case 'c':
-                    return GenerateRandomString(ConsonantCharacters, 1).ToLower();
+                    GenerateRandomString(sb, ConsonantLower);
+                    break;
                 case 'X':
-                    return GenerateRandomString(Numbers0To9Characters, 1);
+                    GenerateRandomString(sb, Numbers0To9Characters);
+                    break;
                 case 'x':
-                    return GenerateRandomString(Numbers1To9Characters, 1);
+                    GenerateRandomString(sb, Numbers1To9Characters);
+                    break;
                 default:
                     // Just append the character as it is not a symbol.
-                    return symbol.ToString(CultureInfo.InvariantCulture);
+                    sb.Append(symbol);
+                    break;
             }
-
         }
 
-        private static string GenerateRandomString(string allowedCharacters, int length)
+        private static void GenerateRandomString(StringBuilder sb, string allowedCharacters)
         {
-            int numberofChars = allowedCharacters.Length;
-            var sb = new StringBuilder(length);
-
-            for(int i = 0; i < length;i++)
-            {
-                sb.Append(allowedCharacters[Random.Next(numberofChars)]);
-            }
-            return sb.ToString();
+            sb.Append(allowedCharacters[Random.Next(allowedCharacters.Length)]);
         }
     }
 }
