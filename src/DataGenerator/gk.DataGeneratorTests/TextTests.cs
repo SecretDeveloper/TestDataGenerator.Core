@@ -5,9 +5,6 @@ using gk.DataGenerator.Generators;
 
 namespace gk.DataGeneratorTests
 {
-    /// <summary>
-    /// Summary description for UnitTest1
-    /// </summary>
     [TestClass]
     public class TextTests
     {
@@ -59,7 +56,7 @@ namespace gk.DataGeneratorTests
 
 
         [TestMethod]
-        public void CanGenerateAlphaNumeric()
+        public void Can_Generate_AlphaNumeric()
         {
 
             var pattern = "*LlVvCcXx";
@@ -96,7 +93,7 @@ namespace gk.DataGeneratorTests
         }
 
         [TestMethod]
-        public void CanGenerateSimplePatterns()
+        public void Can_Generate_Simple_Patterns()
         {
             var pattern = "LLLLLL-LL-LLLLL";
             string text = AlphaNumericGenerator.GenerateFromPattern(pattern);
@@ -127,7 +124,7 @@ namespace gk.DataGeneratorTests
         }
 
         [TestMethod]
-        public void CanGenerateRepeatPattern()
+        public void Can_Generate_Repeat_Pattern()
         {
             string pattern;
             string text = AlphaNumericGenerator.GenerateFromPattern();
@@ -172,7 +169,7 @@ namespace gk.DataGeneratorTests
         }
 
         [TestMethod]
-        public void CanGenerate_Mixed_Pattern_With_Random_Length()
+        public void Can_Generate_Mixed_Pattern_With_Random_Length()
         {
             string pattern;
             pattern = "[L]{10,20}";
@@ -183,7 +180,7 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [ExpectedException(typeof(GenerationException))]
-        public void CanGenerate_Mixed_Pattern_With_Invalid_Random_Length_Character()
+        public void Can_Generate_Mixed_Pattern_With_Invalid_Random_Length_Character()
         {
             string pattern;
             pattern = "[L]{10,}";
@@ -193,7 +190,7 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [ExpectedException(typeof(GenerationException))]
-        public void CanGenerate_Mixed_Pattern_With_Invalid_Random_Length_Min_Max()
+        public void Can_Generate_Mixed_Pattern_With_Invalid_Random_Length_Min_Max()
         {
             string pattern;
             pattern = "[L]{10,0}";
@@ -202,7 +199,34 @@ namespace gk.DataGeneratorTests
         }
 
         [TestMethod]
-        public void CanGenerateMixedPattern()
+        public void Can_Output_Escaped_Symbols()
+        {
+            string pattern;
+            pattern = @"\X";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            StringAssert.Matches(text, new Regex(@"X"));
+        }
+
+        [TestMethod]
+        public void Can_Output_Escaped_Repeated_Symbols()
+        {
+            string pattern;
+            pattern = @"\X{10}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            StringAssert.Matches(text, new Regex(@"[X]{10}"));
+        }
+
+        [TestMethod]
+        public void Can_Output_Escaped_Slash()
+        {
+            string pattern;
+            pattern = @"[\\]{1,10}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            StringAssert.Matches(text, new Regex(@"[\\]{1,10}"));
+        }
+
+        [TestMethod]
+        public void Can_Generate_Mixed_Pattern()
         {
             string pattern;
             pattern = "LL[LLXX]{3}LL[L]{23}";
@@ -212,7 +236,7 @@ namespace gk.DataGeneratorTests
         }
 
         [TestMethod]
-        public void CanGenerateRepeatPattern_Long()
+        public void Can_Generate_Repeat_Pattern_Long()
         {
             var pattern = "[L]{1}[X]{1}[L]{2}[X]{2}[L]{4}[X]{4}[L]{8}[X]{8}[L]{16}[X]{16}[L]{32}[X]{32}[L]{64}[X]{64}[L]{128}[X]{128}[L]{256}[X]{256}[L]{512}[X]{512}[L]{1024}[X]{1024}";
             var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
@@ -221,27 +245,55 @@ namespace gk.DataGeneratorTests
         }
 
         [TestMethod]
-        public void CanGenerateRepeatPattern_Long_Profile()
+        public void Profile_Random_Repeat()
         {
-            var pattern = "[L]{1}[X]{1}[L]{2}[X]{2}[L]{4}[X]{4}[L]{8}[X]{8}[L]{16}[X]{16}[L]{32}[X]{32}[L]{64}[X]{64}[L]{128}[X]{128}[L]{256}[X]{256}[L]{512}[X]{512}[L]{1024}[X]{1024}";
-
+            var pattern = "((L{50,51}))";
             var testLimit = 1000;
-
             var sw = new System.Diagnostics.Stopwatch();
-
             sw.Start();
             for (var i = 0; i < testLimit; i++)
             {
-                AlphaNumericGenerator.GenerateFromPattern(pattern);
+                AlphaNumericGenerator.GenerateFromTemplate(pattern);
             }
             sw.Stop();
             
             Console.WriteLine(string.Format("Executed {0} large generations in {1} milliseconds.", testLimit, sw.ElapsedMilliseconds));
         }
+        
+        [TestMethod]
+        public void Profile_NonRandom_Repeat()
+        {
+            var pattern = "((L{50}))";
+            var testLimit = 1000;
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            for (var i = 0; i < testLimit; i++)
+            {
+                AlphaNumericGenerator.GenerateFromTemplate(pattern);
+            }
+            sw.Stop();
+
+            Console.WriteLine(string.Format("Executed {0} large generations in {1} milliseconds.", testLimit, sw.ElapsedMilliseconds));
+        }
+
+        [TestMethod]
+        public void Profile_Large_NonRandom_Repeat()
+        {
+            var pattern = "(([L]{1}[X]{1}[L]{2}[X]{2}[L]{4}[X]{4}[L]{8}[X]{8}[L]{16}[X]{16}[L]{32}[X]{32}[L]{64}[X]{64}[L]{128}[X]{128}[L]{256}[X]{256}[L]{512}[X]{512}[L]{1024}[X]{1024}))";
+            var testLimit = 1000;
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            for (var i = 0; i < testLimit; i++)
+            {
+                AlphaNumericGenerator.GenerateFromTemplate(pattern);
+            }
+            sw.Stop();
+            Console.WriteLine(string.Format("Executed {0} large generations in {1} milliseconds.", testLimit, sw.ElapsedMilliseconds));
+        }
 
         [TestMethod]
         [ExpectedException(typeof (GenerationException))]
-        public void CanGenerate_Exceptions_IncompletePattern()
+        public void Can_Generate_Exceptions_IncompletePattern()
         {
             var pattern = "[LLXX";
             AlphaNumericGenerator.GenerateFromPattern(pattern);
@@ -249,7 +301,7 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [ExpectedException(typeof (GenerationException))]
-        public void CanGenerate_Exceptions_InvalidCardinality_Start()
+        public void Can_Generate_Exceptions_InvalidCardinality_Start()
         {
             var pattern = "[LLXX]{33";
             AlphaNumericGenerator.GenerateFromPattern(pattern);
@@ -257,7 +309,7 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [ExpectedException(typeof (GenerationException))]
-        public void CanGenerate_Exceptions_InvalidCardinality_End()
+        public void Can_Generate_Exceptions_InvalidCardinality_End()
         {
             var pattern = "[LLXX]33}";
             AlphaNumericGenerator.GenerateFromPattern(pattern);
@@ -265,7 +317,7 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [ExpectedException(typeof (GenerationException))]
-        public void CanGenerate_Exceptions_InvalidCardinality_Value()
+        public void Can_Generate_Exceptions_InvalidCardinality_Value()
         {
             var pattern = "[LLXX]{}";
             AlphaNumericGenerator.GenerateFromPattern(pattern);
@@ -273,7 +325,7 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [ExpectedException(typeof (GenerationException))]
-        public void CanGenerate_Exceptions_InvalidPattern_InvalidCardinality()
+        public void Can_Generate_Exceptions_InvalidPattern_InvalidCardinality()
         {
             var pattern = "LLXX]{}";
             AlphaNumericGenerator.GenerateFromPattern(pattern);
@@ -281,7 +333,7 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [ExpectedException(typeof (GenerationException))]
-        public void CanGenerate_Exceptions_InvalidCardinality_Missing()
+        public void Can_Generate_Exceptions_InvalidCardinality_Missing()
         {
             var pattern = "[LLXX]";
             AlphaNumericGenerator.GenerateFromPattern(pattern);
@@ -289,7 +341,7 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [ExpectedException(typeof (GenerationException))]
-        public void CanGenerate_Exceptions_Invalid_Cardinaliy_Less_Than_Zero()
+        public void Can_Generate_Exceptions_Invalid_Cardinaliy_Less_Than_Zero()
         {
             var pattern = "[LLXX]{-1}";
             AlphaNumericGenerator.GenerateFromPattern(pattern);
@@ -297,7 +349,7 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [ExpectedException(typeof (GenerationException))]
-        public void CanGenerate_Exceptions_InvalidPattern_Null()
+        public void Can_Generate_Exceptions_InvalidPattern_Null()
         {
             AlphaNumericGenerator.GenerateFromPattern(null);
         }

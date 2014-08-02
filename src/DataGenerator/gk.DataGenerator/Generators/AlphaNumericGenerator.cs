@@ -41,7 +41,7 @@ namespace gk.DataGenerator.Generators
             while (index < template.Length)
             {
                 // Find our next placeholder
-                int start = GetNext(template, index, Placeholder_Start, Placeholder_End);
+                int start = FindPositionOfNext(template, index, Placeholder_Start, Placeholder_End);
                 if (start == -1)
                 {
                     sb.Append(template.Substring(index));  //add remaining string.
@@ -51,7 +51,7 @@ namespace gk.DataGenerator.Generators
                 sb.Append(template.Substring(index, start-index)); // Append everything up to start as it is.
                 start = start + 2; // move past '((' to start of expression
 
-                int end = GetNext(template, start, Placeholder_End, Placeholder_Start); // find end of placeholder
+                int end = FindPositionOfNext(template, start, Placeholder_End, Placeholder_Start); // find end of placeholder
                 if (end == -1)
                 {
                     throw new GenerationException("Unable to find closing placeholder after "+start);
@@ -64,20 +64,7 @@ namespace gk.DataGenerator.Generators
 
             return sb.ToString();
         }
-
-        private static int GetNext(string template, int index, string toFind, string notBefore)
-        {
-            var notBeforeNdx = template.IndexOf(notBefore, index, StringComparison.Ordinal);
-            if(notBeforeNdx == -1)
-                return template.IndexOf(toFind, index, StringComparison.Ordinal);
-            
-            var ndx = template.IndexOf(toFind, index, StringComparison.Ordinal);
-            if(notBeforeNdx < ndx)
-                throw new GenerationException("Found start of new section '"+notBefore+"' at index '" + notBeforeNdx + "' when expecting to find '"+toFind+"' first.");
-            return ndx;
-        }
-
-
+        
         /// <summary>
         /// 
         /// </summary>
@@ -104,12 +91,11 @@ namespace gk.DataGenerator.Generators
 
             var sb = new StringBuilder();
             bool skipNext = false;
-
-            var characters = pattern.ToCharArray();
+            
             int i = 0; 
-            while(i < characters.Length)
+            while(i < pattern.Length)
             {
-                char ch = characters[i];
+                char ch = pattern[i];
 
                 // check for escape chars for next part
                 if (ch == '\\')
@@ -118,6 +104,24 @@ namespace gk.DataGenerator.Generators
                     i++;
                     continue;
                 }
+
+                // check are we entering a repeat pattern section
+                // Format = "LL[xx]{4}" = repeat xx pattern 4 times.
+                if (ch == '[')
+                {
+                    AppendContentFromRepeatExpression(sb, pattern, ref i);
+                    continue; // skip to next character - index has already been forwarded to new position
+                }
+
+                // check are we entering a repeat symbol section
+                // Format = "L{4}" = repeat L symbol 4 times.
+                bool repeatSymbol = i < pattern.Length -1 && pattern[i + 1] == '{';
+                if (repeatSymbol)
+                {
+                    AppendRepeatedSymbol(sb, pattern, ref i, skipNext);
+                    continue; // skip to next character - index has already been forwarded to new position
+                }
+
                 // if we are escaping this char then just stick it in as is.
                 if (skipNext)
                 {
@@ -126,59 +130,94 @@ namespace gk.DataGenerator.Generators
                     i++;
                     continue;
                 }
-
-                // check are we entering a repeat pattern section
-                // Format = "LL[xx]{4}" = repeat xx pattern 4 times.
-                if (ch == '[')
-                {
-                    GetRepeatedPattern(sb, pattern, ref i);
-                    continue; // skip to next character - i has already been forwarded to new position
-                }
-
-                // check are we entering a repeat symbol section
-                // Format = "L{4}" = repeat L symbol 4 times.
-                bool repeatSymbol = i < characters.Length -1 && characters[i + 1] == '{';
-                if (repeatSymbol)
-                {
-                    GetRepeatedSymbol(sb, pattern, ref i);
-                    continue; // skip to next character - i has already been forwarded to new position
-                }
-
-                GenerateStringFromSymbol(sb, ch);
+                
+                AppendCharacterDerivedFromSymbol(sb, ch);
                 i++;
             }
             return sb.ToString();
         }
 
-        
-        private static string GetRepeatedSymbol(StringBuilder sb, string characters, ref int i)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="template"></param>
+        /// <param name="index"></param>
+        /// <param name="toFind"></param>
+        /// <param name="notBefore"></param>
+        /// <returns></returns>
+        private static int FindPositionOfNext(string template, int index, string toFind, string notBefore)
         {
-            var symbol = characters[i++];
-            string rs = GetRepeatedPartSection(characters, ref i, '{', '}');
-            int repeat = GetRepeatValue(rs);
+            var notBeforeNdx = template.IndexOf(notBefore, index, StringComparison.Ordinal);
+            if (notBeforeNdx == -1)
+                return template.IndexOf(toFind, index, StringComparison.Ordinal);
 
-        
-            //ok so we have our pattern, lets repeat it
-            for (int x = 0; x < repeat; x++)
-            {
-                GenerateStringFromSymbol(sb, symbol);
-            }
-
-            // i = currentposition + '{}' + string in between + move forward 1
-            //i = i + 2 + (end - start) +1 ;  // update index
-            return sb.ToString();
+            var ndx = template.IndexOf(toFind, index, StringComparison.Ordinal);
+            if (notBeforeNdx < ndx)
+                throw new GenerationException("Found start of new section '" + notBefore + "' at index '" + notBeforeNdx + "' when expecting to find '" + toFind + "' first.");
+            return ndx;
         }
 
-
-        private static void GetRepeatedPattern(StringBuilder sb, string characters, ref int i)
+        /// <summary>
+        /// Calculates the content from a repeated symbol when the following form is encountered 's{repeat}' where s is a symbol.
+        /// The calculated value is append to sb.
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="characters"></param>
+        /// <param name="index"></param>
+        /// <param name="isEscaped">
+        /// True if the previous character was escaped and should be added 'as-is'.
+        /// False if previous character should be treated as a symbol.</param>
+        /// <returns></returns>
+        private static void AppendRepeatedSymbol(StringBuilder sb, string characters, ref int index, bool isEscaped)
         {
-            var tuple = GetRepeatingPatternTuple(characters, ref i);
+            var symbol = characters[index++];
+            string rs = GetSurroundedContent(characters, ref index, '{', '}');
+            int repeat = GetRepeatValueFromRepeatExpression(rs);
 
+            if (!isEscaped)
+            {
+                for (int x = 0; x < repeat; x++)
+                {
+                    AppendCharacterDerivedFromSymbol(sb, symbol);
+                }
+            }
+            else
+            {
+                for (int x = 0; x < repeat; x++)
+                {
+                    sb.Append(symbol);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Calculates the content from a repeated expression when the following form is enountered '[exp]{repeat}'.
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="characters"></param>
+        /// <param name="index"></param>
+        private static void AppendContentFromRepeatExpression(StringBuilder sb, string characters, ref int index)
+        {
+            var tuple = GetPatternAndRepeatValueFromExpression(characters, ref index);
+
+            bool skipNext = false;
             for (int x = 0; x < tuple.Item1; x++)
             {
                 foreach (var chx in tuple.Item2)
                 {
-                    GenerateStringFromSymbol(sb, chx);
+                    if (skipNext)
+                    {
+                        skipNext = false;
+                        sb.Append(chx); // append escaped character.
+                        continue;
+                    }
+                    if (chx == '\\')
+                    {
+                        skipNext = true;
+                        continue;
+                    }
+
+                    AppendCharacterDerivedFromSymbol(sb, chx);
                 }
             }
         }
@@ -187,26 +226,31 @@ namespace gk.DataGenerator.Generators
         /// Returns a tuple containing an integer representing the number of repeats and a string representing the pattern.
         /// </summary>
         /// <param name="characters"></param>
-        /// <param name="i"></param>
+        /// <param name="index"></param>
         /// <returns></returns>
-        private static Tuple<int,string> GetRepeatingPatternTuple(string characters, ref int i)
+        private static Tuple<int,string> GetPatternAndRepeatValueFromExpression(string characters, ref int index)
         {
-            string pattern = GetRepeatedPartSection(characters, ref i, '[', ']');
-            string rs = GetRepeatedPartSection(characters, ref i, '{', '}');
+            string pattern = GetSurroundedContent(characters, ref index, '[', ']');
+            string repeatExpression = GetSurroundedContent(characters, ref index, '{', '}');
 
             int repeat;
-            repeat = GetRepeatValue(rs);
+            repeat = GetRepeatValueFromRepeatExpression(repeatExpression);
 
             return new Tuple<int, string>(repeat, pattern);
         }
 
-        private static int GetRepeatValue(string rs)
+        /// <summary>
+        /// Dervives the correct repeat value from the provided expression.
+        /// </summary>
+        /// <param name="repeatExpression">String in the form of '{n}' or '{n,m}' where n and m are integers</param>
+        /// <returns></returns>
+        private static int GetRepeatValueFromRepeatExpression(string repeatExpression)
         {
             int repeat;
-            if (rs.Contains(","))
+            if (repeatExpression.Contains(","))
             {
                 // {min,max} has been provided - parse and get value.
-                var vals = rs.Split(',');
+                var vals = repeatExpression.Split(',');
                 int min = -1, max = -1;
 
                 if (vals.Length < 2 || !int.TryParse(vals[0], out min) || !int.TryParse(vals[1], out max) || min > max || min < 0)
@@ -214,7 +258,7 @@ namespace gk.DataGenerator.Generators
 
                 repeat = Random.Next(min, max + 1);
             }
-            else if (!int.TryParse(rs, out repeat)) repeat = -1;
+            else if (!int.TryParse(repeatExpression, out repeat)) repeat = -1;
 
             if (repeat < 0)
                 throw new GenerationException("Invalid repeat section, repeat value must not be less than zero.");
@@ -222,56 +266,53 @@ namespace gk.DataGenerator.Generators
         }
 
 
-        private static string GetRepeatedPartSection(string characters, ref int i, char sectionStartChar, char sectionEndChar)
+        private static string GetSurroundedContent(string characters, ref int index, char sectionStartChar, char sectionEndChar)
         {
-            if (i == characters.Length)
-                throw new GenerationException("Expected '" + sectionStartChar + "' at " + i +" but reached end of pattern instead.");
-            if (characters[i].Equals(sectionStartChar) == false)
-                throw new GenerationException("Expected '" + sectionStartChar + "' at " + i + " but it was not found.");
+            if (index == characters.Length)
+                throw new GenerationException("Expected '" + sectionStartChar + "' at " + index +" but reached end of pattern instead.");
+            if (characters[index].Equals(sectionStartChar) == false)
+                throw new GenerationException("Expected '" + sectionStartChar + "' at " + index + " but it was not found.");
             
-            int patternStart = i+1;
+            int patternStart = index+1;
 
-            int patternLength = (characters.IndexOf(sectionEndChar, i)) - patternStart;
+            int patternLength = (characters.IndexOf(sectionEndChar, index)) - patternStart;
             if(patternLength <= 0)
                 throw new GenerationException("Expected '"+ sectionEndChar +"' but it was not found.");
 
-            i = i + patternLength + 2; // update index position.
+            index = index + patternLength + 2; // update index position.
             return characters.Substring(patternStart, patternLength);
         }
 
-        private static void GenerateStringFromSymbol(StringBuilder sb, char symbol)
+        private static void AppendCharacterDerivedFromSymbol(StringBuilder sb, char symbol)
         {
-            if(AllAllowedCharacters.IndexOf(symbol) == -1)
-                throw new GenerationException("Invalid symbol '" + symbol + "' encountered.");
-            
             switch (symbol)
             {
                 case '*':
-                    GenerateRandomString(sb, AllLetters);
+                    AppendRandomCharacterFromString(sb, AllLetters);
                     break;
                 case 'L':
-                    GenerateRandomString(sb, AllUpperLetters);
+                    AppendRandomCharacterFromString(sb, AllUpperLetters);
                     break;
                 case 'l':
-                    GenerateRandomString(sb, AllLowerLetters);
+                    AppendRandomCharacterFromString(sb, AllLowerLetters);
                     break;
                 case 'V':
-                    GenerateRandomString(sb, VowelUpper);
+                    AppendRandomCharacterFromString(sb, VowelUpper);
                     break;
                 case 'v':
-                    GenerateRandomString(sb, VowelLower);
+                    AppendRandomCharacterFromString(sb, VowelLower);
                     break;
                 case 'C':
-                    GenerateRandomString(sb, ConsonantUpper);
+                    AppendRandomCharacterFromString(sb, ConsonantUpper);
                     break;
                 case 'c':
-                    GenerateRandomString(sb, ConsonantLower);
+                    AppendRandomCharacterFromString(sb, ConsonantLower);
                     break;
                 case 'X':
-                    GenerateRandomString(sb, Numbers0To9Characters);
+                    AppendRandomCharacterFromString(sb, Numbers0To9Characters);
                     break;
                 case 'x':
-                    GenerateRandomString(sb, Numbers1To9Characters);
+                    AppendRandomCharacterFromString(sb, Numbers1To9Characters);
                     break;
                 default:
                     // Just append the character as it is not a symbol.
@@ -280,7 +321,7 @@ namespace gk.DataGenerator.Generators
             }
         }
 
-        private static void GenerateRandomString(StringBuilder sb, string allowedCharacters)
+        private static void AppendRandomCharacterFromString(StringBuilder sb, string allowedCharacters)
         {
             sb.Append(allowedCharacters[Random.Next(allowedCharacters.Length)]);
         }
