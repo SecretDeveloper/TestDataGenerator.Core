@@ -256,8 +256,8 @@ namespace gk.DataGeneratorTests
                 AlphaNumericGenerator.GenerateFromTemplate(pattern);
             }
             sw.Stop();
-            
-            Console.WriteLine(string.Format("Executed {0} large generations in {1} milliseconds.", testLimit, sw.ElapsedMilliseconds));
+
+            Console.WriteLine(string.Format("{0} instances of the following template generated in {1} milliseconds.\n'{2}'", testLimit, sw.ElapsedMilliseconds, pattern));
         }
         
         [TestMethod]
@@ -273,7 +273,7 @@ namespace gk.DataGeneratorTests
             }
             sw.Stop();
 
-            Console.WriteLine(string.Format("Executed {0} large generations in {1} milliseconds.", testLimit, sw.ElapsedMilliseconds));
+            Console.WriteLine(string.Format("{0} instances of the following template generated in {1} milliseconds.\n'{2}'", testLimit, sw.ElapsedMilliseconds, pattern));
         }
 
         [TestMethod]
@@ -288,7 +288,7 @@ namespace gk.DataGeneratorTests
                 AlphaNumericGenerator.GenerateFromTemplate(pattern);
             }
             sw.Stop();
-            Console.WriteLine(string.Format("Executed {0} large generations in {1} milliseconds.", testLimit, sw.ElapsedMilliseconds));
+            Console.WriteLine(string.Format("{0} instances of the following template generated in {1} milliseconds.\n'{2}'", testLimit, sw.ElapsedMilliseconds, pattern));
         }
 
         [TestMethod]
