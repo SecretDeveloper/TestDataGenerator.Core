@@ -8,7 +8,6 @@ namespace gk.DataGenerator.Generators
     {
         private static readonly Random Random;
 
-        private const string AllAllowedCharacters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!£$%^&*()-=_+;'#:@~,./<>?\| ";
         private const string AllLowerLetters = "abcdefghijklmnopqrstuvwxyz";
         private const string AllUpperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         private const string AllLetters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -48,7 +47,7 @@ namespace gk.DataGenerator.Generators
                     break; // all done!
                 }
 
-                sb.Append(template.Substring(index, start-index)); // Append everything up to start as it is.
+                sb.Append(template.Substring(index, start - index)); // Append everything up to start as it is.
                 start = start + 2; // move past '((' to start of expression
 
                 int end = FindPositionOfNext(template, start, Placeholder_End, Placeholder_Start); // find end of placeholder
@@ -57,7 +56,13 @@ namespace gk.DataGenerator.Generators
                     throw new GenerationException("Unable to find closing placeholder after "+start);
                 }
 
-                var pattern = template.Substring(start, end-start); // grab our expression
+                var pattern = template.Substring(start, end - start); // grab our expression
+                if (pattern.IndexOf('|') > -1) // check for alternates.
+                {
+                    var exps = pattern.Split('|');
+                    pattern = exps[Random.Next(0, exps.Length)];
+                }
+
                 sb.Append(GenerateFromPattern(pattern)); // generate value from expression
                 index = end+2; // update our index.
             }
@@ -171,8 +176,8 @@ namespace gk.DataGenerator.Generators
         private static void AppendRepeatedSymbol(StringBuilder sb, string characters, ref int index, bool isEscaped)
         {
             var symbol = characters[index++];
-            string rs = GetSurroundedContent(characters, ref index, '{', '}');
-            int repeat = GetRepeatValueFromRepeatExpression(rs);
+            string repeatExpression = GetSurroundedContent(characters, ref index, '{', '}');
+            int repeat = GetRepeatValueFromRepeatExpression(repeatExpression);
 
             if (!isEscaped)
             {
@@ -200,10 +205,21 @@ namespace gk.DataGenerator.Generators
         {
             var tuple = GetPatternAndRepeatValueFromExpression(characters, ref index);
 
+            var exp = tuple.Item2;
+            if (exp.IndexOf('|')>-1)
+            {
+                // alternates in expression 'LL|ll|vv'
+                var alternates = exp.Split('|');
+                exp = alternates[Random.Next(0, alternates.Length)];
+                int ndx = 0;
+                AppendContentFromRepeatExpression(sb, exp, ref ndx);
+                return;
+            }
+
             bool skipNext = false;
             for (int x = 0; x < tuple.Item1; x++)
             {
-                foreach (var chx in tuple.Item2)
+                foreach (var chx in exp)
                 {
                     if (skipNext)
                     {
@@ -246,6 +262,8 @@ namespace gk.DataGenerator.Generators
         /// <returns></returns>
         private static int GetRepeatValueFromRepeatExpression(string repeatExpression)
         {
+            if (string.IsNullOrWhiteSpace(repeatExpression)) return 1; 
+
             int repeat;
             if (repeatExpression.Contains(","))
             {
@@ -269,13 +287,29 @@ namespace gk.DataGenerator.Generators
         private static string GetSurroundedContent(string characters, ref int index, char sectionStartChar, char sectionEndChar)
         {
             if (index == characters.Length)
-                throw new GenerationException("Expected '" + sectionStartChar + "' at " + index +" but reached end of pattern instead.");
+                return ""; // throw new GenerationException("Expected '" + sectionStartChar + "' at " + index + " but reached end of pattern instead.");
             if (characters[index].Equals(sectionStartChar) == false)
-                throw new GenerationException("Expected '" + sectionStartChar + "' at " + index + " but it was not found.");
-            
-            int patternStart = index+1;
+                return ""; // return blank string if expected character is not found.
 
-            int patternLength = (characters.IndexOf(sectionEndChar, index)) - patternStart;
+            int patternStart = index + 1;
+
+            var sectionDepth = 1; // start off inside current section
+            var patternEnd = patternStart;
+            while (patternEnd < characters.Length)
+            {
+                if (characters[patternEnd] == sectionStartChar) sectionDepth++;
+
+                if (characters[patternEnd] == sectionEndChar)
+                {
+                    sectionDepth--;
+                    if (sectionDepth == 0) break;
+                }
+                patternEnd++;
+            }
+            if (sectionDepth > 0) // make sure we found closing char
+                throw new GenerationException("Expected '" + sectionEndChar + "' but it was not found.");
+
+            int patternLength = patternEnd - patternStart;
             if(patternLength <= 0)
                 throw new GenerationException("Expected '"+ sectionEndChar +"' but it was not found.");
 
