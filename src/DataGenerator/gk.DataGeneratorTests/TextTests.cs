@@ -412,7 +412,7 @@ namespace gk.DataGeneratorTests
         [TestCategory("Profiling")]
         public void Profile_Random_Repeat()
         {
-            var pattern = @"<<L{50,51}>>";
+            var pattern = @"<<\L{50,51}>>";
             var testLimit = 1000;
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
@@ -430,7 +430,7 @@ namespace gk.DataGeneratorTests
         [TestCategory("Profiling")]
         public void Profile_NonRandom_Repeat()
         {
-            var pattern = @"<<L{50}>>";
+            var pattern = @"<<\L{50}>>";
             var testLimit = 1000;
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();

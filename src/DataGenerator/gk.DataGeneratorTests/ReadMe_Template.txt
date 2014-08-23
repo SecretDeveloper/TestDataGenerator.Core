@@ -59,11 +59,11 @@ the tool also supports exporting the generated output to either the command line
 
 ## Profiling results
 Profiling results:
-- 1000 instances of the following template generated in 295 milliseconds.
+- 1000 instances of the following template generated in 172 milliseconds.
   - `\<<\L{1}\D{1}\L{2}\D{2}\L{4}\D{4}\L{8}\D{8}\L{16}\D{16}\L{32}\D{32}\L{64}\D{64}\L{128}\D{128}\L{256}\D{256}\L{512}\D{512}\L{1024}\D{1024}>>`
-- 1000 instances of the following template generated in 5 milliseconds.
+- 1000 instances of the following template generated in 3 milliseconds.
   - `\<<\L{50}>>`
-- 1000 instances of the following template generated in 5 milliseconds.
+- 1000 instances of the following template generated in 3 milliseconds.
   - `\<<\L{50,51}>>`
 
 ### Examples
