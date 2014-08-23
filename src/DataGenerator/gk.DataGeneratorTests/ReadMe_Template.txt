@@ -45,8 +45,8 @@ the tool also supports exporting the generated output to either the command line
   - `tdg -t 'Hi there \<<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`
   - Produces 100 items like '<<\L\v\l\v \L\v\l\l\v\v\l\l\v>>'.
 - Combine several placeholders to produce more complicated content
-  - `tdg -t 'Hi there \<<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is \<<Ddd-dd-dddd>>.' -c 100` 
-  - Produces 100 items like 'Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is <<Ddd-dd-dddd>>.'
+  - `tdg -t 'Hi there \<<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is \<<\D\d\d-\d\d-\d\d\d\d>>.' -c 100` 
+  - Produces 100 items like 'Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is <<\D\d\d-\d\d-\d\d\d\d>>.'
 - Single repeating symbols using the following syntax
   - `tdg -t 'Letters \<<\L{20}>> and Numbers \<<\D{12}>>' -c 100`
   - Produces 100 items like 'Letters <<\L{20}>> and Numbers <<\D{12}>>'
@@ -66,7 +66,7 @@ Profiling results:
 - 1000 instances of the following template generated in 5 milliseconds.
   - `\<<\L{50,51}>>`
 
-##Examples
+### Examples
 Executing the following `tdg -t '\<<Letters \w{2,20} and Numbers \D{2,12}\n>>'` produces the following output:
 ```
 <<Letters \w{2,20} and Numbers \D{2,12}\n>>
