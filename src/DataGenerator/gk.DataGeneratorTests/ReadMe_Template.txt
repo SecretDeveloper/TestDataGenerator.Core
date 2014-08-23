@@ -46,7 +46,7 @@ the tool also supports exporting the generated output to either the command line
   - Produces 100 items like '<<\L\v\l\v \L\v\l\l\v\v\l\l\v>>'.
 - Combine several placeholders to produce more complicated content
   - `tdg -t 'Hi there \<<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is \<<Ddd-dd-dddd>>.' -c 100` 
-  - Produces 100 items like 'Hi there \<<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is \<<Ddd-dd-dddd>>.'
+  - Produces 100 items like 'Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is <<Ddd-dd-dddd>>.'
 - Single repeating symbols using the following syntax
   - `tdg -t 'Letters \<<\L{20}>> and Numbers \<<\D{12}>>' -c 100`
   - Produces 100 items like 'Letters <<\L{20}>> and Numbers <<\D{12}>>'
@@ -55,7 +55,7 @@ the tool also supports exporting the generated output to either the command line
   - `tdg -t '<<(\L\L\D){24}>>'`  - Will generate 24 repeating letter-letter-number values e.g. '<<(\L\L\D){24}>>'
 - Variable length data can be generated also
   - `tdg -t '<<(\L){10,20}>>'` - Will generate a string containing between 10 and 20 characters of random value e.g. '<<(\L){10,20}>>'
-  - `tdg -t 'Letters \<<\L{2,20}>> and Numbers \<<\D{2,12}>>' -c 100` produces items like '<<\L{2,20}>> and Numbers <<\D{2,12}>>'
+  - `tdg -t 'Letters \<<\L{2,20}>> and Numbers \<<\D{2,12}>>' -c 100` produces items like 'Letters <<\L{2,20}>> and Numbers <<\D{2,12}>>'
 
 ## Profiling results
 Profiling results:
