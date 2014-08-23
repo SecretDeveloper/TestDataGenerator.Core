@@ -174,14 +174,61 @@ namespace gk.DataGenerator.Generators
         /// <returns></returns>
         private static int FindPositionOfNext(string template, int index, string toFind, string notBefore)
         {
-            var notBeforeNdx = template.IndexOf(notBefore, index, StringComparison.Ordinal);
-            if (notBeforeNdx == -1)
-                return template.IndexOf(toFind, index, StringComparison.Ordinal);
+            bool found = false;
+            var ndx = index;
+            var notBeforeNdx = index;
+            while (!found)
+            {
+                ndx = template.IndexOf(toFind, ndx, StringComparison.Ordinal);
+                if (ndx == -1)break;
 
-            var ndx = template.IndexOf(toFind, index, StringComparison.Ordinal);
-            if (notBeforeNdx < ndx)
-                throw new GenerationException("Found start of new section '" + notBefore + "' at index '" + notBeforeNdx + "' when expecting to find '" + toFind + "' first.");
+                notBeforeNdx = template.IndexOf(notBefore, notBeforeNdx, StringComparison.Ordinal);
+                // check if escaped
+                if (IsEscaped(template, ndx))
+                {
+                    ndx++; //we found an escaped item, go forward and search again.
+                    notBeforeNdx++;
+                    continue;
+                }
+
+                if (notBeforeNdx > -1 && notBeforeNdx < ndx)
+                {
+                    BuildErrorSnippet(template, ndx);
+                    string msg = @"Found unexpected token '" + notBefore + "' at index '" + notBeforeNdx + "' when seeking '" + toFind + "' starting at index '" + index + "'.";
+                    msg = msg + Environment.NewLine + BuildErrorSnippet(template, notBeforeNdx);
+                    throw new GenerationException(msg);
+                }
+                found = true;
+            }
             return ndx;
+        }
+
+        private static string BuildErrorSnippet(string template, int ndx)
+        {
+            var context = 50;
+            var start = context;
+            if (ndx-start < 0) start = ndx -1;// how far back
+            var end = start + context;
+            if (end > template.Length -1) end = (template.Length - ndx -1); // how far forward
+
+            var line = template.Substring(ndx - start, end).Replace('\n', '_').Replace('\r', '_');
+            var indicator = new string('_', start) + "^" + new String('_', end);
+            
+            return line + Environment.NewLine + indicator;
+        }
+
+        private static bool IsEscaped(string template, int ndx)
+        {
+            int slashes = 0;
+            var c = ndx-1;
+            while (c >= 0)
+            {
+                if (template[c] != _Escape) break;
+
+                slashes++;
+                c--;
+            }
+            return (slashes != 0) && slashes%2 != 0;
         }
 
         /// <summary>
@@ -389,11 +436,14 @@ namespace gk.DataGenerator.Generators
                 case 'c':
                     AppendRandomCharacterFromString(sb, _ConsonantLower);
                     break;
-                case 'd':
+                case 'D':
                     AppendRandomCharacterFromString(sb, _Numbers0To9Characters);
                     break;
-                case 'n':
+                case 'd':
                     AppendRandomCharacterFromString(sb, _Numbers1To9Characters);
+                    break;
+                case 'n':
+                    sb.Append(Environment.NewLine);
                     break;
                 default:
                     // Just append the character as it is not a symbol.

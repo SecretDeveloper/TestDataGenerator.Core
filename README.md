@@ -4,28 +4,20 @@ TestDataGenerator
 Generate dummy data which can be used for testing, You provide it with a pattern which you want to generate and it will create 
 random data to match that pattern.
 
-## Placeholders
-The 'GenerateFromTemplate' method allows you to provide a string containing placeholders values, these placeholders are 
-comprised of 1 or more symbols representing the desired output characters.  Note that placeholders are wrapped in double 
-parenthesis e.g. `Hi ((Lvlv))` where `((Lvlv))` is the placeholder pattern containing the symbols `Lvlv`.
-
-####For example
-- `"This is a ((LL)) string"` will produce something similar to `"This is a AQ string"` where `'AQ'` is randomly generated.
-- `"This is a (([XX]{19})) string"` will produce something similar to `"This is a 3698145258142562124 string"` where `'3698145258142562124'` is randomly generated.
-
 ## Symbols
 The pattern is as follows:
-- `*` - An upper-case or lower-case letter or number.
-- `L` - An upper-case Letter.
-- `l` - A lower-case letter.
-- `V` - An upper-case Vowel.
-- `v` - A lower-case vowel.
-- `C` - An upper-case Consonant.
-- `c` - A lower-case consonant.
-- `X` - Any number, 0-9.
-- `x` - Any number, 1-9.
+- `\.` - A single random upper-case, lower-case letter or number.
+- `\w` - A single random upper-case or lower-case letter.
+- `\L` - A single random upper-case Letter.
+- `\l` - A single random lower-case letter.
+- `\V` - A single random upper-case Vowel.
+- `\v` - A single random lower-case vowel.
+- `\C` - A single random upper-case Consonant.
+- `\c` - A single random lower-case consonant.
+- `\X` - A single random number, 0-9.
+- `\x` - A single random number, 1-9.
 
-####For example:
+#### For example:
 - Individual symbols can be repeated a specific number of times using the syntax `L{10}` which will generate 10 upper case letters.
 - Individual symbols can be repeated a random number of times using the syntax `L{10,20}` which will generate between 10 and 20 upper case letters.
 - 1 or more Symbols can be combined into patterns by wrapping them in square brackets e.g. `[*LX]`.
@@ -33,6 +25,14 @@ The pattern is as follows:
 - Patterns can be repeated a random number of times using the syntax `LX{10,20}` which will generate between 10 and 20 repeated letter-number 
 pairs e.g. 'S9B7E9P3F8F1L5I2R5B7J7H0P8X4K1I7'.
 
+## Placeholders
+The 'GenerateFromTemplate' method allows you to provide a string containing placeholders values, these placeholders are 
+comprised of 1 or more symbols representing the desired output characters.  Note that placeholders are wrapped in double 
+parenthesis e.g. `Hi ((Lvlv))` where `((Lvlv))` is the placeholder pattern containing the symbols `Lvlv`.
+
+#### For example
+- `"This is a ((LL)) string"` will produce something similar to `"This is a AQ string"` where `'AQ'` is randomly generated.
+- `"This is a (([XX]{19})) string"` will produce something similar to `"This is a 3698145258142562124 string"` where `'3698145258142562124'` is randomly generated.
 
 ## Commandline Tool
 You can use the `tdg.exe` application to generate test data from the command line.  You can provide templates directly from the command line or from a file and 
