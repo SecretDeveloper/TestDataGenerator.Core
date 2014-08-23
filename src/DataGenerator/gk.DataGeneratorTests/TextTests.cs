@@ -45,6 +45,39 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [TestCategory("Template")]
+        public void Can_Generate_From_Template_for_ReadMe1()
+        {
+            var template = @"Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"Hi there [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou] [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou]{0,2}[a-z]{0,2}[a-z] how are you doing\?"));
+        }
+
+        [TestMethod]
+        [TestCategory("Template")]
+        public void Can_Generate_From_Template_for_ReadMe2()
+        {
+            var template = @"<<aa\D\d\d-\d\d-\d\d\d\d>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"aa[1-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]"));
+        }
+
+        [TestMethod]
+        [TestCategory("Template")]
+        public void Can_Generate_From_Template_for_ReadMe3()
+        { 
+            
+            var template = @"Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing? Your SSN is <<\D\d\d-\d\d-\d\d\d\d>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            
+            StringAssert.Matches(text, new Regex(@"Hi there [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou] [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou]{0,2}[a-z]{0,2}[a-z] how are you doing\? Your SSN is [1-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]"));
+        }
+
+
+        [TestMethod]
+        [TestCategory("Template")]
         public void Can_Generate_From_Template_with_Symbols()
         {
             var template = @"Generated <<L\L>>";

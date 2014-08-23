@@ -154,6 +154,7 @@ namespace gk.DataGenerator.Generators
                 if (isEscaped && repeatSymbol)
                 {
                     AppendRepeatedSymbol(sb, pattern, ref i, isEscaped);
+                    isEscaped = false;
                     continue; // skip to next character - index has already been forwarded to new position
                 }
                 
