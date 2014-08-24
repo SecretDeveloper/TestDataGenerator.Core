@@ -32,24 +32,24 @@ You can use the `tdg.exe` application to generate test data from the command lin
 ### Examples
 - Single repeating symbols using the following syntax
   - `tdg -t 'Letters \<<\L{20}>> and Numbers \<<\D{12}>>'`
-  - Produces items like **'Letters LFDKQNGMYBWLQDJAIVOS and Numbers 064281453808'**.
+  - Produces items like *'Letters LYQUJBXZHZAWVETCHWRC and Numbers 551828327238'*.
 - Repeating patterns containing multiple letters or numbers of random length.
-  - `tdg -t '\<<(\L){5}>>'` - Will generate 5 random upper-case characters. e.g. **'EUVDN'**
-  - `tdg -t '\<<(\L\L\D){24}>>'`  - Will generate 24 repeating letter-letter-number values e.g. **'EV1BP4XU9FY2LD1WA6TU9OO0SC0BZ2VH2MD0KQ4HN4WW4GY7WA1EB3PQ2BI4IV7RJ6BZ0DL3'**
+  - `tdg -t '\<<(\L){5}>>'` - Will generate 5 random upper-case characters. e.g. *'WDHUL'*
+  - `tdg -t '\<<(\L\L\D){24}>>'`  - Will generate 24 repeating letter-letter-number values e.g. *'CP6WL7VB5SY4IT1DT2XU8NO6SG0SE9RX9RE2CG1TI7TD4UK4DS1YJ0QO0YD1SD8NA0MR5WB4'*
 - Variable length data can be generated also
-  - `tdg -t '\<<(\L){10,20}>>'` - Will generate a string containing between 10 and 20 characters of random value e.g. **'MHMRRPMEJFZ'**
-  - `tdg -t 'Letters \<<\L{2,20}>> and Numbers \<<\D{2,12}>>'` produces items like **'Letters QFXW and Numbers 7329966'**
+  - `tdg -t '\<<(\L){10,20}>>'` - Will generate a string containing between 10 and 20 characters of random value e.g. *'DMBULGXVPO'*
+  - `tdg -t 'Letters \<<\L{2,20}>> and Numbers \<<\D{2,12}>>'` produces items like *'Letters WTNYBQGECZA and Numbers 821'*
 - Input can contain several placeholders.
   - `tdg -t 'Hi there \<<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is \<<\D\d\d-\d\d-\d\d\d\d>>.' -c 100` 
-  - Produces 100 items like **'Hi there Euu Sioay how are you doing?  Your SSN is 658-39-6867.'**
+  - Produces 100 items like *'Hi there Kxho Qeiuok how are you doing?  Your SSN is 164-63-5569.'*
 - Generate 100 SSN like values and output to console window.
   - `tdg -t '\<<\D\d\d-\d\d-\d\d\d\d>>' -c 100`
-  - Produces 100 items like **'421-54-1125'**.
+  - Produces 100 items like *'694-12-3253'*.
 - Generate 100 strings with random name like values and output to file.
   - `tdg -t 'Hi there \<<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`
-  - Produces 100 items like **'Quna Tefqiiipo'**.
-- `tdg -t '\<<Letters \w{2,20} and Numbers \D{2,12}\n>>'` produces the following output: **Letters MCgVwHXdQFNucSkrxK and Numbers 04244751313
-**
+  - Produces 100 items like *'Wibo Hufveemvo'*.
+- `tdg -t '\<<Letters \w{2,20} and Numbers \D{2,12}\n>>'` produces the following output: *Letters SEUEyDQUOfX and Numbers 728123227
+*
 
 ## More Information
 
@@ -63,23 +63,23 @@ If you are familiar with Regular Expressions then most of the syntax used will b
 `\<<\L\v\l\v>>` is a placeholder containing the pattern of symbols `\L\v\l\v`.
 
 ### Symbol Repetition
-Individual symbols can be repeated by a supplying a repeat section immediately after the symbol.  For example `\L{5}` will produce 5 upper case letters.  You can also add some randomness to the mix by supplying a range: `\L{min,max}`.  The pattern `\L{1,100}` will produce between 1 and 100 upper case letters. Here's one **'DUHJZHEQNPOAXKJGJLDZQSP'**
+Individual symbols can be repeated by a supplying a repeat section immediately after the symbol.  For example `\L{5}` will produce 5 upper case letters.  You can also add some randomness to the mix by supplying a range: `\L{min,max}`.  The pattern `\L{1,100}` will produce between 1 and 100 upper case letters. Here's one *'ILINLLFEECYKOMFSSZMZVZSPDAAFCCPJSFHLGYDJRPYVSIRIWOSHUVVISSKLLABCN'*
 
 ### Symbol Grouping
-Individual symbols can be grouped together using parenthesis characters.  When grouped together they can be repeated using the same repeat syntax.  `(\l\D){5}` will produce something like **'k4d6f8o5y4'**.
+Individual symbols can be grouped together using parenthesis characters.  When grouped together they can be repeated using the same repeat syntax.  `(\l\D){5}` will produce something like *'o7j2u4t8c2'*.
 You can also include the random range syntax from above.
 
 ### Alternating Symbols and Groups
 Patterns can contain several individual symbols or groups of symbols and randomly alternate between them when generating the output value.  `\<<\C|\c{10}|\V\V\V|(\v\v){2,3}>>` will produce either a single upper-case consonant, 10 lower-case consonants, 3 upper-case vowels or between 10 and 15 lower-case vowels.  Which one gets outputed is randomly selected when processing the pattern.
 
 ### Other patterns:
-- `'\<<This is a \L\L string>>'` will produce something similar to **'This is a KQ string'**.
-- `'\<<This is a \D{19} string>>'` will produce something similar to **'This is a 6742020348250337994 string'**.
+- `'\<<This is a \L\L string>>'` will produce something similar to *'This is a FB string'*.
+- `'\<<This is a \D{19} string>>'` will produce something similar to *'This is a 8873635325839755796 string'*.
 - Individual symbols can be repeated a specific number of times using the syntax `\L{10}` which will generate 10 upper case letters.
 - Individual symbols can be repeated a random number of times using the syntax `\L{10,20}` which will generate between 10 and 20 upper case letters.
 - 1 or more Symbols can be combined into patterns by wrapping them in parenthesis e.g. `(\*\L\D)`.
-- Patterns can be repeated a specific number of times using the syntax `(\L\D){10}` which will generate 10 repeated letter-number pairs e.g. **'P4F8X8P9U9A5P5T7M8F0'**.
-- Patterns can be repeated a random number of times using the syntax `(\L\D){10,20}` which will generate between 10 and 20 repeated letter-number pairs e.g. **'P3D5F6P8N7R9A8G3W5J4H2J4H6Z3P8W7X6'**.
+- Patterns can be repeated a specific number of times using the syntax `(\L\D){10}` which will generate 10 repeated letter-number pairs e.g. *'O8H1P3D0C9M6N6H8U6B7'*.
+- Patterns can be repeated a random number of times using the syntax `(\L\D){10,20}` which will generate between 10 and 20 repeated letter-number pairs e.g. *'M7G9V9H0X2C1P6F5S1B5F4L8X3T6W7X6D9'*.
 
 
 ### Profiling results
