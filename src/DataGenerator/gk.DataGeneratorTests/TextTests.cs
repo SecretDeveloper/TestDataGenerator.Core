@@ -12,11 +12,10 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [TestCategory("Documentation")]
-        [DeploymentItem(@"ReadMe_Template.txt")]
+        [DeploymentItem(@"..\templates\README.template")]
         public void Documentation_Builder()
         {
-
-            var template = System.IO.File.ReadAllText("ReadMe_Template.txt");
+            var template = System.IO.File.ReadAllText("README.template");
 
             var text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(text);
@@ -108,13 +107,24 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [TestCategory("Template")]
-        public void Can_Generate_From_Template_With_Alternatives()
+        public void Can_Generate_From_Template_With_Alternatives_Symbols()
         {
-            var template = @"<<\C|\c{10}|\V\V\V|(\v\v){2,3}>>";
+            var template = @"<<\C|\c{10}|\V\V\V|\v{2,3}>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine("'" + template + "' produced '" + text + "'");
             StringAssert.Matches(text, new Regex(@"[BCDFGHJKLMNPQRSTVWXYZ]{1}|[bcdfghjklmnpqrstvwxyz]{10}|[AEIOU]{3}|[aeiou]{2,3}"));
         }
+
+        [TestMethod]
+        [TestCategory("Template")]
+        public void Can_Generate_From_Template_With_Alternative_Groups()
+        {
+            var template = @"<<(\C)|\c{10}|(\V\V\V){20}|(\v\v\v\v\v){2,3}>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"[BCDFGHJKLMNPQRSTVWXYZ]{1}|[bcdfghjklmnpqrstvwxyz]{10}|[AEIOU]{60}|[aeiou]{10,15}"));
+        }
+
 
         [TestMethod]
         [TestCategory("Template")]
@@ -130,7 +140,7 @@ namespace gk.DataGeneratorTests
         [TestCategory("Template")]
         public void Can_Generate_From_Pattern_With_Alternatives_Repeated_Symbols()
         {
-            var template = @"Alternatives <<(\C{1}|\c{10}|\V{3}|\v{2,3})>>";
+            var template = @"Alternatives <<\C{1}|\c{10}|\V{3}|\v{2,3})>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine("'" + template + "' produced '" + text + "'");
             StringAssert.Matches(text, new Regex(@"Alternatives ([BCDFGHJKLMNPQRSTVWXYZ]{1})|([bcdfghjklmnpqrstvwxyz]{10})|([AEIOU]{3}|[aeiou]{2,3})"));

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using CommandLine;
 using gk.DataGenerator.Generators;
@@ -19,6 +20,13 @@ namespace gk.DataGenerator.tdg
                     return;
                 }
 
+                Stopwatch sw = null;
+                if (cla.Verbose)
+                {
+                    sw = new Stopwatch();
+                    sw.Start();
+                }
+                
                 if (cla.Template != "") // template provided -- no header skipping required
                 {
                     if (cla.OutputPath != "") // output path provided.
@@ -77,7 +85,13 @@ namespace gk.DataGenerator.tdg
                 {
                     Console.WriteLine(cla.GetUsage());
                 }
-
+                
+                if (cla.Verbose)
+                {
+                    sw.Stop();
+                    Console.WriteLine("");
+                    Console.WriteLine("Generation took {0} milliseconds",sw.ElapsedMilliseconds);
+                }
             }
             catch (Exception ex)
             {

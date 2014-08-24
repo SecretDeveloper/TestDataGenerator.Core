@@ -20,6 +20,9 @@ namespace gk.DataGenerator.tdg
 
         [Option('c', "count", DefaultValue = 1, HelpText = "The number of items to produce.", Required = false)]
         public int Count { get; set; }
+        
+        [Option('v', "verbose", DefaultValue = false, HelpText = "Verbose output including debug and performance information.", Required = false)]
+        public bool Verbose { get; set; }
 
         [HelpOption]
         public string GetUsage()
@@ -34,9 +37,9 @@ namespace gk.DataGenerator.tdg
             help.AddPreOptionsLine("This is free software. You may redistribute copies of it under the terms of the MIT License <http://www.opensource.org/licenses/mit-license.php>.");
 
             help.AddPostOptionsLine("Examples:");
-            help.AddPostOptionsLine("\t tdg -t '((LL))'");
-            help.AddPostOptionsLine("\t tdg -t '((LL))' -c 10");
-            help.AddPostOptionsLine("\t tdg -t '((LL))' -o 'c:\\test.txt' -c 10");
+            help.AddPostOptionsLine("\t tdg -t '<<LL>>'");
+            help.AddPostOptionsLine("\t tdg -t '<<LL>>' -c 10");
+            help.AddPostOptionsLine("\t tdg -t '<<LL>>' -o 'c:\\test.txt' -c 10");
             help.AddPostOptionsLine("Either a Template (-t) or input File (-f) value must be provided as input.");
             
             help.AddOptions(this);
