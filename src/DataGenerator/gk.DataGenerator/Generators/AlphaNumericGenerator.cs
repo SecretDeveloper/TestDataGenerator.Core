@@ -74,11 +74,11 @@ namespace gk.DataGenerator.Generators
                 }
 
                 var pattern = template.Substring(start, end - start); // grab our expression
-                if (pattern.IndexOf(_Alternation) > -1) // check for alternates.
-                {
-                    var exps = pattern.Split(_Alternation);
-                    pattern = exps[Random.Next(0, exps.Length)];
-                }
+//                if (pattern.IndexOf(_Alternation) > -1) // check for alternates.
+//                {
+//                    var exps = pattern.Replace("(","").Replace(")","").Split(_Alternation);
+//                    pattern = exps[Random.Next(0, exps.Length)];
+//                }
 
                 sb.Append(GenerateFromPattern(pattern)); // generate value from expression
                 index = end+2; // update our index.

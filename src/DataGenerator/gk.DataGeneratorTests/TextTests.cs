@@ -139,7 +139,7 @@ namespace gk.DataGeneratorTests
         [TestCategory("Template")]
         public void Can_Generate_From_Pattern_With_Alternatives_Repeated_Symbols()
         {
-            var template = @"Alternatives <<\C{1}|\c{10}|\V{3}|\v{2,3})>>";
+            var template = @"Alternatives <<(\C{1}|\c{10}|\V{3}|\v{2,3})>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine("'" + template + "' produced '" + text + "'");
             StringAssert.Matches(text, new Regex(@"Alternatives ([BCDFGHJKLMNPQRSTVWXYZ]{1})|([bcdfghjklmnpqrstvwxyz]{10})|([AEIOU]{3}|[aeiou]{2,3})"));
@@ -257,6 +257,16 @@ namespace gk.DataGeneratorTests
             Console.WriteLine("'" + template + "' produced '" + text + "'");
             StringAssert.Matches(text, new Regex(@"^(.(100|101))?(.(100|101))?(.(100|101))?$"));
         }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Complex()
+        {
+            var template = @"<<\C\C\C-[0-9]{6}>>,<<(818|33)>>,<<\D\d\d-\d\d-\d\d\d\d>>,,GHI,Enroll,<<[1-12]/[1-28]/[1960-2000]>>,<<(M|F)>>,<<\d \L\v\l\l (st|rd|ave|blv)>>,,<<Dallas>>,<<(TX|GA|TN|FL)>>,<<[3000-5000]>>,<<[1-12]/[1-28]/[2005-2014]>>,<<2014-[1-12]-[1-28]T:[0-24]:[0-60]:[0-60]>>,<<[20-30]>>,<<[10-20]>>,<<[1-12]/[1-28]/[2014]>>,N,,N,N,,,,,,,,,,,,,,,,,,,,,,,,,,,";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+        }
+        
 
         [TestMethod]
         [TestCategory("Sets")]
