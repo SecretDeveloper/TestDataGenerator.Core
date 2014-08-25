@@ -381,7 +381,7 @@ namespace gk.DataGenerator.Generators
             {
                 var upper = -1;
                 if(int.TryParse(items[1], out upper))
-                    ret = Random.Next(start, upper).ToString(CultureInfo.InvariantCulture);
+                    ret = Random.Next(start, upper+1).ToString(CultureInfo.InvariantCulture);
             }
             
             return ret;
