@@ -4,6 +4,9 @@ A library and command line tool that can be used to generate data for testing or
 
 ## Quick Start with examples
 
+### Placeholders
+When using the commandline tool place all patterns and symbols inside '\<<' tokens **without the backslash** e.g. 'Generate some Letters \<<\L\L>>'. 
+
 ### Symbols
 The pattern is as follows:
 - `\.` - A single random upper-case, lower-case letter or number.
@@ -17,6 +20,25 @@ The pattern is as follows:
 - `\D` - A single random number, 0-9.
 - `\d` - A single random number, 1-9.
 - `\n` - A newline character.
+
+### Groups
+- `(\d){5}` - Five digits between 1 and 9.
+- `\L(\d){3}\L` - A upper-case letter, five digits between 1 and 9 and another upper-case letter.
+- `(.[100-101]){3}` - Three items, each will include a dot '.' and either 100 or 101 e.g. *'<<(.[100-101]){3}>>'*
+
+### Ranges
+- `[a-z]` - A single lower-case letter between a and z.
+- `[a-z]{5}` - Five lower-case letter between a and z.
+- `[a-z]{5,10}` - Between five and ten lower-case letter between a and z.
+- `[A-Z]` - A single upper-case letter between Z and Z.
+- `[1-5]` - A number between 1 and 5.
+- `[100-500]` - A number between 100 and 500.
+- `[1-28]/[1-12]/[1960-2013]` - A date value between 1960 and 2013.
+
+### Alternations
+- `(\L\L|\d\d)` - Either two upper-case letters OR two numbers.
+- `(\L\L|\d\d|[AEIOU]|[100-120])` - Either two upper-case letters OR two digits OR an upper-case vowel OR a number between 100 and 120.
+
 
 ### CommandLine tool
 You can use the `tdg.exe` application to generate test data from the command line.  It can handle provided templates directly from the command line or from a file. The tool also supports exporting the generated output to either the command line or another file.

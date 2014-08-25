@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace gk.DataGenerator.Generators
 {
@@ -62,7 +65,7 @@ namespace gk.DataGenerator.Generators
                 }
 
                 sb.Append(template.Substring(index, start - index)); // Append everything up to start as it is.
-                start = start + 2; // move past '((' to start of expression
+                start = start + 2; // move past '<<' to start of expression
 
                 int end = FindPositionOfNext(template, start, _Placeholder_End, _Placeholder_Start); // find end of placeholder
                 if (end == -1)
@@ -287,8 +290,9 @@ namespace gk.DataGenerator.Generators
             bool isEscaped = false;
             for (int x = 0; x < tuple.Item1; x++)
             {
-                foreach (var chx in exp)
+                for (var curNdx = 0; curNdx < exp.Length; curNdx++ )
                 {
+                    var chx = exp[curNdx];
                     if (chx == _Escape)
                     {
                         if (isEscaped)
@@ -299,6 +303,14 @@ namespace gk.DataGenerator.Generators
                         }
                         isEscaped = true;
                         continue;
+                    }
+
+                    // check are we entering a set pattern that may include a quantifier
+                    // Format = "[Vv]{4}" = generate 4 random ordered characters comprising of either V or v characters
+                    if (!isEscaped && chx == _Set_Start)
+                    {
+                        AppendContentFromSetExpression(sb, exp, ref curNdx);
+                        continue; // skip to next character - index has already been forwarded to new position
                     }
 
                     AppendCharacterDerivedFromSymbol(sb, chx, isEscaped);
@@ -316,11 +328,63 @@ namespace gk.DataGenerator.Generators
         private static void AppendContentFromSetExpression(StringBuilder sb, string characters, ref int index)
         {
             var tuple = GetPatternAndRepeatValueFromExpression(characters, _Set_Start, _Set_End, ref index);
-            var possibles = tuple.Item2.Split();
-            for (int i = 0; i < tuple.Item1; i++)
+            var possibles = tuple.Item2.ToCharArray();
+
+            if (tuple.Item2.Contains("-")) // Ranged - [0-7] or [a-z] or [1-9A-Za-z] for fun.
             {
-                sb.Append(possibles[Random.Next(0, possibles.Length)]);
+                var tmp = "";
+                MatchCollection ranges = new Regex(@"\D-\D|\d*-\d*").Matches(tuple.Item2);
+                for (int i = 0; i < tuple.Item1; i++)
+                {
+                    var range = ranges[Random.Next(0, ranges.Count)];
+                    sb.Append(GetRandomCharacterFromRange(range.ToString()));
+                }
             }
+            else
+            {
+                for (int i = 0; i < tuple.Item1; i++)
+                {
+                    sb.Append(possibles[Random.Next(0, possibles.Length)]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Recieves a "A-Z" type string and returns the appropriate list of characters.
+        /// </summary>
+        /// <param name="range"></param>
+        /// <returns></returns>
+        private static string GetRandomCharacterFromRange(string range)
+        {
+            string ret = "";
+            string possibles = "";
+            var items = range.Split('-');
+
+            var start = _AllLowerLetters.IndexOf(items[0].ToString(CultureInfo.InvariantCulture), System.StringComparison.Ordinal);
+            if (start > -1)
+            {
+                var end = _AllLowerLetters.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), System.StringComparison.Ordinal);
+                possibles = _AllLowerLetters.Substring(start, end - start+1);
+                ret = possibles[Random.Next(0, possibles.Length)].ToString();
+            }
+
+            start = _AllUpperLetters.IndexOf(items[0].ToString(CultureInfo.InvariantCulture), System.StringComparison.Ordinal);
+            if (start > -1)
+            {
+                var end = _AllUpperLetters.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), System.StringComparison.Ordinal);
+                possibles = _AllUpperLetters.Substring(start, end - start+1);
+                ret = possibles[Random.Next(0, possibles.Length)].ToString();
+            }
+            
+            // NUMERIC RANGES
+            if (int.TryParse(items[0], out start))
+            {
+                var upper = -1;
+                if(int.TryParse(items[1], out upper))
+                    ret = Random.Next(start, upper).ToString(CultureInfo.InvariantCulture);
+            }
+            
+            return ret;
         }
 
 

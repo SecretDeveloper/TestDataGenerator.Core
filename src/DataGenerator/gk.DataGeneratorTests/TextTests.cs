@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using gk.DataGenerator.Generators;
@@ -59,7 +60,7 @@ namespace gk.DataGeneratorTests
             var template = @"<<aa\D\d\d-\d\d-\d\d\d\d>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine("'" + template + "' produced '" + text + "'");
-            StringAssert.Matches(text, new Regex(@"aa[1-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]"));
+            StringAssert.Matches(text, new Regex(@"aa[0-9][1-9][1-9]-[1-9][1-9]-[1-9][1-9][1-9][1-9]"));
         }
 
         [TestMethod]
@@ -67,13 +68,12 @@ namespace gk.DataGeneratorTests
         public void Can_Generate_From_Template_for_ReadMe3()
         { 
             
-            var template = @"Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing? Your SSN is <<\D\d\d-\d\d-\d\d\d\d>>";
+            var template = @"Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing? Your SSN is <<\d\D\D-\D\D-\D\D\D\D>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine("'" + template + "' produced '" + text + "'");
             
             StringAssert.Matches(text, new Regex(@"Hi there [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou] [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou]{0,2}[a-z]{0,2}[a-z] how are you doing\? Your SSN is [1-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]"));
         }
-
 
         [TestMethod]
         [TestCategory("Template")]
@@ -124,8 +124,7 @@ namespace gk.DataGeneratorTests
             Console.WriteLine("'" + template + "' produced '" + text + "'");
             StringAssert.Matches(text, new Regex(@"[BCDFGHJKLMNPQRSTVWXYZ]{1}|[bcdfghjklmnpqrstvwxyz]{10}|[AEIOU]{60}|[aeiou]{10,15}"));
         }
-
-
+        
         [TestMethod]
         [TestCategory("Template")]
         public void Can_Generate_From_Pattern_With_Alternatives()
@@ -156,6 +155,139 @@ namespace gk.DataGeneratorTests
             Console.WriteLine("'" + template + "' produced '" + text + "'");
             StringAssert.Matches(text, new Regex(@"([aeiou]{2,3})"));
             if (text.Contains("|")) Assert.Fail(text);
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Escape_Sets()
+        {
+            var template = @"<<\[LL]>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^\[LL]$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_NonRange_Set()
+        {
+            var template = @"<<[AEI]>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^[AEI]{1}$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Set()
+        {
+            var template = @"<<[A-I]>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^[ABCDEFGHI]{1}$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Set2()
+        {
+            var template = @"<<[A-B]>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^[AB]{1}$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Set3()
+        {
+            var template = @"<<[W-X]>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^[W-X]{1}$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Repeated_Set1()
+        {
+            var template = @"<<[W-X]{10}>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^[W-X]{10}$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Numeric()
+        {
+            var template = @"<<[1-8]>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^[1-8]{1}$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Numeric2()
+        {
+            var template = @"<<[100-150]>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            int e = int.Parse(text);
+            if(e < 100 || e>150) Assert.Fail("Number not between 100 and 150.");
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Numeric3()
+        {
+            var template = @"<<(.[100-101]){3}>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^(.(100|101)){1}(.(100|101)){1}(.(100|101)){1}$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Numeric4()
+        {
+            var template = @"<<(.[100-101]){1,3}>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^(.(100|101))?(.(100|101))?(.(100|101))?$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_MultipleRange_Set()
+        {
+            var template = @"<<[A-B][1-3]>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^[A-B]{1}[1-3]{1}$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_MultipleRange_Set2()
+        {
+            var template = @"<<[1-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^[1-9]{1}[0-9]{1}[0-9]{1}-[0-9]{1}[0-9]{1}-[0-9]{1}[0-9]{1}[0-9]{1}[0-9]{1}$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_MultipleRange_Set3()
+        {
+            var template = @"<<[1-28]/[1-12]/[1960-2013]>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            DateTime dt = DateTime.Now;
+            if(DateTime.TryParseExact(text, @"d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out dt) == false) Assert.Fail("invalid Date");
+        
         }
         
         [TestMethod]
@@ -340,6 +472,16 @@ namespace gk.DataGeneratorTests
             var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
             StringAssert.Matches(text, new Regex(@"^([A-Z]{2}|[0-9]{2})$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Pattern")]
+        public void Can_Generate_Expressions_With_Alternates2()
+        {
+            var pattern = @"(\L\L|\d\d|[AEIOU]|[100-120])";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^([A-Z]{2}|[0-9]{2}|[AEIOU]|\d\d\d)$"));
         }
 
         [TestMethod]
