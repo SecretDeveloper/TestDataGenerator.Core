@@ -510,6 +510,9 @@ namespace gk.DataGenerator.Generators
                 case 'n':
                     sb.Append(Environment.NewLine);
                     break;
+                case 't':
+                    sb.Append("\t");
+                    break;
                 default:
                     // Just append the character as it is not a symbol.
                     sb.Append(symbol);
