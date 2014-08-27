@@ -29,7 +29,7 @@ namespace gk.DataGenerator.tdg
         {
             var help = new HelpText
             {
-                Heading = new HeadingInfo("Test Data Generator", "1.0"),
+                Heading = new HeadingInfo("Test Data Generator", "3.2.0"),
                 Copyright = new CopyrightInfo("Gary Kenneally (@SecretDeveloper)", 2014),
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true
@@ -40,6 +40,7 @@ namespace gk.DataGenerator.tdg
             help.AddPostOptionsLine("\t tdg -t '<<LL>>'");
             help.AddPostOptionsLine("\t tdg -t '<<LL>>' -c 10");
             help.AddPostOptionsLine("\t tdg -t '<<LL>>' -o 'c:\\test.txt' -c 10");
+            help.AddPostOptionsLine("\t tdg -f 'c:\\input.txt' -o 'c:\\test.txt' -c 10");
             help.AddPostOptionsLine("Either a Template (-t) or input File (-f) value must be provided as input.");
             
             help.AddOptions(this);

@@ -23,6 +23,8 @@ namespace gk.DataGeneratorTests
 
         }
 
+        #region Template
+
         [TestMethod]
         [TestCategory("Template")]
         public void Can_Escape_Template()
@@ -157,6 +159,10 @@ namespace gk.DataGeneratorTests
             if (text.Contains("|")) Assert.Fail(text);
         }
 
+#endregion
+
+        #region Sets
+        
         [TestMethod]
         [TestCategory("Sets")]
         public void Can_Escape_Sets()
@@ -260,6 +266,58 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [TestCategory("Sets")]
+        public void Can_Generate_Range_Numeric_DecimalFormat()
+        {
+            var template = @"<<([1.00-10.00])>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            double d = -1d;
+            if (!double.TryParse(text, out d))
+                Assert.Fail();
+            if(d<1.00 || d>10.00d) Assert.Fail();
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Numeric_DecimalFormat2()
+        {
+            var template = @"<<([1.00-2.00])>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            double d = -1d;
+            if (!double.TryParse(text, out d))
+                Assert.Fail();
+            if (d < 1.00 || d > 2.00d) Assert.Fail();
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Numeric_DecimalFormat3()
+        {
+            var template = @"<<([1.1-1.2])>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            double d = -1d;
+            if (!double.TryParse(text, out d))
+                Assert.Fail();
+            if (d < 1.1 || d > 1.2d) Assert.Fail();
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Numeric_DecimalFormat4()
+        {
+            var template = @"<<([12345.12345-12345.12346])>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            double d = -1d;
+            if (!double.TryParse(text, out d))
+                Assert.Fail();
+            if (d < 12345.12345 || d > 12345.12346d) Assert.Fail();
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
         public void Can_Generate_Range_Complex()
         {
             var template = @"<<\C\C\C-[0-9]{6}>>,<<(818|33)>>,<<\D\d\d-\d\d-\d\d\d\d>>,,GHI,Enroll,<<[1-12]/[1-28]/[1960-2000]>>,<<(M|F)>>,<<\d \L\v\l\l (st|rd|ave|blv)>>,,<<Dallas>>,<<(TX|GA|TN|FL)>>,<<[3000-5000]>>,<<[1-12]/[1-28]/[2005-2014]>>,<<2014-[1-12]-[1-28]T:[0-24]:[0-60]:[0-60]>>,<<[20-30]>>,<<[10-20]>>,<<[1-12]/[1-28]/[2014]>>,N,,N,N,,,,,,,,,,,,,,,,,,,,,,,,,,,";
@@ -267,7 +325,6 @@ namespace gk.DataGeneratorTests
             Console.WriteLine("'" + template + "' produced '" + text + "'");
         }
         
-
         [TestMethod]
         [TestCategory("Sets")]
         public void Can_Generate_MultipleRange_Set()
@@ -299,7 +356,11 @@ namespace gk.DataGeneratorTests
             if(DateTime.TryParseExact(text, @"d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out dt) == false) Assert.Fail("invalid Date");
         
         }
-        
+
+        #endregion
+
+        #region Pattern
+
         [TestMethod]
         [TestCategory("Pattern")]
         public void Can_Generate_AlphaNumeric_multiple()
@@ -514,6 +575,9 @@ namespace gk.DataGeneratorTests
             StringAssert.Matches(text, new Regex(@"^[A-Z]{2}[0-9]{2}$"));
         }
 
+        #endregion
+
+        #region Symbols
 
         [TestMethod]
         [TestCategory("Symbols")]
@@ -570,6 +634,10 @@ namespace gk.DataGeneratorTests
             StringAssert.Matches(text, new Regex(@"^[1-9]$"));
         }
 
+        #endregion
+
+        #region Profiling
+
         [TestMethod]
         [TestCategory("Profiling")]
         public void Profile_Random_Repeat()
@@ -622,6 +690,10 @@ namespace gk.DataGeneratorTests
             sw.Stop();
             Console.WriteLine(string.Format("{0} instances of the following template generated in {1} milliseconds.\n'{2}'", testLimit, sw.ElapsedMilliseconds, pattern));
         }
+        
+        #endregion
+
+        #region NegativeTesting
 
         [TestMethod]
         [TestCategory("NegativeTesting")]
@@ -705,8 +777,7 @@ namespace gk.DataGeneratorTests
             pattern = "(L){10,0}";
             var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
         }
-
-
+        
         [TestMethod]
         [TestCategory("NegativeTesting")]
         [ExpectedException(typeof(GenerationException))]
@@ -715,6 +786,8 @@ namespace gk.DataGeneratorTests
             var pattern = "(LLXX){w}";
             AlphaNumericGenerator.GenerateFromPattern(pattern);
         }
+
+        #endregion
     }
 }
 

@@ -333,7 +333,7 @@ namespace gk.DataGenerator.Generators
             if (tuple.Item2.Contains("-")) // Ranged - [0-7] or [a-z] or [1-9A-Za-z] for fun.
             {
                 var tmp = "";
-                MatchCollection ranges = new Regex(@"\D-\D|\d*-\d*").Matches(tuple.Item2);
+                MatchCollection ranges = new Regex(@"\D-\D|\d+\.?\d*-\d+\.?\d*").Matches(tuple.Item2);
                 for (int i = 0; i < tuple.Item1; i++)
                 {
                     var range = ranges[Random.Next(0, ranges.Count)];
@@ -366,6 +366,7 @@ namespace gk.DataGenerator.Generators
                 var end = _AllLowerLetters.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), System.StringComparison.Ordinal);
                 possibles = _AllLowerLetters.Substring(start, end - start+1);
                 ret = possibles[Random.Next(0, possibles.Length)].ToString();
+                return ret;
             }
 
             start = _AllUpperLetters.IndexOf(items[0].ToString(CultureInfo.InvariantCulture), System.StringComparison.Ordinal);
@@ -374,6 +375,7 @@ namespace gk.DataGenerator.Generators
                 var end = _AllUpperLetters.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), System.StringComparison.Ordinal);
                 possibles = _AllUpperLetters.Substring(start, end - start+1);
                 ret = possibles[Random.Next(0, possibles.Length)].ToString();
+                return ret;
             }
             
             // NUMERIC RANGES
@@ -382,9 +384,38 @@ namespace gk.DataGenerator.Generators
                 var upper = -1;
                 if(int.TryParse(items[1], out upper))
                     ret = Random.Next(start, upper+1).ToString(CultureInfo.InvariantCulture);
+                return ret;
+            }
+
+            double min = 0d;
+            if (double.TryParse(items[0], out min))
+            {
+                double max = 0d;
+                if (double.TryParse(items[1], out max))
+                {
+                    int scale = 0;
+                    if (items[0].Contains("."))
+                    {
+                        scale = items[0].Split('.')[1].Length;
+                    }
+                    var t = Random.NextDouble();
+                    min = min + (t * (max - min));
+                    ret = min.ToString(generateFloatingFormatWithScale(scale), CultureInfo.InvariantCulture);
+                }
+                return ret;
             }
             
             return ret;
+        }
+
+        private static string generateFloatingFormatWithScale(int scale)
+        {
+            var t = "#.";
+            for (int i = 0; i < scale; i++)
+            {
+                t += "#";
+            }
+            return t;
         }
 
 
