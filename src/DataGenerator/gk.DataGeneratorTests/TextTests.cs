@@ -195,6 +195,16 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [TestCategory("Sets")]
+        public void Can_Generate_Range_Set_Lower()
+        {
+            var template = @"<<[a-i]>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^[abcdefhi]{1}$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
         public void Can_Generate_Range_Set2()
         {
             var template = @"<<[A-B]>>";
@@ -314,6 +324,19 @@ namespace gk.DataGeneratorTests
             if (!double.TryParse(text, out d))
                 Assert.Fail();
             if (d < 12345.12345 || d > 12345.12346d) Assert.Fail();
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Numeric_DecimalFormat5()
+        {
+            var template = @"<<([12345.9999-12346])>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            double d = -1d;
+            if (!double.TryParse(text, out d))
+                Assert.Fail();
+            if (d < 12345.9999d || d > 12346d) Assert.Fail();
         }
 
         [TestMethod]

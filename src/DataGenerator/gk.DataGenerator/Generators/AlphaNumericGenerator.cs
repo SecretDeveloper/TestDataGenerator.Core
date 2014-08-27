@@ -251,20 +251,12 @@ namespace gk.DataGenerator.Generators
             string repeatExpression = GetSurroundedContent(characters, ref index, _Quantifier_Start, _Quantifier_End);
             int repeat = GetRepeatValueFromRepeatExpression(repeatExpression);
 
-            if (isEscaped)
-            {
+            
                 for (int x = 0; x < repeat; x++)
                 {
                     AppendCharacterDerivedFromSymbol(sb, symbol, isEscaped);
                 }
-            }
-            else
-            {
-                for (int x = 0; x < repeat; x++)
-                {
-                    sb.Append(symbol);
-                }
-            }
+            
         }
 
         /// <summary>
