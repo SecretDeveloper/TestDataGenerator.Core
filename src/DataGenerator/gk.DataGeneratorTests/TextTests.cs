@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using gk.DataGenerator;
 using gk.DataGenerator.Generators;
 
 namespace gk.DataGeneratorTests
@@ -200,7 +201,7 @@ namespace gk.DataGeneratorTests
             var template = @"<<[a-i]>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine("'" + template + "' produced '" + text + "'");
-            StringAssert.Matches(text, new Regex(@"^[abcdefhi]{1}$"));
+            StringAssert.Matches(text, new Regex(@"^[abcdefghi]{1}$"));
         }
 
         [TestMethod]
@@ -655,6 +656,23 @@ namespace gk.DataGeneratorTests
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
             StringAssert.Matches(text, new Regex(@"^[1-9]$"));
+        }
+
+        #endregion
+
+        #region NamedPatterns
+
+        [TestMethod]
+        [TestCategory("NamedPatterns")]
+        public void Can_Generate_NamedPatterns()
+        {
+            //var namedPatterns = FileReader.GetNamedPattern("default.tdg-patterns");
+
+            var pattern = @"<<($male_name;)>>";
+            var text = AlphaNumericGenerator.GenerateFromTemplate(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            Assert.IsTrue(text.Length>0);
+            
         }
 
         #endregion

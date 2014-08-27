@@ -10,7 +10,7 @@ namespace gk.DataGenerator.Generators
     public static class AlphaNumericGenerator 
     {
         private static readonly Random Random;
-
+        
         private const string _AllAllowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!£$%^&*_+;'#,./:@~?";
 
         private const string _AllLowerLetters = "abcdefghijklmnopqrstuvwxyz";
@@ -37,6 +37,8 @@ namespace gk.DataGenerator.Generators
 
         private const char _Alternation = '|';
         private const char _Escape = '\\';
+        private const char _NamedPattern_Start = '$';
+        private const char _NamedPattern_End = ';';
 
 
         static AlphaNumericGenerator()
@@ -44,12 +46,26 @@ namespace gk.DataGenerator.Generators
             Random = new Random(DateTime.Now.Millisecond);
         }
 
+        
         /// <summary>
         /// Takes in a string that contains 0 or more &lt;&lt;placeholder&gt;&gt; values and replaces the placeholder item with the expression it defines.
         /// </summary>
         /// <param name="template"></param>
+        /// <param name="namedPatterns"></param>
         /// <returns></returns>
         public static string GenerateFromTemplate(string template)
+        {
+            var namedParameters = FileReader.GetNamedPattern(@".\default.tdg-patterns");
+            return GenerateFromTemplate(template, namedParameters);
+        }
+
+        /// <summary>
+        /// Takes in a string that contains 0 or more &lt;&lt;placeholder&gt;&gt; values and replaces the placeholder item with the expression it defines.
+        /// </summary>
+        /// <param name="template"></param>
+        /// <param name="namedPatterns"></param>
+        /// <returns></returns>
+        public static string GenerateFromTemplate(string template, Dictionary<string,string> namedPatterns)
         {
             var sb = new StringBuilder();
 
@@ -74,40 +90,61 @@ namespace gk.DataGenerator.Generators
                 }
 
                 var pattern = template.Substring(start, end - start); // grab our expression
-//                if (pattern.IndexOf(_Alternation) > -1) // check for alternates.
-//                {
-//                    var exps = pattern.Replace("(","").Replace(")","").Split(_Alternation);
-//                    pattern = exps[Random.Next(0, exps.Length)];
-//                }
-
-                sb.Append(GenerateFromPattern(pattern)); // generate value from expression
+                sb.Append(GenerateFromPattern(pattern, namedPatterns)); // generate value from expression
                 index = end+2; // update our index.
             }
 
             return sb.ToString();
+        }
+
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pattern">
+        ///     The format of the text produced. 15 random characters is the default.
+        ///     . - An uppercase or lowercase letter or number.
+        ///     w - Any Letter.  	
+        ///     L - An uppercase Letter.  	
+        ///     l - A lowercase letter. 	
+        ///     V - An uppercase Vowel.
+        ///     v - A lowercase vowel.
+        ///     C - An uppercase Consonant. 	
+        ///     c - A lowercase consonant. 	
+        ///     n - Any number, 1-9.
+        ///     d - Any number, 0-9.
+        ///     -------
+        ///     Patterns can be produced:
+        ///     "\.{10}" will produce a random string 10 characters long.
+        /// </param>
+        /// <returns></returns>
+        public static string GenerateFromPattern(string pattern)
+        {
+            return GenerateFromPattern(pattern, new Dictionary<string, string>());
         }
         
         /// <summary>
         /// 
         /// </summary>
         /// <param name="pattern">
-        /// The format of the text produced. 15 random characters is the default.
-        /// . - An uppercase or lowercase letter or number.
-        /// w - Any Letter.  	
-        /// L - An uppercase Letter.  	
-        /// l - A lowercase letter. 	
-        /// V - An uppercase Vowel.
-        /// v - A lowercase vowel.
-        /// C - An uppercase Consonant. 	
-        /// c - A lowercase consonant. 	
-        /// n - Any number, 1-9.
-        /// d - Any number, 0-9.
-        /// -------
-        /// Patterns can be produced:
-        /// "\.{10}" will produce a random string 10 characters long.
+        ///     The format of the text produced. 15 random characters is the default.
+        ///     . - An uppercase or lowercase letter or number.
+        ///     w - Any Letter.  	
+        ///     L - An uppercase Letter.  	
+        ///     l - A lowercase letter. 	
+        ///     V - An uppercase Vowel.
+        ///     v - A lowercase vowel.
+        ///     C - An uppercase Consonant. 	
+        ///     c - A lowercase consonant. 	
+        ///     n - Any number, 1-9.
+        ///     d - Any number, 0-9.
+        ///     -------
+        ///     Patterns can be produced:
+        ///     "\.{10}" will produce a random string 10 characters long.
         /// </param>
+        /// <param name="namedPatterns"></param>
         /// <returns></returns>
-        public static string GenerateFromPattern(string pattern)
+        public static string GenerateFromPattern(string pattern, Dictionary<string, string> namedPatterns)
         {
             if(pattern == null)
                 throw new GenerationException("Argument 'pattern' cannot be null.");
@@ -139,7 +176,7 @@ namespace gk.DataGenerator.Generators
                 // Format = "(LL){n,m}" = repeat xx pattern 4 times.
                 if (!isEscaped && ch == _Section_Start)
                 {
-                    AppendContentFromSectionExpression(sb, pattern, ref i);
+                    AppendContentFromSectionExpression(sb, pattern, ref i, namedPatterns);
                     continue; // skip to next character - index has already been forwarded to new position
                 }
 
@@ -160,6 +197,8 @@ namespace gk.DataGenerator.Generators
                     isEscaped = false;
                     continue; // skip to next character - index has already been forwarded to new position
                 }
+
+                //TODO - add support for named pattern het
                 
                 AppendCharacterDerivedFromSymbol(sb, ch, isEscaped);
                 isEscaped = false;
@@ -265,7 +304,8 @@ namespace gk.DataGenerator.Generators
         /// <param name="sb"></param>
         /// <param name="characters"></param>
         /// <param name="index"></param>
-        private static void AppendContentFromSectionExpression(StringBuilder sb, string characters, ref int index)
+        /// <param name="namedPatterns"></param>
+        private static void AppendContentFromSectionExpression(StringBuilder sb, string characters, ref int index, Dictionary<string, string> namedPatterns)
         {
             var tuple = GetPatternAndRepeatValueFromExpression(characters,_Section_Start, _Section_End, ref index);
 
@@ -275,7 +315,7 @@ namespace gk.DataGenerator.Generators
                 // alternates in expression 'LL|ll|vv'
                 var alternates = exp.Split(_Alternation);
                 exp = alternates[Random.Next(0, alternates.Length)];
-                sb.Append(GenerateFromPattern(exp));
+                sb.Append(GenerateFromPattern(exp, namedPatterns));
                 return;
             }
 
@@ -305,9 +345,29 @@ namespace gk.DataGenerator.Generators
                         continue; // skip to next character - index has already been forwarded to new position
                     }
 
+                    if (!isEscaped && chx == _NamedPattern_Start)
+                    {
+                        AppendContentFromNamedPattern(sb, exp, ref curNdx, namedPatterns);
+                        continue;
+                    }
+
                     AppendCharacterDerivedFromSymbol(sb, chx, isEscaped);
                     isEscaped = false;
                 }
+            }
+        }
+
+        private static void AppendContentFromNamedPattern(StringBuilder sb, string characters, ref int index, Dictionary<string, string> namedPatterns)
+        {
+            var tuple = GetPatternAndRepeatValueFromExpression(characters, _NamedPattern_Start, _NamedPattern_End, ref index);
+            
+            if (namedPatterns.ContainsKey(tuple.Item2)) // $namedPattern;
+            {
+                sb.Append(GenerateFromPattern(namedPatterns[tuple.Item2].TrimEnd(new [] { ' ', ';' }), namedPatterns));
+            }
+            else
+            {
+                throw new GenerationException("Found named named pattern placeholder '"+ tuple.Item2 +"' but was not provided with a corresponding pattern. Exiting.");
             }
         }
 

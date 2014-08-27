@@ -24,6 +24,9 @@ namespace gk.DataGenerator.tdg
         [Option('v', "verbose", DefaultValue = false, HelpText = "Verbose output including debug and performance information.", Required = false)]
         public bool Verbose { get; set; }
 
+        [Option('n', "namedpatterns", DefaultValue = "", HelpText = "A list of ';' seperated file paths containing named patterns to be used in addition to default.tdg-patterns", Required = false)]
+        public string NamedPatterns { get; set; }
+
         [HelpOption]
         public string GetUsage()
         {
