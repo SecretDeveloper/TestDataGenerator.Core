@@ -20,6 +20,7 @@ The pattern is as follows:
 - `\D` - A single random number, 0-9.
 - `\d` - A single random number, 1-9.
 - `\n` - A newline character.
+- `\t` - A tab character.
 
 ### Groups
 - `(\d){5}` - Five digits between 1 and 9.
@@ -34,6 +35,7 @@ The pattern is as follows:
 - `[1-5]` - A number between 1 and 5.
 - `[100-500]` - A number between 100 and 500.
 - `[1-28]/[1-12]/[1960-2013]` - A date value between 1960 and 2013.
+- `[1.00-5.00]` - A decimal number between 1.00 and 5.00.
 
 ### Alternations
 **Alternatives must be contained within a Group**
@@ -101,7 +103,6 @@ Patterns can contain several individual symbols or groups of symbols and randoml
 - 1 or more Symbols can be combined into patterns by wrapping them in parenthesis e.g. `(\*\L\D)`.
 - Patterns can be repeated a specific number of times using the syntax `(\L\D){10}` which will generate 10 repeated letter-number pairs e.g. *'<<(\L\D){10}>>'*.
 - Patterns can be repeated a random number of times using the syntax `(\L\D){10,20}` which will generate between 10 and 20 repeated letter-number pairs e.g. *'<<(\L\D){10,20}>>'*.
-
 
 ### Profiling results
 *These timings are taken from unit tests making direct API calls, the command line tool will have higher times as it has additional IO work to output the values to screen or file.  Should still be fast.*
