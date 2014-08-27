@@ -2,7 +2,7 @@
 <TestSettings name="Local Test Run" id="dbcca0d7-dc2e-440c-bd07-d9f37856c70a" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
   <Description>This is a default test run configuration for a local test run.</Description>
   <Deployment>
-    <DeploymentItem filename="C:\Development\projects\github.com\SecretDeveloper\TestDataGenerator\src\data\" />
+    <DeploymentItem filename="gk.DataGenerator\default.tdg-patterns" />
   </Deployment>
   <Execution>
     <TestTypeSpecific>

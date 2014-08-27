@@ -37,8 +37,8 @@ namespace gk.DataGenerator.Generators
 
         private const char _Alternation = '|';
         private const char _Escape = '\\';
-        private const char _NamedPattern_Start = '$';
-        private const char _NamedPattern_End = ';';
+        private const char _NamedPattern_Start = '@';
+        private const char _NamedPattern_End = '@';
 
 
         static AlphaNumericGenerator()
@@ -363,7 +363,7 @@ namespace gk.DataGenerator.Generators
             
             if (namedPatterns.ContainsKey(tuple.Item2)) // $namedPattern;
             {
-                sb.Append(GenerateFromPattern(namedPatterns[tuple.Item2].TrimEnd(new [] { ' ', ';' }), namedPatterns));
+                sb.Append(GenerateFromPattern(namedPatterns[tuple.Item2].TrimEnd(new [] {';'}), namedPatterns));
             }
             else
             {
@@ -526,7 +526,7 @@ namespace gk.DataGenerator.Generators
 
             int patternStart = index + 1;
 
-            var sectionDepth = 1; // start off inside current section
+            var sectionDepth = sectionStartChar.Equals(sectionEndChar)?0:1; // start off inside current section
             var patternEnd = patternStart;
             while (patternEnd < characters.Length)
             {
@@ -540,11 +540,19 @@ namespace gk.DataGenerator.Generators
                 patternEnd++;
             }
             if (sectionDepth > 0) // make sure we found closing char
-                throw new GenerationException("Expected '" + sectionEndChar + "' but it was not found.");
+            {
+                var msg = "Expected '" + sectionEndChar + "' but it was not found."+Environment.NewLine;
+                msg += BuildErrorSnippet(characters, patternStart);
+                throw new GenerationException(msg);
+            }
 
             int patternLength = patternEnd - patternStart;
-            if(patternLength <= 0)
-                throw new GenerationException("Expected '"+ sectionEndChar +"' but it was not found.");
+            if (patternLength <= 0)
+            {
+                var msg = "Expected '" + sectionEndChar + "' but it was not found."+Environment.NewLine;
+                msg += BuildErrorSnippet(characters, patternStart);
+                throw new GenerationException(msg);
+            }
 
             index = index + patternLength + 2; // update index position.
             return characters.Substring(patternStart, patternLength);

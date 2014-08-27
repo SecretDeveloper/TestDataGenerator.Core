@@ -29,6 +29,10 @@ namespace gk.DataGenerator.tdg
                 
                 if (cla.Template != "") // template provided -- no header skipping required
                 {
+                    if (cla.Verbose)
+                    {
+                        Console.WriteLine("Provided template was '" + cla.Template + "'");
+                    }
                     if (cla.OutputPath != "") // output path provided.
                     {
                         using (var fs = new StreamWriter(cla.OutputPath))
@@ -89,7 +93,6 @@ namespace gk.DataGenerator.tdg
                 if (cla.Verbose)
                 {
                     sw.Stop();
-                    Console.WriteLine("");
                     Console.WriteLine("Generation took {0} milliseconds",sw.ElapsedMilliseconds);
                 }
             }
