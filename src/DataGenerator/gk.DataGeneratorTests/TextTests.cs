@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using gk.DataGenerator;
 using gk.DataGenerator.Generators;
 
 namespace gk.DataGeneratorTests
@@ -234,6 +233,27 @@ namespace gk.DataGeneratorTests
             StringAssert.Matches(text, new Regex(@"^[W-X]{10}$"));
         }
 
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Repeated_Set2()
+        {
+            var template = @"<<([W-X]{10}[W-X]{10})>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^[W-X]{10}[W-X]{10}$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Repeated_Set3()
+        {
+            var template = @"<<([W-X]{10,100}[1-9]{10,100})>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^[W-X]{10,100}[1-9]{10,100}$"));
+        }
+
         [TestMethod]
         [TestCategory("Sets")]
         public void Can_Generate_Range_Numeric()
@@ -379,6 +399,55 @@ namespace gk.DataGeneratorTests
             DateTime dt = DateTime.Now;
             if(DateTime.TryParseExact(text, @"d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out dt) == false) Assert.Fail("invalid Date");
         
+        }
+
+        #endregion
+        
+
+        #region ErrorMessages
+
+        [TestMethod]
+        [TestCategory("ErrorMessages")]
+        public void Can_BuildErrorSnippet_Start()
+        {
+            var template = @"This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  ";
+            int ndx = 0;
+            string text = AlphaNumericGenerator.BuildErrorSnippet(template, ndx);
+            Console.WriteLine("Error Snippet for '" + template + "'\n at index " + ndx +" produced \n'" + text + "'");
+            Assert.AreEqual(AlphaNumericGenerator.ErrorContext*2+4, text.Length);
+        }
+
+        [TestMethod]
+        [TestCategory("ErrorMessages")]
+        public void Can_BuildErrorSnippet_End()
+        {
+            var template = @"This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  ";
+            int ndx = template.Length-1;
+            string text = AlphaNumericGenerator.BuildErrorSnippet(template, ndx);
+            Console.WriteLine("Error Snippet for '" + template + "'\n at index " + ndx + " produced \n'" + text + "'");
+            Assert.AreEqual(AlphaNumericGenerator.ErrorContext*2+4, text.Length);
+        }
+
+        [TestMethod]
+        [TestCategory("ErrorMessages")]
+        public void Can_BuildErrorSnippet_Middle()
+        {
+            var template = @"This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  ";
+            int ndx = AlphaNumericGenerator.ErrorContext + 20;
+            string text = AlphaNumericGenerator.BuildErrorSnippet(template, ndx);
+            Console.WriteLine("Error Snippet for '" + template + "'\n at index " + ndx + " produced \n'" + text + "'");
+            Assert.AreEqual(AlphaNumericGenerator.ErrorContext * 4 + 4, text.Length);
+        }
+        
+        [TestMethod]
+        [TestCategory("ErrorMessages")]
+        public void Can_BuildErrorSnippet1()
+        {
+            var template = @"([100-900]{40])";
+            int ndx = 12;
+            string text = AlphaNumericGenerator.BuildErrorSnippet(template, ndx);
+            Console.WriteLine("Error Snippet for '" + template + "'\n at index " + ndx + " produced \n'" + text + "'");
+            Assert.AreEqual(template.Length*2+2, text.Length);
         }
 
         #endregion
