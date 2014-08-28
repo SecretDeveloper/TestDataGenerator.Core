@@ -25,7 +25,7 @@ The pattern is as follows:
 ### Groups
 - `(\d){5}` - Five digits between 1 and 9.
 - `\L(\d){3}\L` - A upper-case letter, five digits between 1 and 9 and another upper-case letter.
-- `(.[100-101]){3}` - Three items, each will include a dot '.' and either 100 or 101 e.g. *'.101.100.100'*
+- `(.[100-101]){3}` - Three items, each will include a dot '.' and either 100 or 101 e.g. *'.100.101.100'*
 
 ### Ranges
 - `[a-z]` - A single lower-case letter between a and z.
@@ -42,37 +42,41 @@ The pattern is as follows:
 - `(\L\L|\d\d)` - Either two upper-case letters OR two numbers.
 - `(\L\L|\d\d|[AEIOU]|[100-120])` - Either two upper-case letters OR two digits OR an upper-case vowel OR a number between 100 and 120.
 
+### Named Parameters
+
+
 ### CommandLine tool
 You can use the `tdg.exe` application to generate test data from the command line.  It can handle provided templates directly from the command line or from a file. The tool also supports exporting the generated output to either the command line or another file.
 
 ### Parameters:
-- `-t, --template`    The template to use when producing data
-- `-f, --file`        The path of the input file.
-- `-o, --output`      The path of the output file.
-- `-c, --count`       (Default: 1) The number of items to produce.
-- `-v, --verbose`     (Default: False) Verbose output including debug and performance information.
+- `-t:, --template:`    The template containing 1 or more patterns to use when producing data.
+- `-p:  --pattern:`     The pattern to use when producing data.
+- `-i:  --inputfile:`   The path of the input file.
+- `-o:, --output:`      The path of the output file.
+- `-c:, --count:`       The number of items to produce.
+- `-v:, --verbose:`     Verbose output including debug and performance information.
 - `--help`            Display the help screen.
-
+  
 ### Examples
 - Single repeating symbols using the following syntax
   - `tdg -t 'Letters \<<\L{20}>> and Numbers \<<\D{12}>>'`
-  - Produces items like *'Letters CPJLJSLXRFFKGSUUBQAA and Numbers 195954571798'*.
+  - Produces items like *'Letters XWXLMQMNZEYZLDAEGJFI and Numbers 856443829517'*.
 - Repeating patterns containing multiple letters or numbers of random length.
-  - `tdg -t '\<<(\L){5}>>'` - Will generate 5 random upper-case characters. e.g. *'HZRIV'*
-  - `tdg -t '\<<(\L\L\D){24}>>'`  - Will generate 24 repeating letter-letter-number values e.g. *'NB1JP3XV9UD4FM4ZS1DB3XX1QS9HJ1HA4YO5XQ5PQ1PR3HY2MW5VN2LP1YS8JP4VM1BH9WC0'*
+  - `tdg -t '\<<(\L){5}>>'` - Will generate 5 random upper-case characters. e.g. *'EXLEE'*
+  - `tdg -t '\<<(\L\L\D){24}>>'`  - Will generate 24 repeating letter-letter-number values e.g. *'OS9KJ5GL3IK2DY1ST1IG4ZE8GP3BF8NR8AR6GY5AI9CZ4AU6ZA4TC9RP5DD7FF2OU7KD2MM8'*
 - Variable length data can be generated also
-  - `tdg -t '\<<(\L){10,20}>>'` - Will generate a string containing between 10 and 20 characters of random value e.g. *'NKGIGVITSVNNMNDM'*
-  - `tdg -t 'Letters \<<\L{2,20}>> and Numbers \<<\D{2,12}>>'` produces items like *'Letters KZXRFBRTEHGRIPTMEZWF and Numbers 91406'*
+  - `tdg -t '\<<(\L){10,20}>>'` - Will generate a string containing between 10 and 20 characters of random value e.g. *'IYNXEKGVSBELUPYJC'*
+  - `tdg -t 'Letters \<<\L{2,20}>> and Numbers \<<\D{2,12}>>'` produces items like *'Letters CUSV and Numbers 752'*
 - Input can contain several placeholders.
   - `tdg -t 'Hi there \<<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is \<<\D\d\d-\d\d-\d\d\d\d>>.' -c 100` 
-  - Produces 100 items like *'Hi there Teayo Zaeeob how are you doing?  Your SSN is 511-43-7135.'*
+  - Produces 100 items like *'Hi there Romi Ozdeozmd how are you doing?  Your SSN is 129-24-7244.'*
 - Generate 100 SSN like values and output to console window.
   - `tdg -t '\<<\D\d\d-\d\d-\d\d\d\d>>' -c 100`
-  - Produces 100 items like *'237-58-5663'*.
+  - Produces 100 items like *'095-88-4976'*.
 - Generate 100 strings with random name like values and output to file.
   - `tdg -t 'Hi there \<<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`
-  - Produces 100 items like *'Tieo Iujdoefsi'*.
-- `tdg -t '\<<Letters \w{2,20} and Numbers \D{2,12}\n>>'` produces the following output: *'Letters KRDqamBinLfJAp and Numbers 264708098710
+  - Produces 100 items like *'Depi Wouzeitju'*.
+- `tdg -t '\<<Letters \w{2,20} and Numbers \D{2,12}\n>>'` produces the following output: *'Letters rYFvmBjUnekBipir and Numbers 49281
 '*
 
 ## More Information
@@ -87,23 +91,23 @@ If you are familiar with Regular Expressions then most of the syntax used will b
 `\<<\L\v\l\v>>` is a placeholder containing the pattern of symbols `\L\v\l\v`.
 
 ### Symbol Repetition
-Individual symbols can be repeated by a supplying a repeat section immediately after the symbol.  For example `\L{5}` will produce 5 upper case letters.  You can also add some randomness to the mix by supplying a range: `\L{min,max}`.  The pattern `\L{1,100}` will produce between 1 and 100 upper case letters. Here's one *'DSCVSPZRHF'*
+Individual symbols can be repeated by a supplying a repeat section immediately after the symbol.  For example `\L{5}` will produce 5 upper case letters.  You can also add some randomness to the mix by supplying a range: `\L{min,max}`.  The pattern `\L{1,100}` will produce between 1 and 100 upper case letters. Here's one *'NGHIMOTQZEEDVFYSFLGAMKINMUWBIKOYDKCEYESINLFIZEIDKSUWOEBD'*
 
 ### Symbol Grouping
-Individual symbols can be grouped together using parenthesis characters.  When grouped together they can be repeated using the same repeat syntax.  `(\l\D){5}` will produce something like *'o3t5f4o6k0'*.
+Individual symbols can be grouped together using parenthesis characters.  When grouped together they can be repeated using the same repeat syntax.  `(\l\D){5}` will produce something like *'x7v6s6i5q2'*.
 You can also include the random range syntax from above.
 
 ### Alternating Symbols and Groups
 Patterns can contain several individual symbols or groups of symbols and randomly alternate between them when generating the output value.  `\<<\C|\c{10}|\V\V\V|(\v\v){2,3}>>` will produce either a single upper-case consonant, 10 lower-case consonants, 3 upper-case vowels or between 10 and 15 lower-case vowels.  Which one gets outputed is randomly selected when processing the pattern.
 
 ### Other patterns:
-- `'\<<This is a \L\L string>>'` will produce something similar to *'This is a FJ string'*.
-- `'\<<This is a \D{19} string>>'` will produce something similar to *'This is a 6794869658140562993 string'*.
+- `'\<<This is a \L\L string>>'` will produce something similar to *'This is a ZL string'*.
+- `'\<<This is a \D{19} string>>'` will produce something similar to *'This is a 1770795010534766573 string'*.
 - Individual symbols can be repeated a specific number of times using the syntax `\L{10}` which will generate 10 upper case letters.
 - Individual symbols can be repeated a random number of times using the syntax `\L{10,20}` which will generate between 10 and 20 upper case letters.
 - 1 or more Symbols can be combined into patterns by wrapping them in parenthesis e.g. `(\*\L\D)`.
-- Patterns can be repeated a specific number of times using the syntax `(\L\D){10}` which will generate 10 repeated letter-number pairs e.g. *'G9L8K3G8M2D8Z8U0H8H7'*.
-- Patterns can be repeated a random number of times using the syntax `(\L\D){10,20}` which will generate between 10 and 20 repeated letter-number pairs e.g. *'T5Q7D3O6U2S4T9J2X5D6T4K4A1'*.
+- Patterns can be repeated a specific number of times using the syntax `(\L\D){10}` which will generate 10 repeated letter-number pairs e.g. *'Z3Z2E3B6V0Q7T1X0P9U1'*.
+- Patterns can be repeated a random number of times using the syntax `(\L\D){10,20}` which will generate between 10 and 20 repeated letter-number pairs e.g. *'Q9Z9F5E9A7Z9X0C1N5R6H6Z5H8E5S0R8P6'*.
 
 ### Profiling results
 *These timings are taken from unit tests making direct API calls, the command line tool will have higher times as it has additional IO work to output the values to screen or file.  Should still be fast.*

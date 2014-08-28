@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CommandLine;
 using Eloquent;
 
 namespace gk.DataGenerator.tdg
@@ -56,7 +55,7 @@ namespace gk.DataGenerator.tdg
             sb.AppendLine("Parameters:");
             sb.AppendLine("  -t:  --template:       The template containing 1 or more patterns to use when producing data.");
             sb.AppendLine("  -p:  --pattern:        The pattern to use when producing data.");
-            sb.AppendLine("  -i:  --inputfile:           The path of the input file.");
+            sb.AppendLine("  -i:  --inputfile:      The path of the input file.");
             sb.AppendLine("  -h:  --headers:        The number of header rows contained in the --file (i) provided. Can be used to skip header rows in files.");
             sb.AppendLine("  -o:  --output:         The path of the output file.");
             sb.AppendLine("  -c:  --count:          The number of items to produce.");

@@ -42,17 +42,21 @@ The pattern is as follows:
 - `(\L\L|\d\d)` - Either two upper-case letters OR two numbers.
 - `(\L\L|\d\d|[AEIOU]|[100-120])` - Either two upper-case letters OR two digits OR an upper-case vowel OR a number between 100 and 120.
 
+### Named Parameters
+
+
 ### CommandLine tool
 You can use the `tdg.exe` application to generate test data from the command line.  It can handle provided templates directly from the command line or from a file. The tool also supports exporting the generated output to either the command line or another file.
 
 ### Parameters:
-- `-t, --template`    The template to use when producing data
-- `-f, --file`        The path of the input file.
-- `-o, --output`      The path of the output file.
-- `-c, --count`       (Default: 1) The number of items to produce.
-- `-v, --verbose`     (Default: False) Verbose output including debug and performance information.
+- `-t:, --template:`    The template containing 1 or more patterns to use when producing data.
+- `-p:  --pattern:`     The pattern to use when producing data.
+- `-i:  --inputfile:`   The path of the input file.
+- `-o:, --output:`      The path of the output file.
+- `-c:, --count:`       The number of items to produce.
+- `-v:, --verbose:`     Verbose output including debug and performance information.
 - `--help`            Display the help screen.
-
+  
 ### Examples
 - Single repeating symbols using the following syntax
   - `tdg -t 'Letters \<<\L{20}>> and Numbers \<<\D{12}>>'`
