@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -68,7 +69,7 @@ namespace gk.DataGenerator.Generators
         /// <returns></returns>
         public static string GenerateFromTemplate(string template)
         {
-            var path = AppDomain.CurrentDomain.BaseDirectory + "default.tdg-patterns";
+            var path = AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + "default.tdg-patterns";
             var namedParameters = FileReader.GetNamedPattern(path);
             return GenerateFromTemplate(template, namedParameters);
         }
@@ -134,7 +135,7 @@ namespace gk.DataGenerator.Generators
         /// <returns></returns>
         public static string GenerateFromPattern(string pattern)
         {
-            var path = AppDomain.CurrentDomain.BaseDirectory + "default.tdg-patterns";
+            var path = AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + "default.tdg-patterns";
             var namedParameters = FileReader.GetNamedPattern(path);
             return GenerateFromPattern(pattern, namedParameters);
         }
