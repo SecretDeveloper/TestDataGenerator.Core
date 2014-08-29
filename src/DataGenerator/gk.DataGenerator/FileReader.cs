@@ -15,16 +15,19 @@ namespace gk.DataGenerator
             var result = new Dictionary<string, string>();
             using (var fs = new StreamReader(path))
             {
-                while (!fs.EndOfStream)
-                {
-                    var line = fs.ReadLine().Trim();
-                    if (line.StartsWith("#")) continue;
-                    if (!line.Contains('=')) continue;
-                    var keyValue = line.Split('=');
-                    result.Add(keyValue[0], keyValue[1]);
-                }
+                var json = fs.ReadToEnd();
+                result = (new ServiceStack.Text.JsonSerializer<Dictionary<string, string>>()).DeserializeFromString(json);
             }
             return result;
+        }
+
+        public static void SerializeDictionary(Dictionary<string, string> dictionary, string path)
+        {
+            using (var fs = new StreamWriter(path))
+            {
+                var json = new ServiceStack.Text.JsonSerializer<Dictionary<string, string>>().SerializeToString(dictionary);
+                fs.Write(json);
+            }
         }
     }
 }

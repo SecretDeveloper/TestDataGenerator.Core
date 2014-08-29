@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using gk.DataGenerator;
 using gk.DataGenerator.Generators;
 
 namespace gk.DataGeneratorTests
@@ -755,6 +757,16 @@ namespace gk.DataGeneratorTests
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
             Assert.IsTrue(text.Length>0);
             
+        }
+
+        [TestMethod]
+        [TestCategory("NamedPatterns")]
+        public void Can_Generate_NamedPatterns3()
+        {
+            var dict = FileReader.GetNamedPattern(@"C:\Development\projects\github.com\secretdeveloper\TestDataGenerator\src\DataGenerator\gk.DataGenerator\default.tdg-patterns");
+
+            FileReader.SerializeDictionary(dict, @"c:\dict.txt");
+
         }
 
         #endregion
