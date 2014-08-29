@@ -59,10 +59,10 @@ You can use the `tdg.exe` application to generate test data from the command lin
   
 ### Examples
 - Single repeating symbols using the following syntax
-  - *tdg -t "Letters \<<\L{20}>> and Numbers \<<\D{12}>>"*
+  - **tdg -t "Letters \<<\L{20}>> and Numbers \<<\D{12}>>"**
   - Produces items like *'Letters <<\L{20}>> and Numbers <<\D{12}>>'*.
 - Repeating patterns containing multiple letters or numbers of random length.
-  - `tdg -t '\<<(\L){5}>>'` - Will generate 5 random upper-case characters. e.g. *'<<(\L){5}>>'*
+  - ***tdg -t '<<(\L){5}>>'*** - Will generate 5 random upper-case characters. e.g. *'<<(\L){5}>>'*
   - `tdg -t '\<<(\L\L\D){24}>>'`  - Will generate 24 repeating letter-letter-number values e.g. *'<<(\L\L\D){24}>>'*
 - Variable length data can be generated also
   - `tdg -t '\<<(\L){10,20}>>'` - Will generate a string containing between 10 and 20 characters of random value e.g. *'<<(\L){10,20}>>'*
