@@ -49,12 +49,12 @@ A named pattern is surrounded with @ characters and links to a predefined patter
 You can use the `tdg.exe` application to generate test data from the command line.  It can handle provided templates directly from the command line or from a file. The tool also supports exporting the generated output to either the command line or another file.
 
 ### Parameters:
-- `-t:, --template:`    The template containing 1 or more patterns to use when producing data.
-- `-p:  --pattern:`     The pattern to use when producing data.
-- `-i:  --inputfile:`   The path of the input file.
-- `-o:, --output:`      The path of the output file.
-- `-c:, --count:`       The number of items to produce.
-- `-v:, --verbose:`     Verbose output including debug and performance information.
+- `-t, --template:`    The template containing 1 or more patterns to use when producing data.
+- `-p  --pattern:`     The pattern to use when producing data.
+- `-i  --inputfile:`   The path of the input file.
+- `-o, --output:`      The path of the output file.
+- `-c, --count:`       The number of items to produce.
+- `-v, --verbose:`     Verbose output including debug and performance information.
 - `--help`            Display the help screen.
   
 ### Examples
