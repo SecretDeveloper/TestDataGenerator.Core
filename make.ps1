@@ -1,43 +1,58 @@
+
 # Run mstest against all *Tests.dll within the Assemblies\TestOutput\ directory
 
 # Get the PWD - should be the Development\ReleaseBranch folder
 $basePath = Get-Location
-$trxPath = "$basePath\src\TestOutput\AllTest.trx"
 
-if(test-path $trxPath){
-    Remove-Item $trxPath
+# CLEAN
+write-host "Cleaning" -foregroundcolor:blue
+remove-item $basePath\src\BuildOutput\*.* -recurse
+remove-item $basePath\src\TestOutput\* -recurse
+remove-item $basePath\src\DataGenerator\TestResults\* -recurse
+
+
+# BUILD
+write-host "Building"  -foregroundcolor:blue
+$msbuild = "c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
+$solutionPath = "$basePath\src\DataGenerator\DataGenerator.sln"
+Invoke-expression "$msbuild $solutionPath /p:configuration=Release /t:Clean /t:Build /verbosity:q /nologo"
+$lastResult = $?
+if($lastResult -eq $False){
+    Write-host "BUILD FAILED!"
+    exit
 }
 
-#Configure result file
+# TESTING
+write-host "Testing"  -foregroundcolor:blue
+$trxPath = "$basePath\src\TestOutput\AllTest.trx"
 $resultFile="/resultsfile:$trxPath"
 
-# grab the dlls
 $testDLLs = get-childitem -path "$basePath\src\TestOutput\*.*" -include "*Tests.dll"
-write-host $testDLLs
-
+ 
 $fs = New-Object -ComObject Scripting.FileSystemObject
 $f = $fs.GetFile("C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\mstest.exe")
 $mstestPath = $f.shortpath   
+$arguments = " /testcontainer:" + $testDLLs + " /TestSettings:$basePath\src\DataGenerator\LocalTestRun.testrunconfig"
 
-for ($i=0; $i -lt $testDLLs.Count; $i++) {
-    $f = $testDLLs[$i]
-    write-host "Adding $f tests"
-    #$content = Get-Content $f
-    $arguments = $arguments + " /testcontainer:" + $f
-}
-
-write-host "Running tests"
 Invoke-Expression "$mstestPath $resultFile $arguments > LogTest.log"
 
-Foreach ($line in (Get-Content -Path "LogTest.log" | Where {$_ -match '^Failed'})) 
-{ 
-    write-host $line
+$content = (Get-Content -Path "LogTest.log")
+$failedContent = ($content -match "^Failed")
+$failedCount = $failedContent.Count
+if($failedCount -gt 0)
+{    
+    Write-host "TESTING FAILED!" -foregroundcolor:red
+    $lastResult = $false
 }
-write-host "Finished tests"
+Foreach ($line in $failedContent) 
+{
+    write-host $line -foregroundcolor:red
+}
+if($lastResult -eq $False){    
+    exit
+}
 
-
-
-
-Write-Host Generating README.md from template.
+# DOCUMENTING
+Write-Host "Documenting" -foregroundcolor:blue
 ./src/buildoutput/tdg.exe -i:".\src\templates\README.template" -o:"./README.md"
-Write-Host Finished
+Write-Host Finished -foregroundcolor:blue
