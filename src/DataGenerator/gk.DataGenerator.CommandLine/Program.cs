@@ -19,20 +19,12 @@ namespace gk.DataGenerator.tdg
 #endif
             try
             {
-                var result = cla.Parse(args);
-                if (result.Any())
+                var result = CommandLine.Parser.Default.ParseArguments(args, cla);
+                if (!result)
                 {
                     Console.WriteLine("Parse failed!  Use --help flag for instructions on usage.");
-                    result.ForEach(Console.WriteLine);
                     return;
                 }
-
-                if (cla.ShowHelp)
-                {
-                    Console.WriteLine(cla.GetUsage());
-                    return;
-                }
-
                 
                 if (cla.Verbose)
                 {

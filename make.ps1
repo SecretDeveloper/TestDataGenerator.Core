@@ -9,15 +9,33 @@ write-host "Cleaning" -foregroundcolor:blue
 remove-item $basePath\src\BuildOutput\*.* -recurse
 remove-item $basePath\src\TestOutput\* -recurse
 remove-item $basePath\src\DataGenerator\TestResults\* -recurse
-
+$lastResult = $true
 
 # BUILD
 write-host "Building"  -foregroundcolor:blue
 $msbuild = "c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
 $solutionPath = "$basePath\src\DataGenerator\DataGenerator.sln"
-Invoke-expression "$msbuild $solutionPath /p:configuration=Release /t:Clean /t:Build /verbosity:q /nologo"
-$lastResult = $?
-if($lastResult -eq $False){
+Invoke-expression "$msbuild $solutionPath /p:configuration=Release /t:Clean /t:Build /verbosity:q /nologo > LogBuild.log"
+$content = (Get-Content -Path "LogBuild.log")
+$failedContent = ($content -match "error")
+$failedCount = $failedContent.Count
+if($failedCount -gt 0)
+{    
+    Write-host "BUILDING FAILED!" -foregroundcolor:red
+    $lastResult = $false
+    
+    Foreach ($line in $content) 
+    {
+        write-host $line -foregroundcolor:red
+    }
+}
+
+if($lastResult -eq $False){    
+    exit
+}
+
+
+if($? -eq $False){
     Write-host "BUILD FAILED!"
     exit
 }
@@ -54,5 +72,5 @@ if($lastResult -eq $False){
 
 # DOCUMENTING
 Write-Host "Documenting" -foregroundcolor:blue
-./src/buildoutput/tdg.exe -i:".\src\templates\README.template" -o:"./README.md"
+Invoke-expression "./src/buildoutput/tdg.exe -i '.\src\templates\README.template' -o './README.md'"
 Write-Host Finished -foregroundcolor:blue
