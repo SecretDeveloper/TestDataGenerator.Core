@@ -67,7 +67,7 @@
     </NamedPattern>
     <NamedPattern>
       <Name>common_county_name</Name>
-      <Pattern>(Loudoun|Howard|Fairfax|Hunterdon|Arlington|Stafford|Putnam|Somerset|Douglas|Morris|Montgomery|Prince William|Nassau|Santa Clara|Charles|Williamson|Marin|Anne Arundel|Calvert|Sussex|St. Mary's|Suffolk|Fort Bend|Hamilton|Forsyth|)</Pattern>
+      <Pattern>(Loudoun|Howard|Fairfax|Hunterdon|Arlington|Stafford|Putnam|Somerset|Douglas|Morris|Montgomery|Prince William|Nassau|Santa Clara|Charles|Williamson|Marin|Anne Arundel|Calvert|Sussex|St. Mary's|Suffolk|Fort Bend|Hamilton|Forsyth)</Pattern>
     </NamedPattern>
     <NamedPattern>
       <Name>all_country_name</Name>

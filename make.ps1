@@ -90,7 +90,7 @@ if($lastResult -eq $False){
 
 # DOCUMENTING
 Write-Host "Documenting" -foregroundcolor:blue
-Invoke-expression "./src/buildoutput/tdg.exe -i '.\src\templates\README.template' -o './README.md'"
+Invoke-expression "./src/buildoutput/tdg.exe -i '.\src\templates\README.template.md' -o './README.md'"
 
 # DEPLOYING
 write-host "Deploying" -foregroundcolor:blue

@@ -11,14 +11,12 @@ namespace gk.DataGeneratorTests
     [TestClass]
     public class TextTests
     {
-
-
         [TestMethod]
         [TestCategory("Documentation")]
-        [DeploymentItem(@"..\templates\README.template")]
+        [DeploymentItem(@"..\templates\README.template.md")]
         public void Documentation_Builder()
         {
-            var template = System.IO.File.ReadAllText("README.template");
+            var template = System.IO.File.ReadAllText("README.template.md");
 
             var text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(text);
@@ -404,7 +402,6 @@ namespace gk.DataGeneratorTests
         }
 
         #endregion
-        
 
         #region ErrorMessages
 

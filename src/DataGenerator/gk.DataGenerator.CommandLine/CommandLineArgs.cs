@@ -35,7 +35,7 @@ namespace gk.DataGenerator.tdg
         {
             var help = new HelpText
             {
-                Heading = new HeadingInfo("Test Data Generator", "3.3.0"),
+                Heading = new HeadingInfo("Test Data Generator", "3.3.1"),
                 Copyright = new CopyrightInfo("Gary Kenneally (@SecretDeveloper)", 2014),
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true
@@ -54,35 +54,6 @@ namespace gk.DataGenerator.tdg
             return help;
         }
 
-        public string GetHelpText()
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine("Test Data Generator 3.3.0");
-            sb.AppendLine("Copyright (C) 2014 Gary Kenneally (@SecretDeveloper)");
-            sb.AppendLine("This is free software. You may redistribute copies of it under the terms of the MIT License.");
-            sb.AppendLine("  http://www.opensource.org/licenses/mit-license.php");
-            sb.AppendLine();
-            sb.AppendLine("Parameters:");
-            sb.AppendLine("  -t:  --template:       The template containing 1 or more patterns to use when producing data.");
-            sb.AppendLine("  -p:  --pattern:        The pattern to use when producing data.");
-            sb.AppendLine("  -i:  --inputfile:      The path of the input file.");
-            sb.AppendLine("  -h:  --headers:        The number of header rows contained in the --file (i) provided. Can be used to skip header rows in files.");
-            sb.AppendLine("  -o:  --output:         The path of the output file.");
-            sb.AppendLine("  -c:  --count:          The number of items to produce.");
-            sb.AppendLine("  -v:  --verbose:        Verbose output including debug and performance information.");
-            //sb.AppendLine("  -n:  --namedpatterns:  A list of ';' separated file paths containing named patterns to be used in addition to default.tdg-patterns.");
-            sb.AppendLine();
-            sb.AppendLine("Examples:");
-            sb.AppendLine("     tdg -p:'\\L\\L'");
-            sb.AppendLine("     tdg -t:'<<\\L\\L>>'");
-            sb.AppendLine("     tdg -t:'<<\\L\\L>>' -c:10");
-            sb.AppendLine("     tdg -t:'<<\\L\\L>>' -o:'c:\\test.txt' -c:10");
-            sb.AppendLine("     tdg -i:'c:\\input.txt' -o:'c:\\test.txt' -c:10");
-            sb.AppendLine();
-            sb.AppendLine("Either a Template (-t), Pattern (-p) or Input file (-i) value must be provided as input.");
-
-            return sb.ToString();
-        }
     }
 }
 
