@@ -70,7 +70,7 @@ namespace gk.DataGenerator.Generators
         public static string GenerateFromTemplate(string template)
         {
             var path = AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + "default.tdg-patterns";
-            var namedParameters = FileReader.GetNamedPattern(path);
+            var namedParameters = FileReader.LoadNamedPatterns(path);
             return GenerateFromTemplate(template, namedParameters);
         }
 
@@ -80,7 +80,7 @@ namespace gk.DataGenerator.Generators
         /// <param name="template"></param>
         /// <param name="namedPatterns"></param>
         /// <returns></returns>
-        public static string GenerateFromTemplate(string template, Dictionary<string,string> namedPatterns)
+        public static string GenerateFromTemplate(string template, NamedPatterns namedPatterns)
         {
             var sb = new StringBuilder();
 
@@ -136,7 +136,7 @@ namespace gk.DataGenerator.Generators
         public static string GenerateFromPattern(string pattern)
         {
             var path = AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + "default.tdg-patterns";
-            var namedParameters = FileReader.GetNamedPattern(path);
+            var namedParameters = FileReader.LoadNamedPatterns(path);
             return GenerateFromPattern(pattern, namedParameters);
         }
         
@@ -161,7 +161,7 @@ namespace gk.DataGenerator.Generators
         /// </param>
         /// <param name="namedPatterns"></param>
         /// <returns></returns>
-        public static string GenerateFromPattern(string pattern, Dictionary<string, string> namedPatterns)
+        public static string GenerateFromPattern(string pattern, NamedPatterns namedPatterns)
         {
             if(pattern == null)
                 throw new GenerationException("Argument 'pattern' cannot be null.");
@@ -279,8 +279,8 @@ namespace gk.DataGenerator.Generators
 
             var line = template.Substring(ndx-contextBefore, contextBefore);
             line += template.Substring(ndx, contextAfter + 1);
-            line = line.Replace('\n', '_').Replace('\r', '_');
-            var indicator = new string('_', contextBefore) + "^" + new String('_', contextAfter);
+            line = line.Replace('\n', ' ').Replace('\r', ' ');
+            var indicator = new string(' ', contextBefore) + "^" + new String(' ', contextAfter);
             
             return line + Environment.NewLine + indicator;
         }
@@ -330,7 +330,7 @@ namespace gk.DataGenerator.Generators
         /// <param name="characters"></param>
         /// <param name="index"></param>
         /// <param name="namedPatterns"></param>
-        private static void AppendContentFromSectionExpression(StringBuilder sb, string characters, ref int index, Dictionary<string, string> namedPatterns)
+        private static void AppendContentFromSectionExpression(StringBuilder sb, string characters, ref int index, NamedPatterns namedPatterns)
         {
             var tuple = GetPatternAndRepeatValueFromExpression(characters,_Section_Start, _Section_End, ref index);
 
@@ -386,17 +386,20 @@ namespace gk.DataGenerator.Generators
             }
         }
 
-        private static void AppendContentFromNamedPattern(StringBuilder sb, string characters, ref int index, Dictionary<string, string> namedPatterns)
+        private static void AppendContentFromNamedPattern(StringBuilder sb, string characters, ref int index, NamedPatterns namedPatterns)
         {
+            var ndx = index;
             var tuple = GetPatternAndRepeatValueFromExpression(characters, _NamedPattern_Start, _NamedPattern_End, ref index);
             
-            if (namedPatterns.ContainsKey(tuple.Item2)) // $namedPattern;
+            if (namedPatterns.HasPattern(tuple.Item2)) // $namedPattern;
             {
-                sb.Append(GenerateFromPattern(namedPatterns[tuple.Item2].TrimEnd(new [] {';'}), namedPatterns));
+                sb.Append(GenerateFromPattern(namedPatterns.GetPattern(tuple.Item2).Pattern, namedPatterns));
             }
             else
             {
-                throw new GenerationException("Found named named pattern placeholder '"+ tuple.Item2 +"' but was not provided with a corresponding pattern. Exiting.");
+                var msg = BuildErrorSnippet(characters, ndx);
+                msg = "Found named pattern placeholder '" + tuple.Item2 + "' but was not provided with a corresponding pattern Check Named Patterns file." + Environment.NewLine + msg;
+                throw new GenerationException(msg);
             }
         }
 

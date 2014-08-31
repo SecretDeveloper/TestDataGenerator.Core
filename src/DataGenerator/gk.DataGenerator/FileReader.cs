@@ -1,32 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using gk.DataGenerator.Generators;
+﻿using System.Xml;
+using System.Xml.Serialization;
 
 namespace gk.DataGenerator
 {
     public static class FileReader
     {
-        public static Dictionary<string, string> GetNamedPattern(string path)
+        public static NamedPatterns LoadNamedPatterns(string path)
         {
-            var result = new Dictionary<string, string>();
-            using (var fs = new StreamReader(path))
+            var result = new NamedPatterns();
+            using (var reader = XmlReader.Create(path))
             {
-                var json = fs.ReadToEnd();
-                result = (new ServiceStack.Text.JsonSerializer<Dictionary<string, string>>()).DeserializeFromString(json);
+                var ser = new XmlSerializer(typeof(NamedPatterns));
+                result = ser.Deserialize(reader) as NamedPatterns;
             }
             return result;
         }
 
-        public static void SerializeDictionary(Dictionary<string, string> dictionary, string path)
+        public static void SerializeDictionary(NamedPatterns namedPatterns, string path)
         {
-            using (var fs = new StreamWriter(path))
+            using (var fs = XmlWriter.Create(path, new XmlWriterSettings(){Indent = true,OmitXmlDeclaration = true}))
             {
-                var json = new ServiceStack.Text.JsonSerializer<Dictionary<string, string>>().SerializeToString(dictionary);
-                fs.Write(json);
+                var ns = new XmlSerializerNamespaces();
+                ns.Add("", "");
+
+                var ser = new XmlSerializer(typeof(NamedPatterns));
+                ser.Serialize(fs, namedPatterns, ns);
+
             }
         }
     }

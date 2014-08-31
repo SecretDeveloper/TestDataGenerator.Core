@@ -737,9 +737,9 @@ namespace gk.DataGeneratorTests
         [TestCategory("NamedPatterns")]
         public void Can_Generate_NamedPatterns()
         {
-            //var namedPatterns = FileReader.GetNamedPattern("default.tdg-patterns");
+            //var namedPatterns = FileReader.LoadNamedPatterns("default.tdg-patterns");
 
-            var pattern = @"<<(@male_name@)>>";
+            var pattern = @"<<(@common_male_name@)>>";
             var text = AlphaNumericGenerator.GenerateFromTemplate(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
             Assert.IsTrue(text.Length>0);
@@ -750,7 +750,7 @@ namespace gk.DataGeneratorTests
         [TestCategory("NamedPatterns")]
         public void Can_Generate_NamedPatterns2()
         {
-            //var namedPatterns = FileReader.GetNamedPattern("default.tdg-patterns");
+            //var namedPatterns = FileReader.LoadNamedPatterns("default.tdg-patterns");
 
             var pattern = @"<<(@address_type1@)>>";
             var text = AlphaNumericGenerator.GenerateFromTemplate(pattern);
@@ -763,10 +763,15 @@ namespace gk.DataGeneratorTests
         [TestCategory("NamedPatterns")]
         public void Can_Generate_NamedPatterns3()
         {
-            var dict = FileReader.GetNamedPattern(@"C:\Development\projects\github.com\secretdeveloper\TestDataGenerator\src\DataGenerator\gk.DataGenerator\default.tdg-patterns");
+            var namedPatterns = FileReader.LoadNamedPatterns(@"C:\Development\projects\github.com\secretdeveloper\TestDataGenerator\src\DataGenerator\gk.DataGenerator\default.tdg-patterns");
 
-            FileReader.SerializeDictionary(dict, @"c:\dict.txt");
-
+            var nps = new NamedPatterns();
+            nps.CollectionName = "Test";
+            foreach (var dic in namedPatterns.Patterns)
+            {
+                Assert.IsFalse(string.IsNullOrEmpty(dic.Name));
+                Assert.IsFalse(string.IsNullOrEmpty(dic.Pattern));
+            }
         }
 
         #endregion
