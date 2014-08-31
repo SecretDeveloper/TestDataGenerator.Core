@@ -748,11 +748,11 @@ namespace gk.DataGeneratorTests
         
         [TestMethod]
         [TestCategory("NamedPatterns")]
-        public void Can_Generate_NamedPatterns2()
+        public void Can_Generate_NamedPatterns_CompoundPattern()
         {
             //var namedPatterns = FileReader.LoadNamedPatterns("default.tdg-patterns");
 
-            var pattern = @"<<(@address_type1@)>>";
+            var pattern = @"<<(@us_address_type1@)>>";
             var text = AlphaNumericGenerator.GenerateFromTemplate(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
             Assert.IsTrue(text.Length>0);
@@ -761,18 +761,27 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [TestCategory("NamedPatterns")]
-        public void Can_Generate_NamedPatterns3()
+        public void Can_Generate_NamedPatterns_All_Defaults()
         {
-            var namedPatterns = FileReader.LoadNamedPatterns(@"C:\Development\projects\github.com\secretdeveloper\TestDataGenerator\src\DataGenerator\gk.DataGenerator\default.tdg-patterns");
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+
+            var namedPatterns = FileReader.LoadNamedPatterns(@"default.tdg-patterns");
 
             var nps = new NamedPatterns();
             nps.CollectionName = "Test";
             foreach (var dic in namedPatterns.Patterns)
             {
-                Assert.IsFalse(string.IsNullOrEmpty(dic.Name));
-                Assert.IsFalse(string.IsNullOrEmpty(dic.Pattern));
+                var text = AlphaNumericGenerator.GenerateFromPattern(dic.Pattern);
+                Console.WriteLine("'{0}' produced '{1}'", dic.Name, text);
+                Assert.IsTrue(text.Length > 0);
             }
+            sw.Stop();
+            Console.WriteLine("All {0} default patterns generated in {1} milliseconds.\n"
+                                            , namedPatterns.Patterns.Count
+                                            , sw.ElapsedMilliseconds);
         }
+
 
         #endregion
 
