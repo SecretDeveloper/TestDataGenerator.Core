@@ -87,7 +87,11 @@
     </NamedPattern>
     <NamedPattern>
       <Name>us_address_type1</Name>
-      <Pattern>([1-9]{1,4} @common_street_name@ @common_street_suffix@, @us_city_name@, @common_county_name@, @us_state_name@, @us_zip_code@)</Pattern>
+      <Pattern>([1-9]{1,4} @common_street_name@ @common_street_suffix@, @common_county_name@ County, @us_state_name@, @us_zip_code@)</Pattern>
+    </NamedPattern>
+    <NamedPattern>
+      <Name>eu_address_type1</Name>
+      <Pattern>([1-9]{1,4} @common_street_name@ @common_street_suffix@, @common_county_name@ County, @european_country_name@)</Pattern>
     </NamedPattern>
     <NamedPattern>
       <Name>rainbow_colour_name</Name>

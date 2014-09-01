@@ -35,6 +35,12 @@ $msbuild = "c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
 $solutionPath = "$basePath\src\DataGenerator\DataGenerator.sln"
 Invoke-expression "$msbuild $solutionPath /p:configuration=Release /t:Clean /t:Build /verbosity:q /nologo > $logPath\LogBuild.log"
 $content = (Get-Content -Path "$logPath\LogBuild.log")
+$passedContent = ($content -match "Passed")
+if($passedContent.Count -eq 0)
+{    
+    Write-host "TESTING FAILED!" -foregroundcolor:red
+    $lastResult = $false
+}
 $failedContent = ($content -match "error")
 $failedCount = $failedContent.Count
 if($failedCount -gt 0)
