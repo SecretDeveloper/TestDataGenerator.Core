@@ -35,7 +35,7 @@ namespace gk.DataGenerator.tdg
         {
             var help = new HelpText
             {
-                Heading = new HeadingInfo("Test Data Generator", "3.3.1"),
+                Heading = new HeadingInfo("Test Data Generator", "3.3.2"),
                 Copyright = new CopyrightInfo("Gary Kenneally (@SecretDeveloper)", 2014),
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true
