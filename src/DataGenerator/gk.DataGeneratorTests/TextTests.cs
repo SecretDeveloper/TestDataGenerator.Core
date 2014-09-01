@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Eloquent;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using gk.DataGenerator;
 using gk.DataGenerator.Generators;
@@ -59,10 +60,10 @@ namespace gk.DataGeneratorTests
         [TestCategory("Template")]
         public void Can_Generate_From_Template_for_ReadMe2()
         {
-            var template = @"<<aa\D\d\d-\d\d-\d\d\d\d>>";
+            var template = @"<<aa[1-9]\d\d-\d\d-\d\d\d\d>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine("'" + template + "' produced '" + text + "'");
-            StringAssert.Matches(text, new Regex(@"aa[0-9][1-9][1-9]-[1-9][1-9]-[1-9][1-9][1-9][1-9]"));
+            StringAssert.Matches(text, new Regex(@"aa[1-9]\d{2}-\d{2}-\d{4}"));
         }
 
         [TestMethod]
@@ -70,11 +71,11 @@ namespace gk.DataGeneratorTests
         public void Can_Generate_From_Template_for_ReadMe3()
         { 
             
-            var template = @"Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing? Your SSN is <<\d\D\D-\D\D-\D\D\D\D>>";
+            var template = @"Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing? Your SSN is <<[1-9]\d\d-\d\d-\d\d\d\d>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine("'" + template + "' produced '" + text + "'");
             
-            StringAssert.Matches(text, new Regex(@"Hi there [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou] [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou]{0,2}[a-z]{0,2}[a-z] how are you doing\? Your SSN is [1-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]"));
+            StringAssert.Matches(text, new Regex(@"Hi there [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou] [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou]{0,2}[a-z]{0,2}[a-z] how are you doing\? Your SSN is [1-9]\d{2}-\d{2}-\d{4}"));
         }
 
         [TestMethod]
@@ -364,7 +365,7 @@ namespace gk.DataGeneratorTests
         [TestCategory("Sets")]
         public void Can_Generate_Range_Complex()
         {
-            var template = @"<<\C\C\C-[0-9]{6}>>,<<(818|33)>>,<<\D\d\d-\d\d-\d\d\d\d>>,,GHI,Enroll,<<[1-12]/[1-28]/[1960-2000]>>,<<(M|F)>>,<<\d \L\v\l\l (st|rd|ave|blv)>>,,<<Dallas>>,<<(TX|GA|TN|FL)>>,<<[3000-5000]>>,<<[1-12]/[1-28]/[2005-2014]>>,<<2014-[1-12]-[1-28]T:[0-24]:[0-60]:[0-60]>>,<<[20-30]>>,<<[10-20]>>,<<[1-12]/[1-28]/[2014]>>,N,,N,N,,,,,,,,,,,,,,,,,,,,,,,,,,,";
+            var template = @"<<\C\C\C-[0-9]{6}>>,<<(818|33)>>,<<[1-9]\d\d-\d\d-\d\d\d\d>>,,GHI,Enroll,<<[1-12]/[1-28]/[1960-2000]>>,<<(M|F)>>,<<\d \L\v\l\l (st|rd|ave|blv)>>,,<<Dallas>>,<<(TX|GA|TN|FL)>>,<<[3000-5000]>>,<<[1-12]/[1-28]/[2005-2014]>>,<<2014-[1-12]-[1-28]T:[0-24]:[0-60]:[0-60]>>,<<[20-30]>>,<<[10-20]>>,<<[1-12]/[1-28]/[2014]>>,N,,N,N,,,,,,,,,,,,,,,,,,,,,,,,,,,";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine("'" + template + "' produced '" + text + "'");
         }
@@ -480,7 +481,7 @@ namespace gk.DataGeneratorTests
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
             Assert.AreEqual(11, text.Length);
-            StringAssert.Matches(text, new Regex("[0-9]{3}-[0-9]{2}-[0-9]{4}"));
+            StringAssert.Matches(text, new Regex(@"[\d]{3}-[\d]{2}-[\d]{4}"));
 
             //Test for escaped characters.
             pattern = @"L\LLLLL";
@@ -495,10 +496,10 @@ namespace gk.DataGeneratorTests
         public void Can_Generate_AlphaNumeric()
         {
 
-            var pattern = @"\L\l\V\v\C\c\D\d";
+            var pattern = @"\L\l\V\v\C\c\d\d";
             string text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
-            StringAssert.Matches(text, new Regex(@"[A-Z]{1}[a-z]{1}[AEIOU]{1}[aeiou]{1}[QWRTYPSDFGHJKLZXCVBNM]{1}[qwrtypsdfghjklzxcvbnm]{1}[0-9]{1}[1-9]{1}"));
+            StringAssert.Matches(text, new Regex(@"[A-Z]{1}[a-z]{1}[AEIOU]{1}[aeiou]{1}[QWRTYPSDFGHJKLZXCVBNM]{1}[qwrtypsdfghjklzxcvbnm]{1}[\d]{1}[\d]{1}"));
 
         }
 
@@ -524,11 +525,11 @@ namespace gk.DataGeneratorTests
             Assert.AreEqual(14, text.Length);
             StringAssert.Matches(text, new Regex("[0-9]{6}[A-Z]{4}[a-z]{4}"));
 
-            pattern = @"\D\d\d-\d\d-\d\d\d\d";
+            pattern = @"[1-9]\d\d-\d\d-\d\d\d\d";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
             Assert.AreEqual(11, text.Length);
-            StringAssert.Matches(text, new Regex("[0-9]{3}-[0-9]{2}-[0-9]{4}"));
+            StringAssert.Matches(text, new Regex(@"[1-9]\d{2}-\d{2}-\d{4}"));
 
             //Test for escaped characters.
             pattern = @"L\LLLLL";
@@ -678,12 +679,17 @@ namespace gk.DataGeneratorTests
             var pattern = @"\.";
             var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
-            StringAssert.Matches(text, new Regex(@"^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!£$%^&*_+;'#,./:@~?]$"));
+            StringAssert.Matches(text, new Regex(@"^.$"));
+
+            pattern = @"\W";
+            text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^\W$"));
 
             pattern = @"\w";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
-            StringAssert.Matches(text, new Regex(@"^[A-Za-z]$"));
+            StringAssert.Matches(text, new Regex(@"^\w$"));
 
             pattern = @"\L";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
@@ -718,12 +724,17 @@ namespace gk.DataGeneratorTests
             pattern = @"\D";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
-            StringAssert.Matches(text, new Regex(@"^[0-9]$"));
+            StringAssert.Matches(text, new Regex(@"^\D$"));
 
             pattern = @"\d";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
-            StringAssert.Matches(text, new Regex(@"^[1-9]$"));
+            StringAssert.Matches(text, new Regex(@"^\d$"));
+
+            pattern = @"\s";
+            text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text.ToLiteral() + "'");
+            StringAssert.Matches(text, new Regex(@"^\s$"));
         }
 
         #endregion
@@ -824,7 +835,7 @@ namespace gk.DataGeneratorTests
         [TestCategory("Profiling")]
         public void Profile_Large_NonRandom_Repeat()
         {
-            var pattern = @"<<\L{1}\D{1}\L{2}\D{2}\L{4}\D{4}\L{8}\D{8}\L{16}\D{16}\L{32}\D{32}\L{64}\D{64}\L{128}\D{128}\L{256}\D{256}\L{512}\D{512}\L{1024}\D{1024}>>";
+            var pattern = @"<<\L{1}\d{1}\L{2}\d{2}\L{4}\d{4}\L{8}\d{8}\L{16}\d{16}\L{32}\d{32}\L{64}\d{64}\L{128}\d{128}\L{256}\d{256}\L{512}\d{512}\L{1024}\d{1024}>>";
             var testLimit = 1000;
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();

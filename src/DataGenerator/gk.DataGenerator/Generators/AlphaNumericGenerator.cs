@@ -11,16 +11,23 @@ namespace gk.DataGenerator.Generators
     {
         private static readonly Random Random;
 
-        private const string _AllAllowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!£$%^&*_+;'#,./:@~?";
-        private const string _AllLowerLetters = "abcdefghijklmnopqrstuvwxyz";
-        private const string _AllUpperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        private const string _AllLetters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        private const string _VowelUpper = "AEIOU";
-        private const string _VowelLower = "aeiou";
-        private const string _ConsonantLower = "bcdfghjklmnpqrstvwxyz";
-        private const string _ConsonantUpper = "BCDFGHJKLMNPQRSTVWXYZ";
-        private const string _Numbers0To9Characters = "0123456789";
-        private const string _Numbers1To9Characters = "123456789";
+        private const string _AllNonWhitespaceCharacters = _ShortHand_l + _ShortHand_L + _AllNumbers + _AllNonAlphaNumericCharacters;
+        private const string _AllLetters = _ShortHand_l + _ShortHand_L;
+        private const string _AllNumbers = "0123456789";
+        private const string _AllNonAlphaNumericCharacters = " .,;:\"'!&?£€$%^<>{}[]()*\\+-=@#_|~/";
+
+        private const string _ShortHand_l = "abcdefghijklmnopqrstuvwxyz"; // \l
+        private const string _ShortHand_L = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // \L
+        private const string _ShortHand_V = "AEIOU"; // \V
+        private const string _ShortHand_v = "aeiou"; // \v
+        private const string _ShortHand_C = "BCDFGHJKLMNPQRSTVWXYZ"; // \C
+        private const string _ShortHand_c = "bcdfghjklmnpqrstvwxyz"; // \c
+        
+        private const string _ShortHand_D = _AllLetters + _AllNonAlphaNumericCharacters; // \D
+        private const string _ShortHand_d = _AllNumbers; // \d
+        private const string _ShortHand_W = " .,;:\"'!&?£€$%^<>{}[]()*\\+-=@#_|~/";  // \W
+        private const string _ShortHand_w = _AllLetters; // \w
+        private const string _ShortHand_s = " \t\n\r\f";  // \s
         
         private const string _Placeholder_Start = "<<";
         private const string _Placeholder_End = ">>";
@@ -339,8 +346,11 @@ namespace gk.DataGenerator.Generators
             {
                 // alternates in expression 'LL|ll|vv'
                 var alternates = exp.Split(_Alternation);
-                exp = alternates[Random.Next(0, alternates.Length)];
-                sb.Append(GenerateFromPattern(exp, namedPatterns));
+                for (int x = 0; x < tuple.Item1; x++)
+                {
+                    exp = alternates[Random.Next(0, alternates.Length)];
+                    sb.Append(GenerateFromPattern(exp, namedPatterns));
+                }
                 return;
             }
 
@@ -443,20 +453,20 @@ namespace gk.DataGenerator.Generators
             string possibles;
             var items = range.Split('-');
 
-            var start = _AllLowerLetters.IndexOf(items[0].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+            var start = _ShortHand_l.IndexOf(items[0].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
             if (start > -1)
             {
-                var end = _AllLowerLetters.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
-                possibles = _AllLowerLetters.Substring(start, end - start+1);
+                var end = _ShortHand_l.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+                possibles = _ShortHand_l.Substring(start, end - start+1);
                 ret = possibles[Random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
                 return ret;
             }
 
-            start = _AllUpperLetters.IndexOf(items[0].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+            start = _ShortHand_L.IndexOf(items[0].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
             if (start > -1)
             {
-                var end = _AllUpperLetters.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
-                possibles = _AllUpperLetters.Substring(start, end - start+1);
+                var end = _ShortHand_L.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+                possibles = _ShortHand_L.Substring(start, end - start+1);
                 ret = possibles[Random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
                 return ret;
             }
@@ -593,34 +603,40 @@ namespace gk.DataGenerator.Generators
             switch (symbol)
             {
                 case '.':
-                    AppendRandomCharacterFromString(sb, _AllAllowedCharacters);
+                    AppendRandomCharacterFromString(sb, _AllNonWhitespaceCharacters);
+                    break;
+                case 'W':
+                    AppendRandomCharacterFromString(sb, _ShortHand_W);
                     break;
                 case 'w':
-                    AppendRandomCharacterFromString(sb, _AllLetters);
+                    AppendRandomCharacterFromString(sb, _ShortHand_w);
                     break;
                 case 'L':
-                    AppendRandomCharacterFromString(sb, _AllUpperLetters);
+                    AppendRandomCharacterFromString(sb, _ShortHand_L);
                     break;
                 case 'l':
-                    AppendRandomCharacterFromString(sb, _AllLowerLetters);
+                    AppendRandomCharacterFromString(sb, _ShortHand_l);
                     break;
                 case 'V':
-                    AppendRandomCharacterFromString(sb, _VowelUpper);
+                    AppendRandomCharacterFromString(sb, _ShortHand_V);
                     break;
                 case 'v':
-                    AppendRandomCharacterFromString(sb, _VowelLower);
+                    AppendRandomCharacterFromString(sb, _ShortHand_v);
                     break;
                 case 'C':
-                    AppendRandomCharacterFromString(sb, _ConsonantUpper);
+                    AppendRandomCharacterFromString(sb, _ShortHand_C);
                     break;
                 case 'c':
-                    AppendRandomCharacterFromString(sb, _ConsonantLower);
+                    AppendRandomCharacterFromString(sb, _ShortHand_c);
                     break;
                 case 'D':
-                    AppendRandomCharacterFromString(sb, _Numbers0To9Characters);
+                    AppendRandomCharacterFromString(sb, _ShortHand_D);
                     break;
                 case 'd':
-                    AppendRandomCharacterFromString(sb, _Numbers1To9Characters);
+                    AppendRandomCharacterFromString(sb, _ShortHand_d);
+                    break;
+                case 's':
+                    AppendRandomCharacterFromString(sb, _ShortHand_s);
                     break;
                 case 'n':
                     sb.Append(Environment.NewLine);
