@@ -26,11 +26,6 @@ namespace gk.DataGenerator
         {
             return Patterns.Any(n => n.Name.Equals(name));
         }
-
-        public void AddPattern(string name, string pattern)
-        {
-            Patterns.Add(new NamedPattern(){Name = name, Pattern = pattern});
-        }
     }
 
     public class NamedPattern

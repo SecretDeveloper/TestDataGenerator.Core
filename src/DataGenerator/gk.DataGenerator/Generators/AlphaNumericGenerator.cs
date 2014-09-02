@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using gk.DataGenerator.Exceptions;
 
 namespace gk.DataGenerator.Generators
 {
@@ -55,11 +56,6 @@ namespace gk.DataGenerator.Generators
         public static int ErrorContext
         {
             get { return _ErrorSnippet_ContextLength; } 
-            set
-            {
-                if(value<0) throw new ArgumentException("Context length cannot be less than 0.");
-                _ErrorSnippet_ContextLength = value;
-            }
         }
 
 
@@ -215,9 +211,9 @@ namespace gk.DataGenerator.Generators
                 // check are we entering a repeat symbol section
                 // Format = "L{4}" = repeat L symbol 4 times.
                 bool repeatSymbol = index < pattern.Length -1 && pattern[index + 1] == _Quantifier_Start;
-                if (isEscaped && repeatSymbol)
+                if (repeatSymbol)
                 {
-                    AppendRepeatedSymbol(sb, pattern, ref index, true);
+                    AppendRepeatedSymbol(sb, pattern, ref index, isEscaped);
                     isEscaped = false;
                     continue; // skip to next character - index has already been forwarded to new position
                 }
@@ -319,15 +315,12 @@ namespace gk.DataGenerator.Generators
         private static void AppendRepeatedSymbol(StringBuilder sb, string characters, ref int index, bool isEscaped)
         {
             var symbol = characters[index++];
-            string repeatExpression = GetSurroundedContent(characters, ref index, _Quantifier_Start, _Quantifier_End);
-            int repeat = GetRepeatValueFromRepeatExpression(repeatExpression);
-
-            
-                for (int x = 0; x < repeat; x++)
-                {
-                    AppendCharacterDerivedFromSymbol(sb, symbol, isEscaped);
-                }
-            
+            var surroundedTuple = GetSurroundedContent(characters, ref index, _Quantifier_Start, _Quantifier_End);
+            int repeat = GetRepeatValueFromRepeatExpression(surroundedTuple.Item1);
+            for (int x = 0; x < repeat; x++)
+            {
+                AppendCharacterDerivedFromSymbol(sb, symbol, isEscaped);
+            }
         }
 
         /// <summary>
@@ -342,7 +335,7 @@ namespace gk.DataGenerator.Generators
             var tuple = GetPatternAndRepeatValueFromExpression(characters,_Section_Start, _Section_End, ref index);
 
             var exp = tuple.Item2;
-            if (exp.IndexOf(_Alternation)>-1)
+            if (tuple.Item3) // containse alternations
             {
                 // alternates in expression 'LL|ll|vv'
                 var alternates = exp.Split(_Alternation);
@@ -374,6 +367,13 @@ namespace gk.DataGenerator.Generators
                         curNdx++;
                         continue;
                     }
+                    
+
+                    if (!isEscaped && chx == _Section_Start)
+                    {
+                        AppendContentFromSectionExpression(sb, exp, ref curNdx, namedPatterns);
+                        continue; // skip to next character - index has already been forwarded to new position
+                    }
 
                     // check are we entering a set pattern that may include a quantifier
                     // Format = "[Vv]{4}" = generate 4 random ordered characters comprising of either V or v characters
@@ -387,6 +387,16 @@ namespace gk.DataGenerator.Generators
                     {
                         AppendContentFromNamedPattern(sb, exp, ref curNdx, namedPatterns);
                         continue;
+                    }
+
+                    // check are we entering a repeat symbol section
+                    // Format = "L{4}" = repeat L symbol 4 times.
+                    bool repeatSymbol = curNdx < exp.Length - 1 && exp[curNdx + 1] == _Quantifier_Start;
+                    if (repeatSymbol)
+                    {
+                        AppendRepeatedSymbol(sb, exp, ref curNdx, isEscaped);
+                        isEscaped = false;
+                        continue; // skip to next character - index has already been forwarded to new position
                     }
 
                     AppendCharacterDerivedFromSymbol(sb, chx, isEscaped);
@@ -487,7 +497,6 @@ namespace gk.DataGenerator.Generators
                     min = min + (t * (max - min));
                     ret = min.ToString(GenerateFloatingFormatWithScale(scale), CultureInfo.InvariantCulture);
                 }
-                return ret;
             }
             
             return ret;
@@ -512,14 +521,18 @@ namespace gk.DataGenerator.Generators
         /// <param name="index"></param>
         /// <param name="startChar"></param>
         /// <returns></returns>
-        private static Tuple<int,string> GetPatternAndRepeatValueFromExpression(string characters, char startChar, char endChar, ref int index)
+        private static Tuple<int,string, bool> GetPatternAndRepeatValueFromExpression(string characters, char startChar, char endChar, ref int index)
         {
-            string pattern = GetSurroundedContent(characters, ref index, startChar, endChar);
-            string repeatExpression = GetSurroundedContent(characters, ref index, _Quantifier_Start, _Quantifier_End);
+            
+            var stringAndAlternations = GetSurroundedContent(characters, ref index, startChar, endChar);
+            string pattern = stringAndAlternations.Item1;
+            bool containsAlternations = stringAndAlternations.Item2;
 
-            int repeat = GetRepeatValueFromRepeatExpression(repeatExpression);
+            stringAndAlternations = GetSurroundedContent(characters, ref index, _Quantifier_Start, _Quantifier_End);
 
-            return new Tuple<int, string>(repeat, pattern);
+            int repeat = GetRepeatValueFromRepeatExpression(stringAndAlternations.Item1);
+
+            return new Tuple<int, string, bool>(repeat, pattern, containsAlternations);
         }
 
         /// <summary>
@@ -551,13 +564,15 @@ namespace gk.DataGenerator.Generators
         }
 
 
-        private static string GetSurroundedContent(string characters, ref int index, char sectionStartChar, char sectionEndChar)
+        private static Tuple<string,bool> GetSurroundedContent(string characters, ref int index, char sectionStartChar, char sectionEndChar)
         {
+            var result = new Tuple<string, bool>("", false);
             if (index == characters.Length)
-                return ""; // throw new GenerationException("Expected '" + sectionStartChar + "' at " + index + " but reached end of pattern instead.");
+                return result;
             if (characters[index].Equals(sectionStartChar) == false)
-                return ""; // return blank string if expected character is not found.
+                return result;
 
+            bool containsAlternations = false;
             int patternStart = index + 1;
 
             var sectionDepth = sectionStartChar.Equals(sectionEndChar)?0:1; // start off inside current section
@@ -565,6 +580,8 @@ namespace gk.DataGenerator.Generators
             while (patternEnd < characters.Length)
             {
                 if (characters[patternEnd] == sectionStartChar) sectionDepth++;
+                //check for Alternations in base group.
+                if (sectionDepth == 1 && characters[patternEnd].Equals(_Alternation)) containsAlternations = true;
 
                 if (characters[patternEnd] == sectionEndChar)
                 {
@@ -589,7 +606,8 @@ namespace gk.DataGenerator.Generators
             }
 
             index = index + patternLength + 2; // update index position.
-            return characters.Substring(patternStart, patternLength);
+            result = new Tuple<string, bool>(characters.Substring(patternStart, patternLength), containsAlternations);
+            return result;
         }
 
         private static void AppendCharacterDerivedFromSymbol(StringBuilder sb, char symbol, bool isEscaped)

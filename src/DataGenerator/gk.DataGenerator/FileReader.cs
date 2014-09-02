@@ -16,6 +16,7 @@ namespace gk.DataGenerator
             return result;
         }
 
+/*
         public static void SerializeDictionary(NamedPatterns namedPatterns, string path)
         {
             using (var fs = XmlWriter.Create(path, new XmlWriterSettings(){Indent = true,OmitXmlDeclaration = true}))
@@ -28,5 +29,6 @@ namespace gk.DataGenerator
 
             }
         }
+*/
     }
 }

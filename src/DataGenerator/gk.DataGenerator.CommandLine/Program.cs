@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Eloquent;
+using gk.DataGenerator.Exceptions;
 using gk.DataGenerator.Generators;
 
 namespace gk.DataGenerator.tdg

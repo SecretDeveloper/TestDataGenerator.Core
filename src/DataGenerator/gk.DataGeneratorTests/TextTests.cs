@@ -1,15 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Eloquent;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using gk.DataGenerator;
+using gk.DataGenerator.Exceptions;
 using gk.DataGenerator.Generators;
 
 namespace gk.DataGeneratorTests
 {
     [TestClass]
+    [ExcludeFromCodeCoverage]
     public class TextTests
     {
         [TestMethod]
@@ -255,14 +257,25 @@ namespace gk.DataGeneratorTests
             StringAssert.Matches(text, new Regex(@"^[W-X]{10,100}[1-9]{10,100}$"));
         }
 
+
         [TestMethod]
         [TestCategory("Sets")]
         public void Can_Generate_Range_Numeric()
         {
+            var template = @"<<[1-9]>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine("'" + template + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^[1-9]$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Numeric5()
+        {
             var template = @"<<[1-8]>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine("'" + template + "' produced '" + text + "'");
-            StringAssert.Matches(text, new Regex(@"^[1-8]{1}$"));
+            StringAssert.Matches(text, new Regex(@"^[1-8]$"));
         }
 
         [TestMethod]
@@ -450,6 +463,17 @@ namespace gk.DataGeneratorTests
             Assert.AreEqual(template.Length*2+2, text.Length);
         }
 
+        [TestMethod]
+        [TestCategory("ErrorMessages")]
+        public void Can_BuildErrorSnippet2()
+        {
+            var template = @"([100-900]{40])";
+            int ndx = 12;
+            string text = AlphaNumericGenerator.BuildErrorSnippet(template, ndx);
+            Console.WriteLine("Error Snippet for '" + template + "'\n at index " + ndx + " produced \n'" + text + "'");
+            Assert.AreEqual(template.Length * 2 + 2, text.Length);
+        }
+
         #endregion
 
         #region Pattern
@@ -537,6 +561,79 @@ namespace gk.DataGeneratorTests
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
             Assert.AreEqual(6, text.Length);
             StringAssert.Matches(text, new Regex("L[A-Z]{1}LLLL"));
+
+        }
+
+        [TestMethod]
+        [TestCategory("Pattern")]
+        public void Can_Generate_Repeat_Character()
+        {
+            var pattern = @"w{3}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"w{3}"));
+
+        }
+
+        [TestMethod]
+        [TestCategory("Pattern")]
+        public void Can_Generate_Repeat_Character_Inside_Group()
+        {
+            var pattern = @"(\dC{3}\d{3}){3}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^(\dC{3}\d{3}){3}$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Pattern")]
+        public void Can_Generate_Repeat_Character_Inside_Group2()
+        {
+            var pattern = @"(\d(C){3}){3}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^(\d(C){3}){3}$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Pattern")]
+        public void Can_Generate_Repeat_Character_Inside_Group3()
+        {
+            var pattern = @"(\d(C){3})";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^(\d(C){3})$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Pattern")]
+        public void Can_Generate_Repeat_Character_Inside_Group4()
+        {
+            var pattern = @"(\d(\\)\d)";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^(\d(\\)\d$)"));
+        }
+
+        [TestMethod]
+        [TestCategory("Pattern")]
+        public void Can_Generate_Repeat_Symbol_Inside_Group()
+        {
+            var pattern = @"(\w{3})";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"\w{3}"));
+
+        }
+
+        [TestMethod]
+        [TestCategory("Pattern")]
+        public void Can_Generate_Repeat_Symbol_Inside_Group2()
+        {
+            var pattern = @"(\w(\d{2}|\v{2})\w{3})";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"\w(\d{2}|[aeiou]{2})\w{3}"));
 
         }
 
@@ -735,6 +832,16 @@ namespace gk.DataGeneratorTests
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text.ToLiteral() + "'");
             StringAssert.Matches(text, new Regex(@"^\s$"));
+            
+            pattern = @"\t";
+            text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text.ToLiteral() + "'");
+            StringAssert.Matches(text, new Regex(@"^\t$"));
+
+            pattern = @"\\";
+            text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text.ToLiteral() + "'");
+            StringAssert.Matches(text, new Regex(@"^\\$"));
         }
 
         #endregion
@@ -769,7 +876,30 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [TestCategory("NamedPatterns")]
-        public void Can_Generate_NamedPatterns_All_Defaults()
+        public void Can_Generate_NamedPatterns_All_Defaults_Name()
+        {
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+
+            var namedPatterns = FileReader.LoadNamedPatterns(@"default.tdg-patterns");
+
+            var nps = new NamedPatterns();
+            nps.CollectionName = "Test";
+            foreach (var dic in namedPatterns.Patterns)
+            {
+                var text = AlphaNumericGenerator.GenerateFromPattern("@"+dic.Name+"@");
+                Console.WriteLine("'{0}' produced '{1}'", dic.Name, text);
+                Assert.IsTrue(text.Length > 0);
+            }
+            sw.Stop();
+            Console.WriteLine("All {0} default patterns generated in {1} milliseconds.\n"
+                                            , namedPatterns.Patterns.Count
+                                            , sw.ElapsedMilliseconds);
+        }
+
+        [TestMethod]
+        [TestCategory("NamedPatterns")]
+        public void Can_Generate_NamedPatterns_All_Defaults_Patterns()
         {
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
@@ -942,6 +1072,15 @@ namespace gk.DataGeneratorTests
         {
             var pattern = "(LLXX){w}";
             AlphaNumericGenerator.GenerateFromPattern(pattern);
+        }
+
+        [TestMethod]
+        [TestCategory("NegativeTesting")]
+        [ExpectedException(typeof(GenerationException))]
+        public void Can_Throw_Exception_Unknown_NamedPatterns()
+        {
+            var pattern = @"<<(@blahblahblah21@)>>";
+            AlphaNumericGenerator.GenerateFromTemplate(pattern);
         }
 
         #endregion

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace gk.DataGenerator.Generators
+namespace gk.DataGenerator.Exceptions
 {
     /// <summary>
     /// Used when a exception needs to be thrown by the test data generator.
