@@ -98,9 +98,12 @@ namespace gk.DataGenerator.Generators
                     break; // all done!
                 }
 
+                bool isEscaped = false || start > 2 && template[start - 1].Equals(_Escape) && template[start - 2].Equals(_Escape);
+                if (isEscaped) start = start - 2;
                 sb.Append(template.Substring(index, start - index)); // Append everything up to start as it is.
+                if (isEscaped) start = start + 2;
                 start = start + 2; // move past '<<' to start of expression
-
+                
                 int end = FindPositionOfNext(template, start, _Placeholder_End, _Placeholder_Start); // find end of placeholder
                 if (end == -1)
                 {
@@ -108,7 +111,10 @@ namespace gk.DataGenerator.Generators
                 }
 
                 var pattern = template.Substring(start, end - start); // grab our expression
-                sb.Append(GenerateFromPattern(pattern, namedPatterns)); // generate value from expression
+                if (isEscaped)
+                    sb.Append("<<"+pattern+">>");
+                else
+                    sb.Append(GenerateFromPattern(pattern, namedPatterns)); // generate value from expression
                 index = end+2; // update our index.
             }
 
