@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using CommandLine;
 using CommandLine.Text;
 
@@ -33,9 +34,10 @@ namespace gk.DataGenerator.tdg
         [HelpOption]
         public string GetUsage()
         {
+            var assemblyName = Assembly.GetExecutingAssembly().GetName();
             var help = new HelpText
             {
-                Heading = new HeadingInfo("Test Data Generator", "3.3.3"),
+                Heading = new HeadingInfo("Test Data Generator", assemblyName.Version.ToString()),
                 Copyright = new CopyrightInfo("Gary Kenneally (@SecretDeveloper)", 2014),
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true

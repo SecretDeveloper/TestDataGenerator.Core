@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://raw.githubusercontent.com/SecretDeveloper/TestDataGenerator/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/SecretDeveloper/TestDataGenerator</projectUrl>    
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>    
+    <copyright>$copyright$</copyright>
+    <tags>Test data generator generate regular expression</tags>
+  </metadata>
+<files>
+      <file src="C:\Development\projects\github.com\secretdeveloper\TestDataGenerator\src\BuildOutput\gk.DataGenerator.dll" target="lib\net45\gk.DataGenerator.dll" />
+      <file src="C:\Development\projects\github.com\secretdeveloper\TestDataGenerator\src\BuildOutput\tdg.exe" target="lib\net45\tdg.exe" />
+      <file src="C:\Development\projects\github.com\secretdeveloper\TestDataGenerator\src\BuildOutput\default.tdg-patterns" target="lib\net45\default.tdg-patterns" />
+      <file src="C:\Development\projects\github.com\secretdeveloper\TestDataGenerator\src\BuildOutput\Eloquent.dll" target="lib\net45\Eloquent.dll" />
+      <file src="C:\Development\projects\github.com\secretdeveloper\TestDataGenerator\src\BuildOutput\CommandLine.dll" target="lib\net45\CommandLine.dll" />
+      <file src="C:\Development\projects\github.com\secretdeveloper\TestDataGenerator\src\BuildOutput\CommandLine.xml" target="lib\net45\CommandLine.xml" />
+      <file src="C:\Development\projects\github.com\secretdeveloper\TestDataGenerator\src\BuildOutput\tdg.exe.config" target="lib\net45\tdg.exe.config" />
+      <file src="C:\Development\projects\github.com\secretdeveloper\TestDataGenerator\src\BuildOutput\README.txt" target="" />
+  </files>
+</package>
