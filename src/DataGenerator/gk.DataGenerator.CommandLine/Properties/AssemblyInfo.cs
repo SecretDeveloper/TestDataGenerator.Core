@@ -7,10 +7,10 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("Test Data Generator")]
 [assembly: AssemblyDescription("Test data generation tool.")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("SecretDeveloper")]
+[assembly: AssemblyConfiguration("A library and command line tool that can be used to generate data for testing or other uses. You provide it with a pattern containing symbols defining the output you want to produce and it will create random data to match that pattern.")]
+[assembly: AssemblyCompany("@SecretDeveloper")]
 [assembly: AssemblyProduct("CommandLine")]
-[assembly: AssemblyCopyright("SecretDeveloper (Gary Kenneally) [2014]")]
+[assembly: AssemblyCopyright("2014 Gary Kenneally (@SecretDeveloper)")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("3.3.3")]
+[assembly: AssemblyFileVersion("3.3.3")]

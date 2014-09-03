@@ -102,22 +102,46 @@ function document{
     # DOCUMENTING
     Write-Host "Documenting" -foregroundcolor:blue
     Invoke-expression "./src/buildoutput/tdg.exe -i '.\src\templates\README.template.md' -o './README.md'"
+    if($? -eq $False){
+        Write-host "DOCUMENT FAILED!"  -foregroundcolor:red
+        exit
+    }
+    Invoke-expression "./src/buildoutput/tdg.exe -i '.\src\templates\README.template.txt' -o '.\src\buildoutput\README.txt'"    
+    if($? -eq $False){
+        Write-host "DOCUMENT FAILED!"  -foregroundcolor:red
+        exit
+    }
+}
+
+function pack{
+    # Packing
+    write-host "Packing" -foregroundcolor:blue
+    nuget pack .\src\DataGenerator\gk.DataGenerator.CommandLine\gk.DataGenerator.tdg.csproj -OutputDirectory .\releases > $logPath\LogPacking.log     
+    if($? -eq $False){
+        Write-host "PACK FAILED!"  -foregroundcolor:red
+        exit
+    }
 }
 
 function deploy{
     # DEPLOYING
     write-host "Deploying" -foregroundcolor:blue
-    zip a -tzip .\src\buildoutput\last.zip .\src\BuildOutput\*.* > $logPath\LogDeploy.log
+    $outputName = $projectName+"_V"+$buildVersion+"_BUILD.zip"
+    zip a -tzip .\src\buildoutput\$outputName .\src\BuildOutput\*.* > $logPath\LogDeploy.log
+
 }
 
 $basePath = Get-Location
 $logPath = "$basePath\src\logs"
+$buildVersion = Get-Content .\VERSION
+$projectName = "TestDataGenerator"
 
 if($buildType -eq "Release"){
     clean
     build
     test
     document
+    pack
     deploy
 }
 else {
