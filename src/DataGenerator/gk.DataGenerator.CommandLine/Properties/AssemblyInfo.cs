@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Test Data Generator")]
-[assembly: AssemblyDescription("Test data generation tool.")]
-[assembly: AssemblyConfiguration("A library and command line tool that can be used to generate data for testing or other uses. You provide it with a pattern containing symbols defining the output you want to produce and it will create random data to match that pattern.")]
+[assembly: AssemblyDescription("A library and command line tool that can be used to generate data for testing or other uses. You provide it with a pattern containing symbols defining the output you want to produce and it will create random data to match that pattern.")]
+[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("@SecretDeveloper")]
 [assembly: AssemblyProduct("CommandLine")]
 [assembly: AssemblyCopyright("2014 Gary Kenneally (@SecretDeveloper)")]
@@ -32,4 +32,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.3.3")]
+[assembly: AssemblyVersion("3.3.3.1")]
