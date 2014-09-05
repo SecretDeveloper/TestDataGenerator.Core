@@ -83,7 +83,7 @@
     </NamedPattern>
     <NamedPattern>
       <Name>us_zip_code</Name>
-      <Pattern>(\D\D\D\D\D)</Pattern>
+      <Pattern>(\d\d\d\d\d)</Pattern>
     </NamedPattern>
     <NamedPattern>
       <Name>us_address_type1</Name>
