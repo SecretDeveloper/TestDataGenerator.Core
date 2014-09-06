@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using Eloquent;
 using gk.DataGenerator.Exceptions;
 
 namespace gk.DataGenerator.Generators
@@ -12,10 +12,10 @@ namespace gk.DataGenerator.Generators
     {
         private static readonly Random Random;
 
-        private const string _AllNonWhitespaceCharacters = _ShortHand_l + _ShortHand_L + _AllNumbers + _AllNonAlphaNumericCharacters;
+        private const string _AllPossibleCharacters = _AllLetters + _AllNumbers + _AllNonAlphaNumericCharacters;
         private const string _AllLetters = _ShortHand_l + _ShortHand_L;
         private const string _AllNumbers = "0123456789";
-        private const string _AllNonAlphaNumericCharacters = " .,;:\"'!&?£€$%^<>{}[]()*\\+-=@#_|~/";
+        private const string _AllNonAlphaNumericCharacters = " .,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_|~/";
 
         private const string _ShortHand_l = "abcdefghijklmnopqrstuvwxyz"; // \l
         private const string _ShortHand_L = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // \L
@@ -23,12 +23,12 @@ namespace gk.DataGenerator.Generators
         private const string _ShortHand_v = "aeiou"; // \v
         private const string _ShortHand_C = "BCDFGHJKLMNPQRSTVWXYZ"; // \C
         private const string _ShortHand_c = "bcdfghjklmnpqrstvwxyz"; // \c
-        
         private const string _ShortHand_D = _AllLetters + _AllNonAlphaNumericCharacters; // \D
         private const string _ShortHand_d = _AllNumbers; // \d
-        private const string _ShortHand_W = " .,;:\"'!&?£€$%^<>{}[]()*\\+-=@#_|~/";  // \W
+        private const string _ShortHand_W = " .,;:\"'!&?£€$%^<>{}[]()*\\+-=@#|~/";  // \W
         private const string _ShortHand_w = _AllLetters; // \w
         private const string _ShortHand_s = " \t\n\r\f";  // \s
+        private const string _ShortHand_S = _ShortHand_l + _ShortHand_L + _AllNumbers + _AllNonAlphaNumericCharacters;  // \S
         
         private const string _Placeholder_Start = "<<";
         private const string _Placeholder_End = ">>";
@@ -44,11 +44,14 @@ namespace gk.DataGenerator.Generators
 
         private const char _Alternation = '|';
         private const char _Escape = '\\';
+        private const char _Negation = '^';
         
         private const char _NamedPattern_Start = '@';
         private const char _NamedPattern_End = '@';
 
         private static int _ErrorSnippet_ContextLength = 50;
+        
+
         /// <summary>
         /// The number of characters before and after the problem location to include in error messages.
         /// Default is 50.
@@ -98,7 +101,7 @@ namespace gk.DataGenerator.Generators
                     break; // all done!
                 }
 
-                bool isEscaped = false || start > 2 && template[start - 1].Equals(_Escape) && template[start - 2].Equals(_Escape);
+                bool isEscaped = start > 2 && template[start - 1].Equals(_Escape) && template[start - 2].Equals(_Escape);
                 if (isEscaped) start = start - 2;
                 sb.Append(template.Substring(index, start - index)); // Append everything up to start as it is.
                 if (isEscaped) start = start + 2;
@@ -321,8 +324,9 @@ namespace gk.DataGenerator.Generators
         private static void AppendRepeatedSymbol(StringBuilder sb, string characters, ref int index, bool isEscaped)
         {
             var symbol = characters[index++];
-            var surroundedTuple = GetSurroundedContent(characters, ref index, _Quantifier_Start, _Quantifier_End);
-            int repeat = GetRepeatValueFromRepeatExpression(surroundedTuple.Item1);
+            var repeatExpression = GetContent(characters, ref index, _Quantifier_Start, _Quantifier_End);
+            var repeat = GetRepeatValueFromRepeatExpression(repeatExpression);
+            
             for (int x = 0; x < repeat; x++)
             {
                 AppendCharacterDerivedFromSymbol(sb, symbol, isEscaped);
@@ -338,23 +342,23 @@ namespace gk.DataGenerator.Generators
         /// <param name="namedPatterns"></param>
         private static void AppendContentFromSectionExpression(StringBuilder sb, string characters, ref int index, NamedPatterns namedPatterns)
         {
-            var tuple = GetPatternAndRepeatValueFromExpression(characters,_Section_Start, _Section_End, ref index);
+            var contentOptions = GetContentOptions(characters, ref index, _Section_Start, _Section_End);
 
-            var exp = tuple.Item2;
-            if (tuple.Item3) // containse alternations
+            var exp = contentOptions.Content;
+            if (contentOptions.ContainsAlternation) // containse alternations
             {
-                // alternates in expression 'LL|ll|vv'
-                var alternates = exp.Split(_Alternation);
-                for (int x = 0; x < tuple.Item1; x++)
-                {
-                    exp = alternates[Random.Next(0, alternates.Length)];
-                    sb.Append(GenerateFromPattern(exp, namedPatterns));
-                }
+                GenerateFromAlternatedPattern(sb, namedPatterns, exp, contentOptions);
+                return;
+            }
+
+            if (contentOptions.IsNegated) // containse alternations
+            {
+                GenerateFromNegatedSet(sb, contentOptions);
                 return;
             }
 
             bool isEscaped = false;
-            for (int x = 0; x < tuple.Item1; x++)
+            for (int x = 0; x < contentOptions.Repeat; x++)
             {
                 var curNdx = 0;
                 while(curNdx < exp.Length)
@@ -411,20 +415,30 @@ namespace gk.DataGenerator.Generators
                 }
             }
         }
+        
+        private static void GenerateFromAlternatedPattern(StringBuilder sb, NamedPatterns namedPatterns, string exp, ContentOptions contentOptions)
+        {
+            var alternates = exp.Split(_Alternation);
+            for (int x = 0; x < contentOptions.Repeat; x++)
+            {
+                exp = alternates[Random.Next(0, alternates.Length)];
+                sb.Append(GenerateFromPattern(exp, namedPatterns));
+            }
+        }
 
         private static void AppendContentFromNamedPattern(StringBuilder sb, string characters, ref int index, NamedPatterns namedPatterns)
         {
             var ndx = index;
-            var tuple = GetPatternAndRepeatValueFromExpression(characters, _NamedPattern_Start, _NamedPattern_End, ref index);
+            var tuple = GetContentOptions(characters, ref index, _NamedPattern_Start, _NamedPattern_End);
             
-            if (namedPatterns.HasPattern(tuple.Item2)) // $namedPattern;
+            if (namedPatterns.HasPattern(tuple.Content)) // $namedPattern;
             {
-                sb.Append(GenerateFromPattern(namedPatterns.GetPattern(tuple.Item2).Pattern, namedPatterns));
+                sb.Append(GenerateFromPattern(namedPatterns.GetPattern(tuple.Content).Pattern, namedPatterns));
             }
             else
             {
                 var msg = BuildErrorSnippet(characters, ndx);
-                msg = "Found named pattern placeholder '" + tuple.Item2 + "' but was not provided with a corresponding pattern Check Named Patterns file." + Environment.NewLine + msg;
+                msg = "Found named pattern placeholder '" + tuple.Content + "' but was not provided with a corresponding pattern Check Named Patterns file." + Environment.NewLine + msg;
                 throw new GenerationException(msg);
             }
         }
@@ -437,24 +451,39 @@ namespace gk.DataGenerator.Generators
         /// <param name="index"></param>
         private static void AppendContentFromSetExpression(StringBuilder sb, string characters, ref int index)
         {
-            var tuple = GetPatternAndRepeatValueFromExpression(characters, _Set_Start, _Set_End, ref index);
-            var possibles = tuple.Item2.ToCharArray();
-
-            if (tuple.Item2.Contains("-")) // Ranged - [0-7] or [a-z] or [1-9A-Za-z] for fun.
+            var contentOptions = GetContentOptions(characters, ref index, _Set_Start, _Set_End);
+            
+            if (contentOptions.Content.Contains("-")) // Ranged - [0-7] or [a-z] or [1-9A-Za-z] for fun.
             {
-                MatchCollection ranges = new Regex(@"\D-\D|\d+\.?\d*-\d+\.?\d*").Matches(tuple.Item2);
-                for (int i = 0; i < tuple.Item1; i++)
+                MatchCollection ranges = new Regex(@"\D-\D|\d+\.?\d*-\d+\.?\d*").Matches(contentOptions.Content);
+                for (int i = 0; i < contentOptions.Repeat; i++)
                 {
                     var range = ranges[Random.Next(0, ranges.Count)];
-                    sb.Append(GetRandomCharacterFromRange(range.ToString()));
+                    sb.Append(GetRandomCharacterFromRange(range.ToString(), contentOptions.IsNegated));
                 }
             }
             else
             {
-                for (int i = 0; i < tuple.Item1; i++)
+                var possibles = contentOptions.Content;
+                if (contentOptions.IsNegated)
+                    possibles = _AllPossibleCharacters.RegexReplace("[" + possibles + "]", "");
+
+                for (int i = 0; i < contentOptions.Repeat; i++)
                 {
                     sb.Append(possibles[Random.Next(0, possibles.Length)]);
                 }
+            }
+        }
+
+
+        private static void GenerateFromNegatedSet(StringBuilder sb, ContentOptions contentOptions)
+        {
+            var alternates = contentOptions.Content.Replace("^", "");
+            var possibles = _AllPossibleCharacters.RegexReplace("[" + alternates + "]", "");
+            for (int x = 0; x < contentOptions.Repeat; x++)
+            {
+                var possible = possibles[Random.Next(0, possibles.Length)];
+                sb.Append(possible);
             }
         }
 
@@ -462,8 +491,9 @@ namespace gk.DataGenerator.Generators
         /// Recieves a "A-Z" type string and returns the appropriate list of characters.
         /// </summary>
         /// <param name="range"></param>
+        /// <param name="isNegated"></param>
         /// <returns></returns>
-        private static string GetRandomCharacterFromRange(string range)
+        private static string GetRandomCharacterFromRange(string range, bool isNegated)
         {
             string ret = "";
             string possibles;
@@ -474,6 +504,7 @@ namespace gk.DataGenerator.Generators
             {
                 var end = _ShortHand_l.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
                 possibles = _ShortHand_l.Substring(start, end - start+1);
+                if (isNegated) possibles = _AllPossibleCharacters.RegexReplace("[" + possibles + "]", "");
                 ret = possibles[Random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
                 return ret;
             }
@@ -483,6 +514,7 @@ namespace gk.DataGenerator.Generators
             {
                 var end = _ShortHand_L.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
                 possibles = _ShortHand_L.Substring(start, end - start+1);
+                if (isNegated) possibles = _AllPossibleCharacters.RegexReplace("[" + possibles + "]", "");
                 ret = possibles[Random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
                 return ret;
             }
@@ -495,16 +527,36 @@ namespace gk.DataGenerator.Generators
                 if (double.TryParse(items[1], out max))
                 {
                     int scale = 0;
-                    if (items[0].Contains("."))
-                    {
+                    if (items[0].Contains(".")) 
                         scale = items[0].Split('.')[1].Length;
+
+                    if (isNegated)
+                    {
+                        if (scale > 0 || min < 0 || min > 9 || max < 0 || max > 9)
+                            throw new GenerationException("Negated numeric sets are restricted to integers between 1 and 9.");
+                        possibles = ExpandNegatedMinMax(min, max);
+                        possibles = "0123456789".RegexReplace("[" + possibles + "]", "");
+                        ret = possibles[Random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
                     }
-                    var t = Random.NextDouble();
-                    min = min + (t * (max - min));
-                    ret = min.ToString(GenerateFloatingFormatWithScale(scale), CultureInfo.InvariantCulture);
+                    else
+                    {
+                        var t = Random.NextDouble();
+                        min = min + (t*(max - min));
+                        ret = min.ToString(GenerateFloatingFormatWithScale(scale), CultureInfo.InvariantCulture);
+                    }
                 }
             }
             
+            return ret;
+        }
+
+        private static string ExpandNegatedMinMax(double min, double max)
+        {
+            string ret = "";
+            for (double i = min; i <= max; i++)
+            {
+                ret += i.ToString(CultureInfo.InvariantCulture);
+            }
             return ret;
         }
 
@@ -518,29 +570,7 @@ namespace gk.DataGenerator.Generators
             return t;
         }
 
-
-        /// <summary>
-        /// Returns a tuple containing an integer representing the number of repeats and a string representing the pattern.
-        /// </summary>
-        /// <param name="characters"></param>
-        /// <param name="endChar"></param>
-        /// <param name="index"></param>
-        /// <param name="startChar"></param>
-        /// <returns></returns>
-        private static Tuple<int,string, bool> GetPatternAndRepeatValueFromExpression(string characters, char startChar, char endChar, ref int index)
-        {
-            
-            var stringAndAlternations = GetSurroundedContent(characters, ref index, startChar, endChar);
-            string pattern = stringAndAlternations.Item1;
-            bool containsAlternations = stringAndAlternations.Item2;
-
-            stringAndAlternations = GetSurroundedContent(characters, ref index, _Quantifier_Start, _Quantifier_End);
-
-            int repeat = GetRepeatValueFromRepeatExpression(stringAndAlternations.Item1);
-
-            return new Tuple<int, string, bool>(repeat, pattern, containsAlternations);
-        }
-
+        
         /// <summary>
         /// Dervives the correct repeat value from the provided expression.
         /// </summary>
@@ -570,50 +600,90 @@ namespace gk.DataGenerator.Generators
         }
 
 
-        private static Tuple<string,bool> GetSurroundedContent(string characters, ref int index, char sectionStartChar, char sectionEndChar)
+        private static ContentOptions GetContentOptions(string characters, ref int index, char openingContainerChar, char closingContainerChar)
         {
-            var result = new Tuple<string, bool>("", false);
+            var result = new ContentOptions();
+            
+            result.Content = GetContent(characters, ref index, openingContainerChar, closingContainerChar);
+            if (result.Content[0].Equals(_Negation))
+            {
+                result.IsNegated = true;
+                result.Content = result.Content.Replace("^", "");
+            }
+
+            if (characters.Length > index && characters[index].Equals(_Quantifier_Start))
+            {
+                var repeatExpression = GetContent(characters, ref index, _Quantifier_Start, _Quantifier_End);
+                result.Repeat = GetRepeatValueFromRepeatExpression(repeatExpression);
+            }
+
+            result.ContainsAlternation = ContainsAlternations(result.Content);
+
+            return result;
+        }
+
+        private static string GetContent(string characters, ref int index, char openingContainerChar, char closingContainerChar)
+        {
             if (index == characters.Length)
-                return result;
-            if (characters[index].Equals(sectionStartChar) == false)
-                return result;
+                return "";
+            if (characters[index].Equals(openingContainerChar) == false)
+                return "";
 
-            bool containsAlternations = false;
             int patternStart = index + 1;
-
-            var sectionDepth = sectionStartChar.Equals(sectionEndChar)?0:1; // start off inside current section
             var patternEnd = patternStart;
+            var sectionDepth = openingContainerChar.Equals(closingContainerChar) ? 0 : 1; // start off inside current section
             while (patternEnd < characters.Length)
             {
-                if (characters[patternEnd] == sectionStartChar) sectionDepth++;
+                if (characters[patternEnd] == openingContainerChar) sectionDepth++;
                 //check for Alternations in base group.
-                if (sectionDepth == 1 && characters[patternEnd].Equals(_Alternation)) containsAlternations = true;
 
-                if (characters[patternEnd] == sectionEndChar)
+                if (characters[patternEnd] == closingContainerChar)
                 {
                     sectionDepth--;
                     if (sectionDepth == 0) break;
                 }
                 patternEnd++;
             }
+
             if (sectionDepth > 0) // make sure we found closing char
             {
-                var msg = "Expected '" + sectionEndChar + "' but it was not found."+Environment.NewLine;
+                var msg = "Expected '" + closingContainerChar + "' but it was not found." + Environment.NewLine;
                 msg += BuildErrorSnippet(characters, patternStart);
                 throw new GenerationException(msg);
             }
 
             int patternLength = patternEnd - patternStart;
+            
             if (patternLength <= 0)
             {
-                var msg = "Expected '" + sectionEndChar + "' but it was not found."+Environment.NewLine;
+                var msg = "Expected '" + closingContainerChar + "' but it was not found." + Environment.NewLine;
                 msg += BuildErrorSnippet(characters, patternStart);
                 throw new GenerationException(msg);
             }
 
             index = index + patternLength + 2; // update index position.
-            result = new Tuple<string, bool>(characters.Substring(patternStart, patternLength), containsAlternations);
-            return result;
+            return characters.Substring(patternStart, patternLength);
+        }
+
+        private static bool ContainsAlternations(string characters)
+        {
+            var patternEnd = 0;
+            var sectionDepth = 0;
+
+            while (patternEnd < characters.Length)
+            {
+                if (characters[patternEnd].Equals(_Section_Start)) sectionDepth++;
+                //check for Alternations in base group.
+                if (sectionDepth == 0 && characters[patternEnd].Equals(_Alternation)) return true;
+
+                if (characters[patternEnd].Equals(_Section_End))
+                {
+                    sectionDepth--;
+                    if (sectionDepth == 0) break;
+                }
+                patternEnd++;
+            }
+            return false;
         }
 
         private static void AppendCharacterDerivedFromSymbol(StringBuilder sb, char symbol, bool isEscaped)
@@ -627,7 +697,7 @@ namespace gk.DataGenerator.Generators
             switch (symbol)
             {
                 case '.':
-                    AppendRandomCharacterFromString(sb, _AllNonWhitespaceCharacters);
+                    AppendRandomCharacterFromString(sb, _AllPossibleCharacters);
                     break;
                 case 'W':
                     AppendRandomCharacterFromString(sb, _ShortHand_W);
@@ -661,6 +731,9 @@ namespace gk.DataGenerator.Generators
                     break;
                 case 's':
                     AppendRandomCharacterFromString(sb, _ShortHand_s);
+                    break;
+                case 'S':
+                    AppendRandomCharacterFromString(sb, _ShortHand_S);
                     break;
                 case 'n':
                     sb.Append(Environment.NewLine);

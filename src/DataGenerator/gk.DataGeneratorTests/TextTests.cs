@@ -980,6 +980,72 @@ namespace gk.DataGeneratorTests
         
         #endregion
 
+        #region Negation
+
+
+        [TestMethod]
+        [TestCategory("Negation")]
+        public void Can_Generate_Correct_Output_from_Negated_Set()
+        {
+            var pattern = @"[^0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ]";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            Assert.IsTrue(Regex.IsMatch(text, "^"+pattern+"$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Negation")]
+        public void Can_Generate_Correct_Output_from_Negated_Set_Range()
+        {
+            var pattern = @"[^A-Z]";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            Assert.IsTrue(Regex.IsMatch(text, "^" + pattern + "$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Negation")]
+        public void Can_Generate_Correct_Output_from_Negated_Set_Range2()
+        {
+            var pattern = @"[^3-6]";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            Assert.IsTrue(Regex.IsMatch(text, "^" + pattern + "$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Negation")]
+        public void Can_Generate_Correct_Output_from_Negated_Set_Range_Multiple()
+        {
+            var pattern = @"[^A-Za-z]";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            Assert.IsTrue(Regex.IsMatch(text, "^" + pattern + "$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Negation")]
+        public void Can_Generate_Correct_Output_from_Negated_Set_Range_Repeated()
+        {
+            var pattern = @"[^3-6]{10}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            Assert.IsTrue(Regex.IsMatch(text, "^" + pattern + "$"));
+        }
+
+        [TestMethod]
+        [TestCategory("Negation")]
+        public void Can_Generate_Correct_Output_from_Negated_Set_Range_Multiple_Repeated()
+        {
+            var pattern = @"[^A-Za-z]{10}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            Assert.IsTrue(Regex.IsMatch(text, "^" + pattern + "$"));
+        }
+
+
+        #endregion
+
         #region NegativeTesting
 
         [TestMethod]
@@ -1081,6 +1147,33 @@ namespace gk.DataGeneratorTests
         {
             var pattern = @"<<(@blahblahblah21@)>>";
             AlphaNumericGenerator.GenerateFromTemplate(pattern);
+        }
+
+        [TestMethod]
+        [TestCategory("NegativeTesting")]
+        [ExpectedException(typeof(GenerationException))]
+        public void Can_Throw_Exception_Negated_Set_Range_InvalidNumeric()
+        {
+            var pattern = @"[^30-60]";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+        }
+
+        [TestMethod]
+        [TestCategory("NegativeTesting")]
+        [ExpectedException(typeof(GenerationException))]
+        public void Can_Throw_Exception_Negated_Set_Range_InvalidNumeric2()
+        {
+            var pattern = @"[^3-60]";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+        }
+
+        [TestMethod]
+        [TestCategory("NegativeTesting")]
+        [ExpectedException(typeof(GenerationException))]
+        public void Can_Throw_Exception_Negated_Set_Range_InvalidNumeric3()
+        {
+            var pattern = @"[^3.00-6]";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
         }
 
         #endregion
