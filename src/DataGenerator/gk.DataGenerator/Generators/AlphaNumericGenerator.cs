@@ -456,10 +456,30 @@ namespace gk.DataGenerator.Generators
             if (contentOptions.Content.Contains("-")) // Ranged - [0-7] or [a-z] or [1-9A-Za-z] for fun.
             {
                 MatchCollection ranges = new Regex(@"\D-\D|\d+\.?\d*-\d+\.?\d*").Matches(contentOptions.Content);
-                for (int i = 0; i < contentOptions.Repeat; i++)
+                if (contentOptions.IsNegated)
                 {
-                    var range = ranges[Random.Next(0, ranges.Count)];
-                    sb.Append(GetRandomCharacterFromRange(range.ToString(), contentOptions.IsNegated));
+                    var possibles = _AllPossibleCharacters;
+                    foreach (var range in ranges)
+                    {
+                        //TODO - Cleanup - Only here to throw an exception for invalid ranges
+                        GetRandomCharacterFromRange(range.ToString(), contentOptions.IsNegated);
+
+                        var regex = new Regex("[" + range.ToString() + "]");
+                        possibles = regex.Replace(possibles, "");
+                    }
+
+                    for (int i = 0; i < contentOptions.Repeat; i++)
+                    {
+                        sb.Append(possibles[Random.Next(0, possibles.Length)]);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < contentOptions.Repeat; i++)
+                    {
+                        var range = ranges[Random.Next(0, ranges.Count)];
+                        sb.Append(GetRandomCharacterFromRange(range.ToString(), contentOptions.IsNegated));
+                    }
                 }
             }
             else

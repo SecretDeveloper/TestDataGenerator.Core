@@ -35,6 +35,12 @@ function build{
     $msbuild = "c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
     $solutionPath = "$basePath\src\DataGenerator\DataGenerator.sln"
     Invoke-expression "$msbuild $solutionPath /p:configuration=$buildType /t:Clean /t:Build /verbosity:q /nologo > $logPath\LogBuild.log"
+
+    if($? -eq $False){
+        Write-host "BUILD FAILED!"
+        exit
+    }
+    
     $content = (Get-Content -Path "$logPath\LogBuild.log")
     $passedContent = ($content -match "Passed")
     if($passedContent.Count -eq 0)
@@ -57,13 +63,7 @@ function build{
 
     if($lastResult -eq $False){    
         exit
-    }
-
-
-    if($? -eq $False){
-        Write-host "BUILD FAILED!"
-        exit
-    }
+    } 
 }
 
 function test{
@@ -74,12 +74,9 @@ function test{
 
     $testDLLs = get-childitem -path "$basePath\src\TestOutput\*.*" -include "*Tests.dll"
      
-    $fs = New-Object -ComObject Scripting.FileSystemObject
-    $f = $fs.GetFile("C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\mstest.exe")
-    $mstestPath = $f.shortpath   
     $arguments = " /testcontainer:" + $testDLLs + " /TestSettings:$basePath\src\DataGenerator\LocalTestRun.testrunconfig"
 
-    Invoke-Expression "$mstestPath $resultFile $arguments > $logPath\LogTest.log"
+    Invoke-Expression "mstest $resultFile $arguments > $logPath\LogTest.log"
 
     $content = (Get-Content -Path "$logPath\LogTest.log")
     $failedContent = ($content -match "^Failed")
