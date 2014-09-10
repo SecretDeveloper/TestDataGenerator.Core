@@ -28,8 +28,11 @@ namespace gk.DataGenerator.tdg
         [Option('v', "verbose", DefaultValue = false, HelpText = "Verbose output including debug and performance information.", Required = false)]
         public bool Verbose { get; set; }
 
-        [Option('n', "namedpatterns", DefaultValue = "", HelpText = "A list of ';' seperated file paths containing named patterns to be used in addition to default.tdg-patterns", Required = false)]
+        [Option('n', "namedpatterns", DefaultValue = "", HelpText = "A list of ';' seperated file paths containing named patterns to be used in addition to default.tdg-patterns.", Required = false)]
         public string NamedPatterns { get; set; }
+
+        [Option('l', "listnamedpatterns", DefaultValue = false, HelpText = "Outputs a list of the named patterns from the default.tdg-patterns file.", Required = false)]
+        public bool ListNamedPatterns { get; set; }
 
         [HelpOption]
         public string GetUsage()

@@ -866,7 +866,7 @@ namespace gk.DataGeneratorTests
         {
             //var namedPatterns = FileReader.LoadNamedPatterns("default.tdg-patterns");
 
-            var pattern = @"<<(@common_male_name@)>>";
+            var pattern = @"<<(@name_firstname_male@)>>";
             var text = AlphaNumericGenerator.GenerateFromTemplate(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
             Assert.IsTrue(text.Length>0);
@@ -879,7 +879,7 @@ namespace gk.DataGeneratorTests
         {
             //var namedPatterns = FileReader.LoadNamedPatterns("default.tdg-patterns");
 
-            var pattern = @"<<(@us_address_type1@)>>";
+            var pattern = @"<<(@address_us_type1@)>>";
             var text = AlphaNumericGenerator.GenerateFromTemplate(pattern);
             Console.WriteLine("'" + pattern + "' produced '" + text + "'");
             Assert.IsTrue(text.Length>0);

@@ -2,112 +2,116 @@
   <CollectionName>Test</CollectionName>
   <Patterns>
     <NamedPattern>
-      <Name>month_name</Name>
-      <Pattern>(January|February|March|April|May|June|July|August|September|October|November|December)</Pattern>
-    </NamedPattern>
-    <NamedPattern>
-      <Name>month_name_abbr</Name>
-      <Pattern>(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)</Pattern>
-    </NamedPattern>
-    <NamedPattern>
-      <Name>week_day</Name>
-      <Pattern>(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)</Pattern>
-    </NamedPattern>
-    <NamedPattern>
-      <Name>ssn</Name>
-      <Pattern>([1-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9])</Pattern>
-    </NamedPattern>
-    <NamedPattern>
-      <Name>male_title</Name>
-      <Pattern>(Mr|Master)</Pattern>
-    </NamedPattern>
-    <NamedPattern>
-      <Name>female_title</Name>
-      <Pattern>(Miss|Mrs|Ms)</Pattern>
-    </NamedPattern>
-    <NamedPattern>
-      <Name>all_male_title</Name>
-      <Pattern>(Mr|Master|Sir|Lord|Dr|Prof|Br|Fr|Rev|Pr|Elder)</Pattern>
-    </NamedPattern>
-    <NamedPattern>
-      <Name>all_female_title</Name>
-      <Pattern>(Miss|Mrs|Ms|Madam|Dr|Prof|Lady|Dame)</Pattern>
-    </NamedPattern>
-    <NamedPattern>
-      <Name>common_male_name</Name>
-      <Pattern>(Jackson|Aiden|Liam|Lucas|Noah|Mason|Jayden|Ethan|Jacob|Jack|Caden|Logan|Benjamin|Michael|Caleb|Ryan|Alexander|Elijah|James|William|Oliver|Connor|Matthew|Daniel|Luke|Brayden|Jayce|Henry|Carter|Dylan|Gabriel|Joshua|Nicholas|Isaac|Owen|Nathan|Grayson|Eli|Landon|Andrew|Max|Samuel|Gavin|Wyatt|Christian|Hunter|Cameron|Evan|Charlie|David|Sebastian|Joseph|Dominic|Anthony|Colton|John|Tyler|Zachary|Thomas|Julian|Levi|Adam|Isaiah|Alex|Aaron|Parker|Cooper|Miles|Chase|Muhammad|Christopher|Blake|Austin|Jordan|Leo|Jonathan|Adrian|Colin|Hudson|Ian|Xavier|Camden|Tristan|Carson|Jason|Nolan|Riley|Lincoln|Brody|Bentley|Nathaniel|Josiah|Declan|Jake|Asher|Jeremiah|Cole|Mateo|Micah|Elliot)</Pattern>
-    </NamedPattern>
-    <NamedPattern>
-      <Name>common_female_name</Name>
-      <Pattern>(Sophia|Emma|Olivia|Isabella|Mia|Ava|Lily|Zoe|Emily|Chloe|Layla|Madison|Madelyn|Abigail|Aubrey|Charlotte|Amelia|Ella|Kaylee|Avery|Aaliyah|Hailey|Hannah|Addison|Riley|Harper|Aria|Arianna|Mackenzie|Lila|Evelyn|Adalyn|Grace|Brooklyn|Ellie|Anna|Kaitlyn|Isabelle|Sophie|Scarlett|Natalie|Leah|Sarah|Nora|Mila|Elizabeth|Lillian|Kylie|Audrey|Lucy|Maya|Annabelle|Makayla|Gabriella|Elena|Victoria|Claire|Savannah|Peyton|Maria|Alaina|Kennedy|Stella|Liliana|Allison|Samantha|Keira|Alyssa|Reagan|Molly|Alexandra|Violet|Charlie|Julia|Sadie|Ruby|Eva|Alice|Eliana|Taylor|Callie|Penelope|Camilla|Bailey|Kaelyn|Alexis|Kayla|Katherine|Sydney|Lauren|Jasmine|London|Bella|Adeline|Caroline|Vivian|Juliana|Gianna|Skyler|Jordyn)</Pattern>
-    </NamedPattern>
-    <NamedPattern>
-      <Name>common_surname</Name>
-      <Pattern>(Smith|Johnson|Williams|Jones|Brown|Davis|Miller|Wilson|Moore|Taylor|Anderson|Thomas|Jackson|White|Harris|Martin|Thompson|Garcia|Martinez|Robinson|Clark|Rodriguez|Lewis|Lee|Walker|Hall|Allen|Young|Hernandez|King|Wright|Lopez|Hill|Scott|Green|Adams|Baker|Gonzalez|Nelson|Carter|Mitchell|Perez|Roberts|Turner|Phillips|Campbell|Parker|Evans|Edwards|Collins|Stewart|Sanchez|Morris|Rogers|Reed|Cook|Morgan|Bell|Murphy|Bailey|Rivera|Cooper|Richardson|Cox|Howard|Ward|Torres|Peterson|Gray|Ramirez|James|Watson|Brooks|Kelly|Sanders|Price|Bennett|Wood|Barnes|Ross|Henderson|Coleman|Jenkins|Perry|Powell|Long|Patterson|Hughes|Flores|Washington|Butler|Simmons|Foster|Gonzales|Bryant|Alexander|Russell|Griffin|Diaz|Hayes)</Pattern>
-    </NamedPattern>
-    <NamedPattern>
-      <Name>common_street_suffix_abbr</Name>
+      <Name>address_street_suffix_abbr</Name>
       <Pattern>(St|Ave|Blvd|Terr|Drive|Place|Lane|Route|Court)</Pattern>
     </NamedPattern>
     <NamedPattern>
-      <Name>common_street_suffix</Name>
+      <Name>address_street_suffix</Name>
       <Pattern>(Street|Avenue|Boulevard|Terrace|Drive|Place|Lane|Court)</Pattern>
     </NamedPattern>
     <NamedPattern>
-      <Name>common_street_name</Name>
+      <Name>address_street_name</Name>
       <Pattern>(Academy|Adams|Amherst|Andover|Ann|Arch|Arlington|Ashley|Aspen|Atlantic|Augusta|Bank|Bay|Bayberry|Beech|Beechwood|Belmont|Berkshire|Brandywine|Briarwood|Bridge|Bridle|Broad|Broadway|Brook|Brookside|Brown|Buckingham|Buttonwood|Cambridge|Canal|Canterbury|Cardinal|Carriage|Catherine|Cedar|Cemetery|Center|Central|Chapel|Charles|Cherry|Chestnut|Church|Circle|Clark|Clay|Cleveland|Clinton|Cobblestone|College|Colonial|Columbia|Coolidge|Cooper|Cottage|Cottonwood|Country|Country Club|Court|Creek|Creekside|Crescent|Cross|Cypress|Dale|Deerfield|Delaware|Depot|Devon|Devonshire|Division|Dogwood|Douglas|Durham|Eagle|East|Edgewood|Elizabeth|Elm|Elmwood|Essex|Euclid|Evergreen|Fairview|Fairway|Fawn|Fieldstone|Forest|Franklin|Front|Fulton|Garden|Garfield|George|Glenwood|Grand|Grandview|Grant|Green|Grove|Hamilton|Hanover|Harrison|Hartford|Hawthorne|Heather|Hemlock|Henry|Heritage|Hickory|High|Highland|Hill|Hillcrest|Hillside|Hilltop|Holly|Homestead|Howard|Hudson|Inverness|Ivy|Jackson|James|Jefferson|John|Jones|Juniper|King|Lafayette|Lake|Lakeview|Lantern|Laurel|Lawrence|Lexington|Liberty|Lilac|Lincoln|Linda|Linden|Locust|Madison|Magnolia|Maiden|Main|Manor|Maple|Market|Marshall|McCarty|Meadow|Mechanic|Michigan|Midland|Mill|Monroe|Morris|Mulberry|Myrtle|New|North|Oak|Oakland|Old Post|Old York|Olive|Orange|Orchard|Overlook Circle|Oxford|Park|Park Place|Parker|Pearl|Penn|Pennsylvania|Perry|Pheasant Run|Pin Oak|Pine|Pleasant|Poplar|Primrose|Prospect|Queen|Race|Railroad|Redwood|Ridge|River|Riverside|Roberts|Roosevelt|Rose|Rosewood|School|Schoolhouse|Shady|Shattuck|Sheffield|Sherman|Sherwood|Smith|Somerset|South|Spring|Spruce|State|Steeplechase|Strawberry|Street|Summer|Summit|Sunset|Surrey|Sycamore|Tanglewood|Taylor|Thompson|Union|Valley|Valley View|Victoria|Village|Vine|Virginia|Vista|Wall|Walnut|Warren|Washington|Water|Weiss|West|Westminster|White|William|Williams|Willow|Wilson|Winding Way|Windsor|Wood|Woodland|Woodlawn|York)</Pattern>
     </NamedPattern>
     <NamedPattern>
-      <Name>europe_city_name</Name>
+      <Name>address_eu_city</Name>
       <Pattern>(Andorra la Vella|Athens|Belgrade|Berlin|Bern|Bratislava|Brussels|Bucharest|Budapest|Chisinau|Copenhagen|Dublin|Helsinki|Kiev|Lisbon|Ljubljana|London|Luxembourg|Madrid|Minsk|Monaco|Moscow|Nicosia|Nuuk|Oslo|Paris|Podgorica|Prague|Reykjavik|Riga|Rome|San Marino|Sarajevo|Skopje|Sofia|Stockholm|Tallinn|Tirana|Vaduz|Valletta|Vatican City|Vienna|Vilnius|Warsaw|Zagreb)</Pattern>
     </NamedPattern>
     <NamedPattern>
-    	<Name>us_city_name</Name>
-    	<Pattern>(New York|Los Angeles|Chicago|Houston|Philadelphia|Phoenix|San Antonio|San Diego|Dallas|San Jose|Austin|Indianapolis|Jacksonville|San Francisco|Columbus|Charlotte|Fort Worth|Detroit|El Paso|Memphis|Seattle|Denver|Washington|Boston|Nashville|Baltimore|Oklahoma City|Louisville|Portland|Las Vegas|Milwaukee|Albuquerque|Tucson|Fresno|Sacramento|Long Beach|Kansas City|Mesa|Virginia Beach|Atlanta|Colorado Springs|Omaha|Raleigh|Miami|Oakland|Minneapolis|Tulsa|Cleveland|Wichita|Arlington|New Orleans|Bakersfield|Tampa|Honolulu|Aurora|Anaheim|Santa Ana|St. Louis|Riverside|Corpus Christi|Lexington|Pittsburgh|Anchorage|Stockton|Cincinnati|Saint Paul|Toledo|Greensboro|Newark|Plano|Henderson|Lincoln|Buffalo|Jersey City|Chula Vista|Fort Wayne|Orlando|St. Petersburg|Chandler|Laredo|Norfolk|Durham|Madison|Lubbock|Irvine|Winston–Salem|Glendale|Garland|Hialeah|Reno|Chesapeake|Gilbert|Baton Rouge|Irving|Scottsdale|North Las Vegas|Fremont|Boise|Richmond|San Bernardino|Birmingham|Spokane|Rochester|Des Moines|Modesto|Fayetteville|Tacoma|Oxnard|Fontana|Columbus|Montgomery|Moreno Valley|Shreveport|Aurora|Yonkers|Akron|Huntington Beach|Little Rock|Augusta|Amarillo|Glendale|Mobile|Grand Rapids|Salt Lake City|Tallahassee|Huntsville|Grand Prairie|Knoxville|Worcester|Newport News|Brownsville|Overland Park|Santa Clarita|Providence|Garden Grove|Chattanooga|Oceanside|Jackson|Fort Lauderdale|Santa Rosa|Rancho Cucamonga|Port St. Lucie|Tempe|Ontario|Vancouver|Cape Coral|Sioux Falls|Springfield|Peoria|Pembroke Pines|Elk Grove|Salem|Lancaster|Corona|Eugene|Palmdale|Salinas|Springfield|Pasadena|Fort Collins|Hayward|Pomona|Cary|Rockford|Alexandria|Escondido|McKinney|Kansas City|Joliet|Sunnyvale|Torrance|Bridgeport|Lakewood|Hollywood|Paterson|Naperville|Syracuse|Mesquite|Dayton|Savannah|Clarksville|Orange|Pasadena|Fullerton|Killeen|Frisco|Hampton|McAllen|Warren|Bellevue|West Valley City|Columbia|Olathe|Sterling Heights|New Haven|Miramar|Waco|Thousand Oaks|Cedar Rapids|Charleston|Visalia|Topeka|Elizabeth|Gainesville|Thornton|Roseville|Carrollton|Coral Springs|Stamford|Simi Valley|Concord|Hartford|Kent|Lafayette|Midland|Surprise|Denton|Victorville|Evansville|Santa Clara|Abilene|Athens|Vallejo|Allentown|Norman|Beaumont|Independence|Murfreesboro|Ann Arbor|Springfield|Berkeley|Peoria|Provo|El Monte|Columbia|Lansing|Fargo|Downey|Costa Mesa|Wilmington|Arvada|Inglewood|Miami Gardens|Carlsbad|Westminster|Rochester|Odessa|Manchester|Elgin|West Jordan|Round Rock|Clearwater|Waterbury|Gresham|Fairfield|Billings|Lowell|Ventura|Pueblo|High Point|West Covina|Richmond|Murrieta|Cambridge|Antioch|Temecula|Norwalk|Centennial|Everett|270-(T)|270-(T)|Green Bay|Daly City|Burbank|Richardson|Pompano Beach|North Charleston|Broken Arrow|Boulder|West Palm Beach|Santa Maria|El Cajon|Davenport|Rialto|Edison|Las Cruces|San Mateo|Lewisville|South Bend|Lakeland|Erie|Tyler|Pearland|College Station)</Pattern>
+      <Name>address_us_city</Name>
+      <Pattern>(New York|Los Angeles|Chicago|Houston|Philadelphia|Phoenix|San Antonio|San Diego|Dallas|San Jose|Austin|Indianapolis|Jacksonville|San Francisco|Columbus|Charlotte|Fort Worth|Detroit|El Paso|Memphis|Seattle|Denver|Washington|Boston|Nashville|Baltimore|Oklahoma City|Louisville|Portland|Las Vegas|Milwaukee|Albuquerque|Tucson|Fresno|Sacramento|Long Beach|Kansas City|Mesa|Virginia Beach|Atlanta|Colorado Springs|Omaha|Raleigh|Miami|Oakland|Minneapolis|Tulsa|Cleveland|Wichita|Arlington|New Orleans|Bakersfield|Tampa|Honolulu|Aurora|Anaheim|Santa Ana|St. Louis|Riverside|Corpus Christi|Lexington|Pittsburgh|Anchorage|Stockton|Cincinnati|Saint Paul|Toledo|Greensboro|Newark|Plano|Henderson|Lincoln|Buffalo|Jersey City|Chula Vista|Fort Wayne|Orlando|St. Petersburg|Chandler|Laredo|Norfolk|Durham|Madison|Lubbock|Irvine|Winston–Salem|Glendale|Garland|Hialeah|Reno|Chesapeake|Gilbert|Baton Rouge|Irving|Scottsdale|North Las Vegas|Fremont|Boise|Richmond|San Bernardino|Birmingham|Spokane|Rochester|Des Moines|Modesto|Fayetteville|Tacoma|Oxnard|Fontana|Columbus|Montgomery|Moreno Valley|Shreveport|Aurora|Yonkers|Akron|Huntington Beach|Little Rock|Augusta|Amarillo|Glendale|Mobile|Grand Rapids|Salt Lake City|Tallahassee|Huntsville|Grand Prairie|Knoxville|Worcester|Newport News|Brownsville|Overland Park|Santa Clarita|Providence|Garden Grove|Chattanooga|Oceanside|Jackson|Fort Lauderdale|Santa Rosa|Rancho Cucamonga|Port St. Lucie|Tempe|Ontario|Vancouver|Cape Coral|Sioux Falls|Springfield|Peoria|Pembroke Pines|Elk Grove|Salem|Lancaster|Corona|Eugene|Palmdale|Salinas|Springfield|Pasadena|Fort Collins|Hayward|Pomona|Cary|Rockford|Alexandria|Escondido|McKinney|Kansas City|Joliet|Sunnyvale|Torrance|Bridgeport|Lakewood|Hollywood|Paterson|Naperville|Syracuse|Mesquite|Dayton|Savannah|Clarksville|Orange|Pasadena|Fullerton|Killeen|Frisco|Hampton|McAllen|Warren|Bellevue|West Valley City|Columbia|Olathe|Sterling Heights|New Haven|Miramar|Waco|Thousand Oaks|Cedar Rapids|Charleston|Visalia|Topeka|Elizabeth|Gainesville|Thornton|Roseville|Carrollton|Coral Springs|Stamford|Simi Valley|Concord|Hartford|Kent|Lafayette|Midland|Surprise|Denton|Victorville|Evansville|Santa Clara|Abilene|Athens|Vallejo|Allentown|Norman|Beaumont|Independence|Murfreesboro|Ann Arbor|Springfield|Berkeley|Peoria|Provo|El Monte|Columbia|Lansing|Fargo|Downey|Costa Mesa|Wilmington|Arvada|Inglewood|Miami Gardens|Carlsbad|Westminster|Rochester|Odessa|Manchester|Elgin|West Jordan|Round Rock|Clearwater|Waterbury|Gresham|Fairfield|Billings|Lowell|Ventura|Pueblo|High Point|West Covina|Richmond|Murrieta|Cambridge|Antioch|Temecula|Norwalk|Centennial|Everett|Green Bay|Daly City|Burbank|Richardson|Pompano Beach|North Charleston|Broken Arrow|Boulder|West Palm Beach|Santa Maria|El Cajon|Davenport|Rialto|Edison|Las Cruces|San Mateo|Lewisville|South Bend|Lakeland|Erie|Tyler|Pearland|College Station)</Pattern>
     </NamedPattern>
     <NamedPattern>
-      <Name>common_county_name</Name>
+      <Name>address_county</Name>
       <Pattern>(Loudoun|Howard|Fairfax|Hunterdon|Arlington|Stafford|Putnam|Somerset|Douglas|Morris|Montgomery|Prince William|Nassau|Santa Clara|Charles|Williamson|Marin|Anne Arundel|Calvert|Sussex|St. Mary's|Suffolk|Fort Bend|Hamilton|Forsyth)</Pattern>
     </NamedPattern>
     <NamedPattern>
-      <Name>all_country_name</Name>
+      <Name>address_country</Name>
       <Pattern>(Abkhazia|Afghanistan|Albania|Algeria|American Samoa|Andorra|Angola|Anguilla|Antigua and Barbuda|Argentina|Armenia|Aruba|Australia|Austria|Azerbaijan|Bahamas|Bahrain|Bangladesh|Barbados|Belarus|Belgium|Belize|Benin|Bermuda|Bhutan|Bolivia|Bosnia and Herzegovina|Botswana|Brazil|British Virgin Islands|Brunei|Bulgaria|Burkina Faso|Burma|Burundi|Cambodia|Cameroon|Canada|Cape Verde|Caribbean Netherlands|Cayman Islands|Central African Republic|Chad|Chile|China|Christmas Island|Cocos Islands|Colombia|Comoros|Cook Islands|Costa Rica|Croatia|Cuba|Curaçao|Cyprus|Czech Republic|Democratic Republic of the Congo|Denmark|Djibouti|Dominica|Dominican Republic|Ecuador|Egypt|El Salvador|Equatorial Guinea|Eritrea|Estonia|Ethiopia|Falkland Islands|Faroe Islands|Federated States of Micronesia|Fiji|Finland|France|French Guiana|French Polynesia|Gabon|Gambia|Georgia|Germany|Ghana|Gibraltar|Greece|Greenland|Grenada|Guadeloupe|Guam|Guatemala|Guernsey|Guinea|Guinea-Bissau|Guyana|Haiti|Honduras|Hong Kong|Hungary|Iceland|India|Indonesia|Iran|Iraq|Ireland|Isle of Man|Israel|Italy|Ivory Coast|Jamaica|Japan|Jersey|Jordan|Kazakhstan|Kenya|Kiribati|Kosovo|Kuwait|Kyrgyzstan|Laos|Latvia|Lebanon|Lesotho|Liberia|Libya|Liechtenstein|Lithuania|Luxembourg|Macau|Macedonia|Madagascar|Malawi|Malaysia|Maldives|Mali|Malta|Marshall Islands|Martinique|Mauritania|Mauritius|Mayotte|Mexico|Moldova|Monaco|Mongolia|Montenegro|Montserrat|Morocco|Mozambique|Namibia|Nauru|Nepal|Netherlands|New Caledonia|New Zealand|Nicaragua|Niger|Nigeria|Niue|Norfolk Island|North Korea|Northern Cyprus|Northern Mariana Islands|Norway|Oman|Pakistan|Palau|Palestine|Panama|Papua New Guinea|Paraguay|Peru|Philippines|Pitcairn Islands|Poland|Portugal|Puerto Rico|Qatar|Republic of the Congo|Romania|Russia|Rwanda|Réunion|Saint Barthélemy|Saint Helena, Ascension and Tristan da Cunha|Saint Kitts and Nevis|Saint Lucia|Saint Martin|Saint Pierre and Miquelon|Saint Vincent and the Grenadines|Samoa|San Marino|Saudi Arabia|Senegal|Serbia|Seychelles|Sierra Leone|Singapore|Sint Maarten|Slovakia|Slovenia|Solomon Islands|Somalia|South Africa|South Korea|South Ossetia|South Sudan|Spain|Sri Lanka|Sudan|Suriname|Svalbard and Jan Mayen|Swaziland|Sweden|Switzerland|Syria|São Tomé and Príncipe|Taiwan|Tajikistan|Tanzania|Thailand|Timor-Leste|Togo|Tokelau|Tonga|Transnistria|Trinidad and Tobago|Tunisia|Turkey|Turkmenistan|Turks and Caicos Islands|Tuvalu|Uganda|Ukraine[|United Arab Emirates|United Kingdom|United States|United States Virgin Islands|Uruguay|Uzbekistan|Vanuatu|Vatican City|Venezuela|Vietnam|Wallis and Futuna|Western Sahara|Yemen|Zambia|Zimbabwe|Åland Islands)</Pattern>
     </NamedPattern>
     <NamedPattern>
-    	<Name>european_country_name</Name>
-    	<Pattern>(Russia|Ukraine|France|Spain|Sweden|Norway|Germany|Finland|Poland|Italy|United Kingdom|Romania|Belarus|Kazakhstan|Greece|Bulgaria|Iceland|Hungary|Portugal|Austria|Czech Republic|Serbia|Republic of Ireland|Lithuania|Latvia|Croatia|Bosnia and Herzegovina|Slovakia|Estonia|Denmark|Netherlands|Switzerland|Moldova|Belgium|Albania|Macedonia|Turkey|Slovenia|Montenegro|Cyprus|Azerbaijan|Luxembourg|Georgia|Andorra|Malta|Liechtenstein|San Marino|Monaco|Vatican City)</Pattern>	
+      <Name>address_eu_country</Name>
+      <Pattern>(Russia|Ukraine|France|Spain|Sweden|Norway|Germany|Finland|Poland|Italy|United Kingdom|Romania|Belarus|Kazakhstan|Greece|Bulgaria|Iceland|Hungary|Portugal|Austria|Czech Republic|Serbia|Republic of Ireland|Lithuania|Latvia|Croatia|Bosnia and Herzegovina|Slovakia|Estonia|Denmark|Netherlands|Switzerland|Moldova|Belgium|Albania|Macedonia|Turkey|Slovenia|Montenegro|Cyprus|Azerbaijan|Luxembourg|Georgia|Andorra|Malta|Liechtenstein|San Marino|Monaco|Vatican City)</Pattern>  
     </NamedPattern>
     <NamedPattern>
-      <Name>us_state_name</Name>
+      <Name>address_us_state</Name>
       <Pattern>(Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming)</Pattern>
     </NamedPattern>
     <NamedPattern>
-      <Name>us_zip_code</Name>
+      <Name>address_us_zip</Name>
       <Pattern>(\d\d\d\d\d)</Pattern>
     </NamedPattern>
     <NamedPattern>
-      <Name>us_address_type1</Name>
-      <Pattern>([1-9]{1,4} @common_street_name@ @common_street_suffix@, @common_county_name@ County, @us_state_name@, @us_zip_code@)</Pattern>
+      <Name>address_us_type1</Name>
+      <Pattern>([1-9]{1,4} @address_street_name@ @address_street_suffix@, @address_county@ County, @address_us_state@, @address_us_zip@)</Pattern>
     </NamedPattern>
     <NamedPattern>
-      <Name>eu_address_type1</Name>
-      <Pattern>([1-9]{1,4} @common_street_name@ @common_street_suffix@, @common_county_name@ County, @european_country_name@)</Pattern>
+      <Name>address_eu_type1</Name>
+      <Pattern>([1-9]{1,4} @address_street_name@ @address_street_suffix@, @address_county@ County, @address_eu_country@)</Pattern>
     </NamedPattern>
     <NamedPattern>
-      <Name>rainbow_colour_name</Name>
+      <Name>date_month_name</Name>
+      <Pattern>(January|February|March|April|May|June|July|August|September|October|November|December)</Pattern>
+    </NamedPattern>
+    <NamedPattern>
+      <Name>date_month_abbr</Name>
+      <Pattern>(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)</Pattern>
+    </NamedPattern>
+    <NamedPattern>
+      <Name>date_week_day</Name>
+      <Pattern>(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)</Pattern>
+    </NamedPattern>
+    <NamedPattern>
+      <Name>misc_ssn</Name>
+      <Pattern>([1-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9])</Pattern>
+    </NamedPattern>
+    <NamedPattern>
+      <Name>misc_rainbow_colour</Name>
       <Pattern>(Red|Orange|Yellow|Green|Blue|Indigo|Violet)</Pattern>
     </NamedPattern>
     <NamedPattern>
-      <Name>credit_card_number</Name>
+      <Name>misc_credit_card_number</Name>
       <Pattern>(\d\d\d\d \d\d\d\d \d\d\d\d d\d\d\d)</Pattern>
     </NamedPattern>
     <NamedPattern>
-      <Name>example_company_name</Name>
+      <Name>misc_company_name</Name>
       <Pattern>(ABC Inc|PetCo|Acme|Foogle)</Pattern>
     </NamedPattern>
     <NamedPattern>
-      <Name>compass_point</Name>
+      <Name>misc_compass_point</Name>
       <Pattern>(North|East|South|West)</Pattern>
     </NamedPattern>
+    <NamedPattern>
+      <Name>name_title_male</Name>
+      <Pattern>(Mr|Master)</Pattern>
+    </NamedPattern>
+    <NamedPattern>
+      <Name>name_title_female</Name>
+      <Pattern>(Miss|Mrs|Ms)</Pattern>
+    </NamedPattern>
+    <NamedPattern>
+      <Name>name_title_male_all</Name>
+      <Pattern>(Mr|Master|Sir|Lord|Dr|Prof|Br|Fr|Rev|Pr|Elder)</Pattern>
+    </NamedPattern>
+    <NamedPattern>
+      <Name>name_title_female_all</Name>
+      <Pattern>(Miss|Mrs|Ms|Madam|Dr|Prof|Lady|Dame)</Pattern>
+    </NamedPattern>
+    <NamedPattern>
+      <Name>name_firstname</Name>
+      <Pattern>(@name_firstname_male@|@name_firstname_female@)</Pattern>
+    </NamedPattern>
+    <NamedPattern>
+      <Name>name_firstname_male</Name>
+      <Pattern>(Jackson|Aiden|Liam|Lucas|Noah|Mason|Jayden|Ethan|Jacob|Jack|Caden|Logan|Benjamin|Michael|Caleb|Ryan|Alexander|Elijah|James|William|Oliver|Connor|Matthew|Daniel|Luke|Brayden|Jayce|Henry|Carter|Dylan|Gabriel|Joshua|Nicholas|Isaac|Owen|Nathan|Grayson|Eli|Landon|Andrew|Max|Samuel|Gavin|Wyatt|Christian|Hunter|Cameron|Evan|Charlie|David|Sebastian|Joseph|Dominic|Anthony|Colton|John|Tyler|Zachary|Thomas|Julian|Levi|Adam|Isaiah|Alex|Aaron|Parker|Cooper|Miles|Chase|Muhammad|Christopher|Blake|Austin|Jordan|Leo|Jonathan|Adrian|Colin|Hudson|Ian|Xavier|Camden|Tristan|Carson|Jason|Nolan|Riley|Lincoln|Brody|Bentley|Nathaniel|Josiah|Declan|Jake|Asher|Jeremiah|Cole|Mateo|Micah|Elliot)</Pattern>
+    </NamedPattern>
+    <NamedPattern>
+      <Name>name_firstname_female</Name>
+      <Pattern>(Sophia|Emma|Olivia|Isabella|Mia|Ava|Lily|Zoe|Emily|Chloe|Layla|Madison|Madelyn|Abigail|Aubrey|Charlotte|Amelia|Ella|Kaylee|Avery|Aaliyah|Hailey|Hannah|Addison|Riley|Harper|Aria|Arianna|Mackenzie|Lila|Evelyn|Adalyn|Grace|Brooklyn|Ellie|Anna|Kaitlyn|Isabelle|Sophie|Scarlett|Natalie|Leah|Sarah|Nora|Mila|Elizabeth|Lillian|Kylie|Audrey|Lucy|Maya|Annabelle|Makayla|Gabriella|Elena|Victoria|Claire|Savannah|Peyton|Maria|Alaina|Kennedy|Stella|Liliana|Allison|Samantha|Keira|Alyssa|Reagan|Molly|Alexandra|Violet|Charlie|Julia|Sadie|Ruby|Eva|Alice|Eliana|Taylor|Callie|Penelope|Camilla|Bailey|Kaelyn|Alexis|Kayla|Katherine|Sydney|Lauren|Jasmine|London|Bella|Adeline|Caroline|Vivian|Juliana|Gianna|Skyler|Jordyn)</Pattern>
+    </NamedPattern>
+    <NamedPattern>
+      <Name>name_surname</Name>
+      <Pattern>(Smith|Johnson|Williams|Jones|Brown|Davis|Miller|Wilson|Moore|Taylor|Anderson|Thomas|Jackson|White|Harris|Martin|Thompson|Garcia|Martinez|Robinson|Clark|Rodriguez|Lewis|Lee|Walker|Hall|Allen|Young|Hernandez|King|Wright|Lopez|Hill|Scott|Green|Adams|Baker|Gonzalez|Nelson|Carter|Mitchell|Perez|Roberts|Turner|Phillips|Campbell|Parker|Evans|Edwards|Collins|Stewart|Sanchez|Morris|Rogers|Reed|Cook|Morgan|Bell|Murphy|Bailey|Rivera|Cooper|Richardson|Cox|Howard|Ward|Torres|Peterson|Gray|Ramirez|James|Watson|Brooks|Kelly|Sanders|Price|Bennett|Wood|Barnes|Ross|Henderson|Coleman|Jenkins|Perry|Powell|Long|Patterson|Hughes|Flores|Washington|Butler|Simmons|Foster|Gonzales|Bryant|Alexander|Russell|Griffin|Diaz|Hayes)</Pattern>
+    </NamedPattern>        
   </Patterns>
 </NamedPatterns>

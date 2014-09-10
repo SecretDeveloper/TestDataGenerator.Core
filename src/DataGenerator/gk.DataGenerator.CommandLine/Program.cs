@@ -33,19 +33,32 @@ namespace gk.DataGenerator.tdg
                     sw.Start();
                 }
 
-                var template = GetTemplateValue(cla);
-
-                if (!template.IsNullOrEmpty() && !cla.OutputFilePath.IsNullOrEmpty()) // output path provided.
+                if (cla.ListNamedPatterns)
                 {
-                    OutputToFile(cla, template);
-                }
-                else if(!template.IsNullOrEmpty())
-                {
-                    OutputToConsole(cla, template);
+                    var path = AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + "default.tdg-patterns";
+                    var namedParameters = FileReader.LoadNamedPatterns(path);
+                    Console.WriteLine("Named Parameters:");
+                    foreach (var namedParameter in namedParameters.Patterns.OrderBy(x => x.Name))
+                    {
+                        Console.WriteLine(namedParameter.Name);
+                    }
                 }
                 else
                 {
-                    Console.WriteLine(cla.GetUsage());
+                    var template = GetTemplateValue(cla);
+
+                    if (!template.IsNullOrEmpty() && !cla.OutputFilePath.IsNullOrEmpty()) // output path provided.
+                    {
+                        OutputToFile(cla, template);
+                    }
+                    else if (!template.IsNullOrEmpty())
+                    {
+                        OutputToConsole(cla, template);
+                    }
+                    else
+                    {
+                        Console.WriteLine(cla.GetUsage());
+                    }
                 }
 
                 if (cla.Verbose)
