@@ -765,6 +765,18 @@ namespace gk.DataGeneratorTests
             StringAssert.Matches(text, new Regex(@"^[A-Z]{2}[0-9]{2}$"));
         }
 
+        
+        [TestMethod]
+        [TestCategory("Pattern")]
+        public void Can_Generate_Complex1()
+        {
+            var pattern = @"\{'\w':('\w{3,25}'|[1-100])\}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine("'" + pattern + "' produced '" + text + "'");
+            StringAssert.Matches(text, new Regex(@"^\{'\w':('\w{3,25}'|\d{1,3})\}$"));
+        }
+
+
         #endregion
 
         #region Symbols
