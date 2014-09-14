@@ -9,10 +9,10 @@
 
         public ContentOptions()
         {
-            this.IsNegated = false;
-            this.Content = "";
-            this.ContainsAlternation = false;
-            this.Repeat = 1;
+            IsNegated = false;
+            Content = "";
+            ContainsAlternation = false;
+            Repeat = 1;
         }
     }
 }

@@ -1,5 +1,4 @@
 <NamedPatterns>
-  <CollectionName>Test</CollectionName>
   <Patterns>
     <NamedPattern>
       <Name>address_street_suffix_abbr</Name>

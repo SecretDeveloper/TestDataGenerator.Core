@@ -94,6 +94,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\gk.DataGenerator.CommandLine\gk.DataGenerator.tdg.csproj">
+      <Project>{655f996b-816e-49e7-8226-dea4f93bf22d}</Project>
+      <Name>gk.DataGenerator.tdg</Name>
+    </ProjectReference>
     <ProjectReference Include="..\gk.DataGenerator\gk.DataGenerator.csproj">
       <Project>{7e0afb0b-0000-4d8a-a3cc-eadd3bc14298}</Project>
       <Name>gk.DataGenerator</Name>

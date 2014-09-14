@@ -1,5 +1,9 @@
-﻿using System.Xml;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
+using gk.DataGenerator.Exceptions;
 
 namespace gk.DataGenerator
 {
@@ -7,7 +11,7 @@ namespace gk.DataGenerator
     {
         public static NamedPatterns LoadNamedPatterns(string path)
         {
-            var result = new NamedPatterns();
+            NamedPatterns result;
             using (var reader = XmlReader.Create(path))
             {
                 var ser = new XmlSerializer(typeof(NamedPatterns));
@@ -16,19 +20,31 @@ namespace gk.DataGenerator
             return result;
         }
 
-/*
-        public static void SerializeDictionary(NamedPatterns namedPatterns, string path)
+        public static string GetPatternFilePath(string filePath)
         {
-            using (var fs = XmlWriter.Create(path, new XmlWriterSettings(){Indent = true,OmitXmlDeclaration = true}))
+            if (!Path.HasExtension(filePath)) filePath = Path.ChangeExtension(filePath, "tdg-patterns");
+
+            var paths = new List<string>();
+            paths.Add(filePath);
+
+            var rooted = Path.IsPathRooted(filePath);
+            if (!rooted)
             {
-                var ns = new XmlSerializerNamespaces();
-                ns.Add("", "");
+                // attempt to root relative path files within the current execution directory.
+                paths.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath));
 
-                var ser = new XmlSerializer(typeof(NamedPatterns));
-                ser.Serialize(fs, namedPatterns, ns);
-
+                // check if it is within the _PatternFolder_Name folder
+                paths.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tdg-patterns", filePath));
             }
+
+            foreach (var path in paths)
+            {
+                if (File.Exists(path)) return path;
+            }
+
+            var msg = string.Format("Unable to find pattern file '{0}'. Searched in the following locations:\n{1}", filePath, string.Join("\n", paths));
+            throw new GenerationException(msg);
         }
-*/
+
     }
 }

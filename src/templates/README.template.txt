@@ -1,4 +1,4 @@
-﻿
+﻿<#{"seed":1}#>
 TestDataGenerator
 A library and command line tool that can be used to generate data for testing or other uses.  You provide it with a pattern containing symbols defining the output you want to produce and it will create random data to match that pattern.
 
@@ -6,9 +6,9 @@ A library and command line tool that can be used to generate data for testing or
 
  Installation
  There are a few ways you can intall tdg.
+  - You can download the latest versions from the releases which will contain all you need to run the command line tdg tool.
   - You can install using Nuget by executing "nuget install tdg" in a terminal which will download and tdg and each of its required libraries to the current folder.
   - You can run "install-package tdg" from the Nuget Package Management Console to add TDG to your project.
-  - You can download the latest versions from the releases which will contain all you need to run the command line tdg tool.
 
  Placeholders
 When using the commandline tool place all patterns and symbols inside '\\<< >>' tokens **without the backslash** e.g. 'Generate some Letters \\<<\L\L>>'. 
@@ -32,7 +32,7 @@ The pattern is as follows:
 
  Groups
 - `(\d){5}` - Five digits between 0 and 9.
-- `\L(\d){3}\L` - A upper-case letter, five digits between 0 and 9 and another upper-case letter.
+- `\L(\d){3}\L` - A upper-case letter, three digits between 0 and 9 and another upper-case letter.
 - `(.[100-101]){3}` - Three items, each will include a dot '.' and either 100 or 101 e.g. *'<<(.[100-101]){3}>>'*
 
  Ranges
@@ -51,7 +51,7 @@ The pattern is as follows:
 - `(\L\L|\d\d|[AEIOU]|[100-120])` - Either two upper-case letters OR two digits OR an upper-case vowel OR a number between 100 and 120.
 
  Named Parameters
-A named pattern is surrounded with @ characters and links to a predefined pattern loaded from a file. The `default.tdg-patterns` file located in the same directory as the tdg executable file contains a list of named patterns which can be used in other patterns you write.  For example to generate you could write something like `([1-9]\d\d-\d\d-\d\d\d\d)` or you can use the named parameter in the file `(@data_ssn@)` to a similar value.  You can add more patterns to the file as you wish.  Named patterns can also include other named patterns if you so wish.  
+A named pattern is surrounded with @ characters and links to a predefined pattern loaded from a file. The `default.tdg-patterns` file located in the same directory as the tdg executable file contains a list of named patterns which can be used in other patterns you write.  For example to generate you could write something like `([1-9]\d\d-\d\d-\d\d\d\d)` or you can use the named parameter in the file `(@misc_ssn@)` to a similar value.  You can add more patterns to the file as you wish.  Named patterns can also include other named patterns if you so wish.  
 
 Take a look at the `@address_us_type1@` pattern in the file as an example of a compound pattern than uses other patterns to produce an output.
 '<<(@address_us_type1@)>>'
@@ -83,7 +83,7 @@ You can use the `tdg.exe` application to generate test data from the command lin
   - Produces 100 items like *'Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is <<[1-9]\d\d-\d\d-\d\d\d\d>>.'*
 - Generate 100 SSN like values and output to console window.
   - `tdg -t '\\<<[1-9]\d\d-\d\d-\d\d\d\d>>' -c 100`
-  - Produces 100 items like *'<<\D\d\d-\d\d-\d\d\d\d>>'*.
+  - Produces 100 items like *'<<[1-9]\d\d-\d\d-\d\d\d\d>>'*.
 - Generate 100 strings with random name like values and output to file.
   - `tdg -t 'Hi there \\<<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`
   - Produces 100 items like *'<<\L\v\l\v \L\v\l\l\v\v\l\l\v>>'*.

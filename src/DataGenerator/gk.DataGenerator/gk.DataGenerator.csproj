@@ -70,9 +70,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileReader.cs" />
+    <Compile Include="GenerationConfig.cs" />
     <Compile Include="Generators\AlphaNumericGenerator.cs" />
     <Compile Include="Exceptions\GenerationException.cs" />
     <Compile Include="Generators\ContentOptions.cs" />
+    <Compile Include="Generators\Utility.cs" />
     <Compile Include="NamedPatterns.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Strings.Designer.cs">
@@ -98,11 +100,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="default.tdg-patterns">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

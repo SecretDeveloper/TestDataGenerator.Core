@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -35,12 +36,20 @@ namespace gk.DataGenerator.tdg
 
                 if (cla.ListNamedPatterns)
                 {
-                    var path = AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + "default.tdg-patterns";
-                    var namedParameters = FileReader.LoadNamedPatterns(path);
+                    var paths = new List<string>();
+                    paths.Add("default");
+
+                    if (!cla.NamedPatterns.IsNullOrEmpty()) cla.NamedPatterns.Split(';').ToList().ForEach(paths.Add);
+
                     Console.WriteLine("Named Parameters:");
-                    foreach (var namedParameter in namedParameters.Patterns.OrderBy(x => x.Name))
+                    foreach (var file in paths)
                     {
-                        Console.WriteLine(namedParameter.Name);
+                        var correctedPath = FileReader.GetPatternFilePath(file);
+                        var namedParameters = FileReader.LoadNamedPatterns(correctedPath);
+                        foreach (var namedParameter in namedParameters.Patterns)
+                        {
+                            Console.WriteLine(namedParameter.Name);   
+                        }
                     }
                 }
                 else
@@ -63,17 +72,20 @@ namespace gk.DataGenerator.tdg
 
                 if (cla.Verbose)
                 {
-                    sw.Stop();
-                    Console.WriteLine("Generation took {0} milliseconds", sw.ElapsedMilliseconds);
+                    if (sw != null)
+                    {
+                        sw.Stop();
+                        Console.WriteLine("Generation took {0} milliseconds", sw.ElapsedMilliseconds);
+                    }
                 }
             }
             catch (GenerationException gex)
             {
-                Console.WriteLine(string.Format("Error:\n{0}", gex.Message));
+                Console.WriteLine("Error:\n{0}", gex.Message);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Format("Error:{0}\n\nStackTrace:{1}",ex.Message, ex.StackTrace));
+                Console.WriteLine("Error:{0}\n\nStackTrace:{1}",ex.Message, ex.StackTrace);
             }
         }
 
@@ -100,16 +112,24 @@ namespace gk.DataGenerator.tdg
 
         private static void OutputToConsole(CommandLineArgs cla, string template)
         {
-            Func<string, string> generateFrom = AlphaNumericGenerator.GenerateFromTemplate;
+            Func<string, GenerationConfig, string> generateFrom = AlphaNumericGenerator.GenerateFromTemplate;
             if (!cla.Pattern.IsNullOrEmpty())
             {
                 generateFrom = AlphaNumericGenerator.GenerateFromPattern;
             }
 
+            GenerationConfig config = null;
+            if (cla.Seed.HasValue || !cla.NamedPatterns.IsNullOrEmpty())
+            {
+                config = new GenerationConfig();
+                if (cla.Seed.HasValue) config.Seed = cla.Seed;
+                if (!cla.NamedPatterns.IsNullOrEmpty()) cla.NamedPatterns.Split(';').ToList().ForEach(config.PatternFiles.Add);
+            }
+
             int ct = 0;
             while (ct < cla.Count)
             {
-                var item = generateFrom(template);
+                var item = generateFrom(template, config);
                 Console.WriteLine(item);
                 ct++;
             }
@@ -117,12 +137,25 @@ namespace gk.DataGenerator.tdg
 
         private static void OutputToFile(CommandLineArgs cla, string template)
         {
+            Func<string, GenerationConfig, string> generateFrom = AlphaNumericGenerator.GenerateFromTemplate;
+            if (!cla.Pattern.IsNullOrEmpty())
+            {
+                generateFrom = AlphaNumericGenerator.GenerateFromPattern;
+            }
+
+            GenerationConfig config = null;
+            if(cla.Seed.HasValue || !cla.NamedPatterns.IsNullOrEmpty()){
+                config = new GenerationConfig();
+                if (cla.Seed.HasValue) config.Seed = cla.Seed;
+                if (!cla.NamedPatterns.IsNullOrEmpty()) cla.NamedPatterns.Split(';').ToList().ForEach(config.PatternFiles.Add);
+            }
+
             using (var fs = new StreamWriter(cla.OutputFilePath))
             {
                 int ct = 0;
                 while (ct < cla.Count)
                 {
-                    var item = AlphaNumericGenerator.GenerateFromTemplate(template);
+                    var item = generateFrom(template, config);
                     fs.WriteLine(item);
                     ct++;
                 }
