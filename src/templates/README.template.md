@@ -4,6 +4,13 @@ A library and command line tool that can be used to generate data for testing or
 
 ## Quick Start with examples
 
+
+ ### Installation
+ There are a few ways you can intall tdg.
+  - You can install using Nuget by executing `nuget install tdg` in a terminal which will download and tdg and each of its required libraries to the current folder.
+  - You can run `install-package tdg` from the Nuget Package Management Console to add TDG to your project.
+  - You can download the latest versions from the [releases](https://github.com/SecretDeveloper/TestDataGenerator/releases) which will contain all you need to run the command line tdg tool.
+
 ### Placeholders
 When using the commandline tool place all patterns and symbols inside '\\<< >>' tokens **without the backslash** e.g. 'Generate some Letters \\<<\L\L>>'. 
 
