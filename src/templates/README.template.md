@@ -5,7 +5,7 @@ A library and command line tool that can be used to generate data for testing or
 ## Quick Start with examples
 
 
- ### Installation
+### Installation
  There are a few ways you can intall tdg.
   - You can install using Nuget by executing `nuget install tdg` in a terminal which will download and tdg and each of its required libraries to the current folder.
   - You can run `install-package tdg` from the Nuget Package Management Console to add TDG to your project.
