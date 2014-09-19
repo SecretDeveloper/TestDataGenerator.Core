@@ -124,7 +124,7 @@ function deploy{
     # DEPLOYING
     write-host "Deploying" -foregroundcolor:blue
     $outputName = $projectName+"_V"+$buildVersion+"_BUILD.zip"
-    zip a -tzip .\src\buildoutput\$outputName .\src\BuildOutput\*.* > $logPath\LogDeploy.log
+    zip a -tzip .\src\buildoutput\$outputName -r .\src\BuildOutput\*.* >> $logPath\LogDeploy.log    
 
 }
 
