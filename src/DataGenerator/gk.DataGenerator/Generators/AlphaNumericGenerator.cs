@@ -11,10 +11,11 @@ namespace gk.DataGenerator.Generators
 {
     public static class AlphaNumericGenerator 
     {
-        private const string _AllPossibleCharacters = _AllLetters + _AllNumbers + _AllNonAlphaNumericCharacters;
+        private const string _AllPossibleCharacters = _AllLetters + _AllNumbers + _AllNonWhitespaceNonAlphaNumericCharacters + " ";
         private const string _AllLetters = _ShortHand_l + _ShortHand_L;
         private const string _AllNumbers = "0123456789";
-        private const string _AllNonAlphaNumericCharacters = " .,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_|~/";
+        private const string _AllWhitespaceCharacters = " \t\n\r\f";
+        private const string _AllNonWhitespaceNonAlphaNumericCharacters = ".,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_|~/";
 
         private const string _ShortHand_l = "abcdefghijklmnopqrstuvwxyz"; // \l
         private const string _ShortHand_L = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // \L
@@ -22,13 +23,12 @@ namespace gk.DataGenerator.Generators
         private const string _ShortHand_v = "aeiou"; // \v
         private const string _ShortHand_C = "BCDFGHJKLMNPQRSTVWXYZ"; // \C
         private const string _ShortHand_c = "bcdfghjklmnpqrstvwxyz"; // \c
-        private const string _ShortHand_D = _AllLetters + _AllNonAlphaNumericCharacters; // \D
+        private const string _ShortHand_D = _AllLetters + _AllNonWhitespaceNonAlphaNumericCharacters + " "; // \D
         private const string _ShortHand_d = _AllNumbers; // \d
-        private const string _ShortHand_W = " .,;:\"'!&?£€$%^<>{}[]()*\\+-=@#|~/";  // \W
-        private const string _ShortHand_w = _AllLetters; // \w
-        private const string _ShortHand_s = " \t\n\r\f";  // \s
-        private const string _ShortHand_S = _ShortHand_l + _ShortHand_L + _AllNumbers + _AllNonAlphaNumericCharacters;  // \S
-
+        private const string _ShortHand_W = _AllNonWhitespaceNonAlphaNumericCharacters + " ";  // \W
+        private const string _ShortHand_w = _AllLetters + _AllNumbers + "_"; // \w
+        private const string _ShortHand_s = _AllWhitespaceCharacters;  // \s
+        private const string _ShortHand_S = _AllLetters + _AllNumbers + _AllNonWhitespaceNonAlphaNumericCharacters;  // \S
 
         private const string _Config_Start = "<#";
         private const string _Config_End = "#>";
@@ -53,9 +53,6 @@ namespace gk.DataGenerator.Generators
         private const char _NamedPattern_End = '@';
 
         private const int _ErrorSnippet_ContextLength = 50;
-
-        private const string _PatternFolder_Name = "tdg-patterns";
-        private const string _PatternFile_Extension = "tdg-patterns";
 
 
         /// <summary>
@@ -205,9 +202,6 @@ namespace gk.DataGenerator.Generators
             {
                 var correctedPath = FileReader.GetPatternFilePath(patternFile);
 
-                if (!File.Exists(correctedPath)) 
-                    throw new GenerationException("PatternFile not found:" + patternFile + "\n Attempted to locate it at\n'"+correctedPath+"\nbut it was not found.");
-
                 try
                 {
                     var patt = FileReader.LoadNamedPatterns(correctedPath);
@@ -241,11 +235,17 @@ namespace gk.DataGenerator.Generators
         private static NamedPatterns LoadDefaultNamedPatterns()
         {
             var patterns = new NamedPatterns();
-            var path = FileReader.GetPatternFilePath("default");
-                //Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _PatternFolder_Name, "default.tdg-patterns");
-            if (File.Exists(path))
+            try
             {
-                patterns = FileReader.LoadNamedPatterns(path);
+                var path = FileReader.GetPatternFilePath("default");
+                if (File.Exists(path))
+                {
+                    patterns = FileReader.LoadNamedPatterns(path);
+                }
+            }
+            catch(GenerationException)
+            {
+                // Error loading defaults - not throwing as they may not have been deployed
             }
             return patterns;
         }

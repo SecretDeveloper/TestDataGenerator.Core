@@ -25,7 +25,7 @@ A library and command line tool that can be used to generate data for testing, t
 If you are familiar with Regular Expressions then most of the syntax used will be familiar but there are significant differences in place given that regex is used to match a string against a pattern.  The generator instead uses simple patterns of symbols to produce strings, because of the difference in usage the syntaxes cannot match up entirely.  Patterns define what the generated values will be and can be composed using text and symbols.  Sections of the pattern can be repeated a specific number of times (they can also be repeated a random number of times by providing a min and max).  Patterns can also include alternate items that will be randomly selected, helping to produce relatively complicated outputs. 
 
 ### Symbols
-The pattern is as follows:
+The following symbols are shorthand tokens which you can use in your generation patterns:
 - `\.` - A single random character of any type.
 - `\W` - A single random character from the following list ' .,;:\"'!&?£€$%^<>{}[]()*+-=\@#|~/'.
 - `\w` - A single random upper-case or lower-case letter.
@@ -37,6 +37,7 @@ The pattern is as follows:
 - `\c` - A single random lower-case consonant.
 - `\D` - A single random non number character.
 - `\d` - A single random number, 1-9.
+- `\S` - A single random non-whitespace character
 - `\s` - A whitespace character (Tab, New Line, Space, Carriage Return or Form Feed)
 - `\n` - A newline character.
 - `\t` - A tab character.
@@ -127,6 +128,8 @@ You can use the `tdg.exe` application to generate test data from the command lin
   
 ### Pattern Files
 Pattern files contain Named Patterns which can be used within Templates. TDG comes with a few pattern files contained within the 'tdg-patterns' folder and you can add your own if you wish.  The files are structured as simple xml documents that should be pretty self explanatory.  To use a pattern file you have created you need to add its path to a GenerationConfig object when using the library or as part of the configuration directive at the start of a template.  You can also include them from the command line using the `-n` or `--namedpatterns` argument.
+
+**If you are adding TDG to a project using nuget and wish to use some of the named patterns defined in default.tdg-patterns you will need to change its build settings to "Content" and "Copy Always" to ensure it gets deployed with your application.**
 
 ### Commandline examples
 - Single repeating symbols using the following syntax

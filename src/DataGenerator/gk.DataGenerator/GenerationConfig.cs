@@ -26,7 +26,7 @@ namespace gk.DataGenerator
         private Random mRandom;
         public Random Random
         {
-            get { return mRandom ?? (mRandom = new Random(mSeed.Value)); }
+            get { return mRandom; }
             set { mRandom = value; }
         }
 

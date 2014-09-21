@@ -1514,7 +1514,7 @@ namespace gk.DataGeneratorTests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
 
-            Assert.AreEqual(text, @"Generated _i)XjUo6Eo");
+            Assert.AreEqual(text, @"Generated |k*XjUo6Eo");
         }
 
         [TestMethod]

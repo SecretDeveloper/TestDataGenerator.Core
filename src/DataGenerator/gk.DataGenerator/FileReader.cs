@@ -9,6 +9,9 @@ namespace gk.DataGenerator
 {
     public static class FileReader
     {
+        private const string _PatternFolder_Name = "tdg-patterns";
+        private const string _PatternFile_Extension = "tdg-patterns";
+
         public static NamedPatterns LoadNamedPatterns(string path)
         {
             NamedPatterns result;
@@ -22,7 +25,7 @@ namespace gk.DataGenerator
 
         public static string GetPatternFilePath(string filePath)
         {
-            if (!Path.HasExtension(filePath)) filePath = Path.ChangeExtension(filePath, "tdg-patterns");
+            if (!Path.HasExtension(filePath)) filePath = Path.ChangeExtension(filePath, _PatternFile_Extension);
 
             var paths = new List<string>();
             paths.Add(filePath);
@@ -34,7 +37,7 @@ namespace gk.DataGenerator
                 paths.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath));
 
                 // check if it is within the _PatternFolder_Name folder
-                paths.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tdg-patterns", filePath));
+                paths.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _PatternFolder_Name, filePath));
             }
 
             foreach (var path in paths)
@@ -42,9 +45,8 @@ namespace gk.DataGenerator
                 if (File.Exists(path)) return path;
             }
 
-            var msg = string.Format("Unable to find pattern file '{0}'. Searched in the following locations:\n{1}", filePath, string.Join("\n", paths));
+            var msg = String.Format("Unable to find pattern file '{0}'. Searched in the following locations:\n{1}", filePath, String.Join("\n", paths));
             throw new GenerationException(msg);
         }
-
     }
 }

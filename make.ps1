@@ -103,7 +103,7 @@ function document{
         Write-host "DOCUMENT FAILED!"  -foregroundcolor:red
         exit
     }
-    Invoke-expression "./src/buildoutput/tdg.exe -i '.\src\templates\README.template.txt' -o '.\src\buildoutput\README.txt'"    
+    Invoke-expression "./src/buildoutput/tdg.exe -i '.\src\templates\README.template.md' -o '.\src\buildoutput\README.txt'"    
     if($? -eq $False){
         Write-host "DOCUMENT FAILED!"  -foregroundcolor:red
         exit
@@ -124,7 +124,7 @@ function deploy{
     # DEPLOYING
     write-host "Deploying" -foregroundcolor:blue
     $outputName = $projectName+"_V"+$buildVersion+"_BUILD.zip"
-    zip a -tzip .\src\buildoutput\$outputName -r .\src\BuildOutput\*.* >> $logPath\LogDeploy.log    
+    zip a -tzip .\releases\$outputName -r .\src\BuildOutput\*.* >> $logPath\LogDeploy.log    
 
 }
 
