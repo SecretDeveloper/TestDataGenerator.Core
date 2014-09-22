@@ -275,6 +275,17 @@ namespace gk.DataGeneratorTests
 
         [TestMethod]
         [TestCategory("Template")]
+        public void Can_Generate_From_Pattern_With_Alternatives2()
+        {
+            var template = @"Alternatives <<(A|B){1000}>>";
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine(@"'{0}' produced '{1}'", template, text);
+            StringAssert.Matches(text, new Regex(@"Alternatives ([BCDFGHJKLMNPQRSTVWXYZ]{1}|[bcdfghjklmnpqrstvwxyz]{10}|[AEIOU]{3}|[aeiou]{2,3})"));
+        }
+
+
+        [TestMethod]
+        [TestCategory("Template")]
         public void Can_Generate_From_Pattern_With_Alternatives_Repeated_Symbols()
         {
             var template = @"Alternatives <<(\C{1}|\c{10}|\V{3}|\v{2,3})>>";
