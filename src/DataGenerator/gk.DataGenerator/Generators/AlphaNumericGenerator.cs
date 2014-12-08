@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -196,7 +197,7 @@ namespace gk.DataGenerator.Generators
 
         private static void AppendPatternsFromConfigToCollection(GenerationConfig config, NamedPatterns patternCollection)
         {
-            if (config == null || config.PatternFiles == null) return;
+            if (config.PatternFiles == null) return;
 
             foreach (var patternFile in config.PatternFiles)
             {
@@ -235,21 +236,16 @@ namespace gk.DataGenerator.Generators
         private static NamedPatterns LoadDefaultNamedPatterns()
         {
             var patterns = new NamedPatterns();
-            try
+
+            var path = FileReader.GetPatternFilePath("default");
+            if (File.Exists(path))
             {
-                var path = FileReader.GetPatternFilePath("default");
-                if (File.Exists(path))
-                {
-                    patterns = FileReader.LoadNamedPatterns(path);
-                }
+                patterns = FileReader.LoadNamedPatterns(path, false);
             }
-            catch(GenerationException)
-            {
-                // Error loading defaults - not throwing as they may not have been deployed
-            }
+
             return patterns;
         }
-        
+
         public static string GenerateFromPattern(string pattern)
         {
             var sb = new StringBuilder();
@@ -697,12 +693,9 @@ namespace gk.DataGenerator.Generators
 
         private static string GetContent(string characters, ref int index, string openingContainerChar, string closingContainerChar)
         {
-            if (index == characters.Length || index + openingContainerChar.Length >= characters.Length)
+            if(index + openingContainerChar.Length >= characters.Length)
                 return "";
-
-            if (characters.Substring(index,openingContainerChar.Length).Equals(openingContainerChar) == false)
-                return "";
-
+            
             int patternStart = index + openingContainerChar.Length;
             var patternEnd = patternStart;
             var sectionDepth = openingContainerChar.Equals(closingContainerChar) ? 0 : 1; // start off inside current section

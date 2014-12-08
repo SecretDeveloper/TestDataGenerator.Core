@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
@@ -14,11 +15,24 @@ namespace gk.DataGenerator
 
         public static NamedPatterns LoadNamedPatterns(string path)
         {
-            NamedPatterns result;
-            using (var reader = XmlReader.Create(path))
+            return LoadNamedPatterns(path, true);
+        }
+
+        [ExcludeFromCodeCoverage]
+        public static NamedPatterns LoadNamedPatterns(string path, bool throwException)
+        {
+            var result = new NamedPatterns();
+            try
             {
-                var ser = new XmlSerializer(typeof(NamedPatterns));
-                result = ser.Deserialize(reader) as NamedPatterns;
+                using (var reader = XmlReader.Create(path))
+                {
+                    var ser = new XmlSerializer(typeof (NamedPatterns));
+                    result = ser.Deserialize(reader) as NamedPatterns;
+                }
+            }
+            catch
+            {
+                if (throwException) throw;
             }
             return result;
         }

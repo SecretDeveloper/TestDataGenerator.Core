@@ -18,7 +18,7 @@ function clean{
     {
         mkdir "$basePath\src\TestOutput\"
     }    
-    remove-item $basePath\src\BuildOutput\*.* -recurse
+    remove-item $basePath\src\BuildOutput\* -recurse
     remove-item $basePath\src\TestOutput\* -recurse
     if((Test-Path "$basePath\src\DataGenerator\TestResults\"))
     {
