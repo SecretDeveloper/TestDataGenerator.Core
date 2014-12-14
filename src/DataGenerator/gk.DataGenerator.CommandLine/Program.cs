@@ -27,6 +27,12 @@ namespace gk.DataGenerator.tdg
                     Console.WriteLine("Parse failed!  Use --help flag for instructions on usage.");
                     return;
                 }
+
+                if (cla.ShowPatternHelp)
+                {
+                    Console.Write(cla.GetPatternUsage());
+                    return;
+                }
                 
                 if (cla.Verbose)
                 {
@@ -142,10 +148,19 @@ namespace gk.DataGenerator.tdg
                 generateFrom = AlphaNumericGenerator.GenerateFromPattern;
             }
 
-            GenerationConfig config = new GenerationConfig();
+            GenerationConfig config = null;
             if(cla.Seed.HasValue || !cla.NamedPatterns.IsNullOrEmpty()){
-                if (cla.Seed.HasValue) config.Seed = cla.Seed;
-                if (!cla.NamedPatterns.IsNullOrEmpty()) cla.NamedPatterns.Split(';').ToList().ForEach(config.PatternFiles.Add);
+                
+                if (cla.Seed.HasValue)
+                {
+                    if (config == null) config = new GenerationConfig();
+                    config.Seed = cla.Seed;
+                }
+                if (!cla.NamedPatterns.IsNullOrEmpty())
+                {
+                    if (config == null) config = new GenerationConfig();
+                    cla.NamedPatterns.Split(';').ToList().ForEach(config.PatternFiles.Add);
+                }
             }
 
             using (var fs = new StreamWriter(cla.OutputFilePath))

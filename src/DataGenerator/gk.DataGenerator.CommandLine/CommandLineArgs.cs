@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Reflection;
+using System.Security.Policy;
+using System.Text;
 using CommandLine;
 using CommandLine.Text;
 
@@ -12,6 +14,9 @@ namespace gk.DataGenerator.tdg
 
         [Option('p', "pattern", DefaultValue = "", HelpText = "The pattern to use when producing data.", MutuallyExclusiveSet = "fromCL")]
         public string Pattern { get; set; }
+
+        [Option('d', "detailed", DefaultValue = false, HelpText = "Show help text for pattern symbols")]
+        public bool ShowPatternHelp { get; set; }
 
         [Option('i', "inputfile", DefaultValue = "", HelpText = "The path of the input file.", Required = false, MutuallyExclusiveSet = "fromFile")]
         public string InputFilePath { get; set; }
@@ -57,6 +62,7 @@ namespace gk.DataGenerator.tdg
             };
             help.AddPreOptionsLine("This is free software. You may redistribute copies of it under the terms of the MIT License.");
             help.AddPreOptionsLine(" <http://www.opensource.org/licenses/mit-license.php>");
+            help.AddPreOptionsLine("Commandline Arguments:");
 
             help.AddPostOptionsLine("Examples:");
             help.AddPostOptionsLine("\t tdg -t '<<LL>>'");
@@ -67,6 +73,45 @@ namespace gk.DataGenerator.tdg
             
             help.AddOptions(this);
             return help;
+        }
+
+        public string GetPatternUsage()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine("Detailed Pattern Usage");
+            sb.AppendLine();
+
+            sb.AppendLine("The following symbols can be used within a pattern to produce the desired output.");
+            sb.AppendLine("\t\\. - A single random character of any type.");
+            sb.AppendLine("\t\\W - A single random character from the following list ' .,;:'\"!&?£€$%^<>{}*+-=\\@#|~/'.");
+            sb.AppendLine("\t\\w - A single random upper-case or lower-case letter.");
+            sb.AppendLine("\t\\L - A single random upper-case Letter.");
+            sb.AppendLine("\t\\l - A single random lower-case letter.");
+            sb.AppendLine("\t\\V - A single random upper-case Vowel.");
+            sb.AppendLine("\t\\v - A single random lower-case vowel.");
+            sb.AppendLine("\t\\C - A single random upper-case Consonant.");
+            sb.AppendLine("\t\\c - A single random lower-case consonant.");
+            sb.AppendLine("\t\\D - A single random non number character.");
+            sb.AppendLine("\t\\d - A single random number, 1-9.");
+            sb.AppendLine("\t\\S - A single random non-whitespace character.");
+            sb.AppendLine("\t\\s - A whitespace character (Tab, New Line, Space, Carriage Return or Form Feed)");
+            sb.AppendLine("\t\\n - A newline character.");
+            sb.AppendLine("\t\\t - A tab character.");
+            
+            sb.AppendLine("Patterns usage");
+            sb.AppendLine("\ttdg -p '(\\L)' - Will generate a random upper-case character.");
+            sb.AppendLine("\ttdg -p '(\\L){5}' - Will generate 5 random upper-case characters.");
+            sb.AppendLine("\ttdg -p '(\\L){10,20}' - Will generate between 10 and 20 random upper-case characters.");
+            
+            sb.AppendLine("Patterns and normal text can be combined in templates");
+            sb.AppendLine("Template usage");
+            sb.AppendLine("\ttdg -t '<<Text containing a (\\L) pattern>>'");
+            sb.AppendLine("\ttdg -t '<<Text containing a (\\L){5} pattern>>'");
+            sb.AppendLine("\ttdg -t '<<Text containing a (\\L){10,20} pattern>>'");
+            sb.AppendLine("View the Readme document for further examples");
+
+            return sb.ToString();
         }
 
     }
