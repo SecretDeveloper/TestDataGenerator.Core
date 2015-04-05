@@ -156,7 +156,7 @@ Pattern files contain Named Patterns which can be used within Templates. TDG com
 **If you are adding TDG to a project using nuget and wish to use some of the named patterns defined in default.tdg-patterns you will need to change its build settings to "Content" and "Copy Always" to ensure it gets deployed with your application.**
 
 ### Commandline examples
-
+<sub>
 |Commandline example|Description|Example|
 |--------|--------|-------|
 |`tdg -t 'Letters <<\L{20}>> and Numbers <<\d{12}>>'`|Single repeating symbols using the following syntax. |*'Letters DBHFCYMVZDVSXBIFTECR and Numbers 620522661563'*|
@@ -169,5 +169,6 @@ Pattern files contain Named Patterns which can be used within Templates. TDG com
 |`tdg -t 'Hi there <<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`|Generate 100 strings with random name like values and output to file. Produces 100 items like|*'Euuu Ravioifsu'*|
 |`tdg -t '<<Letters \w{2,20} and Numbers \d{2,12}\n>>'`|Produces the following output:|*'Letters hIGy_ and Numbers 47113461
 '*|
+</sub>
 
 ## This README was generated using the generator.  See the unit tests for other examples.
