@@ -30,8 +30,7 @@ The following symbols are shorthand tokens which you can use in your generation 
 Symbol|Description|Example
 ------|-----------|-------
 `\.`|A single random character of any type.|y
-`\W`|A single random character from the following list
- ' .,;:\"'!&?£€$%^<>{}[]()*+-=\@#\|~/'.|:
+`\W`|A single random character from the following list ' .,;:\"'!&?£€$%^<>{}[]()*+-=\@#\|~/'.|:
 `\w`|A single random upper-case or lower-case letter.|D
 `\L`|A single random upper-case Letter.|U
 `\l`|A single random lower-case letter.|r
