@@ -159,15 +159,15 @@ Pattern files contain Named Patterns which can be used within Templates. TDG com
 
 |Command|Description|Example|
 |--------|--------|-------|
-|`tdg -t 'Letters <<\L{20}>> and Numbers <<\d{12}>>'`|Single repeating symbols using the following syntax. |<sub>*'Letters DBHFCYMVZDVSXBIFTECR and Numbers 620522661563'*</sub>|
-|`tdg -t '<<(\L){5}>>'`|Repeating patterns containing multiple letters or numbers of random length. Will generate 5 random upper-case characters.|*'JNEZW'*|
-|`tdg -t '<<(\L\L\d){24}>>'`|Will generate 24 repeating letter-letter-number values.|*'BJ8SI8WM2TU3TU5CI3XB7YW3WQ4LN3JW3IR8GZ3JE0YM8FL7EG0DH9DC4NV6LL9YJ9BK1RV3'*|
-|`tdg -t '<<(\L){10,20}>>'`|Will generate a string containing between 10 and 20 characters of random value.|*'NXQAJMQFQG'*|
-|`tdg -t 'Letters <<\L{2,20}>> and Numbers <<\d{2,12}>>'`|Produces items like|*'Letters IFPJEPI and Numbers 1697101910'*|
-|`tdg -t 'Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is <<[1-9]\d\d-\d\d-\d\d\d\d>>.' -c 100`|Input can contain several placeholders. Produces 100 items like|*'Hi there Rico Bam how are you doing?  Your SSN is 266-13-6253.'*|
-|`tdg -t '<<[1-9]\d\d-\d\d-\d\d\d\d>>' -c 100`|- Generate 100 SSN like values and output to console window. Produces 100 items like|*'345-14-0254'*|
-|`tdg -t 'Hi there <<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`|Generate 100 strings with random name like values and output to file. Produces 100 items like|*'Euuu Ravioifsu'*|
-|`tdg -t '<<Letters \w{2,20} and Numbers \d{2,12}\n>>'`|Produces the following output:|*'Letters hIGy_ and Numbers 47113461
+|`tdg -t 'Letters <<\L{20}>> and Numbers <<\d{12}>>'`|Single repeating symbols using the following syntax. |*'Letters DBHFCYMVZDVSXBIFTECR and </br>Numbers 620522661563'*|
+|`tdg -t '<<(\L){5}>>'`|Repeating patterns containing multiple letters or numbers of random length. </br>Will generate 5 random upper-case characters.|*'JNEZW'*|
+|`tdg -t '<<(\L\L\d){4}>>'`|Will generate 4 repeating letter-letter-number values.|*'BJ8SI8WM2TU3'*|
+|`tdg -t '<<(\L){10,20}>>'`|Will generate a string containing between 10 and 20 characters of random value.|*'UNCIKXBSYWHWQKLNIJ'*|
+|`tdg -t 'Letters <<\L{2,20}>> and Numbers <<\d{2,12}>>'`|Produces items like|*'Letters IIRVGZIJECYMVFLUEG and Numbers 12'*|
+|`tdg -t 'Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is <<[1-9]\d\d-\d\d-\d\d\d\d>>.' -c 100`|Input can contain several placeholders. Produces 100 items like|*'Hi there Yi Noiyeuk how are you doing?  </br>Your SSN is 683-05-8603.'*|
+|`tdg -t '<<[1-9]\d\d-\d\d-\d\d\d\d>>' -c 100`|- Generate 100 SSN like values and output to console window. Produces 100 items like|*'626-22-3253'*|
+|`tdg -t 'Hi there <<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`|Generate 100 strings with random name like values and output to file. Produces 100 items like|*'Eiio Doysaadxa'*|
+|`tdg -t '<<Letters \w{2,20} and Numbers \d{2,12}\n>>'`|Produces the following output:|*'Letters QE and Numbers 607050
 '*|
 
 ## This README was generated using the generator.  See the unit tests for other examples.
