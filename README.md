@@ -30,7 +30,8 @@ The following symbols are shorthand tokens which you can use in your generation 
 Symbol|Description|Example
 ------|-----------|-------
 `\.`|A single random character of any type.|y
-`\W`|A single random character from the following list ' .,;:\"'!&?£€$%^<>{}[]()*+-=\@#\|~/'.|:
+`\W`|A single random character from the following list
+ ' .,;:\"'!&?£€$%^<>{}[]()*+-=\@#\|~/'.|:
 `\w`|A single random upper-case or lower-case letter.|D
 `\L`|A single random upper-case Letter.|U
 `\l`|A single random lower-case letter.|r
@@ -48,32 +49,44 @@ Symbol|Description|Example
 ### Groups
 Groups can contain multiple Symbols or characters and allows us to treat them as a single unit.  Their usage becomes apparent when using them with *repetitions* or *alternations*.  Groups are surrounded in () brackets.
 #### Simple Groups
-- `(\d)` - A number between 0 and 9 e.g. '9'
-- `(ABC\d)` - 'ABC' followed by a number between 0 and 9 e.g. ABC6
-- `\L(\d)\L` - A upper-case letter, three digits between 0 and 9 and another upper-case letter e.g. R2P
+
+|Group|Description|Example|
+|----|------|-----|
+|`(\d)`|A number between 0 and 9.|'9'|
+|`(ABC\d)`|'ABC' followed by a number between 0 and 9.|ABC6|
+|`\L(\d)\L`|A upper-case letter, three digits between 0 and 9 and another upper-case letter.|R2P|
 
 #### Alternations
 When a group contains alternations the patterns are divided by the | character, during processing one of the alternated patterns is selected at random. 
 Groups can contain several individual symbols or groups of symbols and randomly alternate between them when generating the output value.
 
 **Alternatives must be contained within a Group**
-- `(\L\L|\d\d)` - Either two upper-case letters OR two numbers e.g. '79'
-- `(\L\L|\d\d|[AEIOU]|[100-120])` - Either two upper-case letters OR two digits OR an upper-case vowel OR a number between 100 and 120 e.g. 'EJ'
-- `(\C|)` - Either a upper-case Consonant or nothing.
+
+|Alternation|Description|Example|
+|----|------|-----|
+|`(\L\L|\d\d)`|Either two upper-case letters OR two numbers.|'79'|
+|`(\L\L|\d\d|[AEIOU]|[100-120])`|Either two upper-case letters OR two digits OR an upper-case vowel OR a number between 100 and 120.|'EJ'|
+|`(\C|)`|Either a upper-case Consonant or nothing.||
 
 ### Ranges
 Ranges can contain multiple characters or ranges of characters but no symbols (the items defined within the range will be what is used, no special symbols are allowed).  The item to be produced is selected at random.
 #### Character ranges
-- `[abc]` - Either 'a','b' or 'c' e.g. 'c'
-- `[a-z]` - A single lower-case letter between a and z e.g. 'u'
-- `[A-Z]` - A single upper-case letter between A and Z e.g. 'V'
-- `[A-D]` - A single upper-case letter between A and D e.g. 'C'
-- `[A-Da-z]` - A single character between A and D or between a and z e.g. 's'
+
+|Character Range|Description|Example|
+|----|------|-----|
+|`[abc]`|Either 'a','b' or 'c'.|'c'|
+|`[a-z]`|A single lower-case letter between a and z.|'u'|
+|`[A-Z]`|A single upper-case letter between A and Z.|'V'|
+|`[A-D]`|A single upper-case letter between A and D.|'C'|
+|`[A-Da-z]`|A single character between A and D or between a and z.|'s'|
 
 #### Numeric ranges
-- `[1-5]` - A number between 1 and 5 e.g. '5'
-- `[100-500]` - A number between 100 and 500 e.g. '443'
-- `[1.25-5]` - A decimal number between 1.25 and 5. The scope or number of decimal places is taken from the first number defined (1.25 in this case) and the produced value will have the same number of decimal places. e.g. '3.18'
+
+|Numeric Range|Description|Example|
+|----|------|-----|
+|`[1-5]`|A number between 1 and 5.|'5'|
+|`[100-500]`|A number between 100 and 500.|'443'|
+|`[1.25-5]`|A decimal number between 1.25 and 5. The scope or number of decimal places is taken from the first number defined (1.25 in this case) and the produced value will have the same number of decimal places.|'3.18'|
 
 ### Named Parameters
 A named pattern is surrounded with @ characters and links to a predefined pattern loaded from a file. The `default.tdg-patterns` file located in the same directory as the tdg executable file contains a list of named patterns which can be used in other patterns you write.  For example to generate you could write something like `([1-9]\d\d-\d\d-\d\d\d\d)` or you can use the named parameter in the file `(@misc_ssn@)` to a similar value.  You can add more patterns to the file as you wish.  Named patterns can also include other named patterns if you so wish.  
@@ -84,14 +97,20 @@ Take a look at the `@address_us_type1@` pattern in the file as an example of a c
 Repetition is a powerful feature allowing for complicated data production. A Symbol, Group or Range can be repeated a set or random number of times by using the following syntax.
 
 #### Quantity Repetition
-- `\d{5}` - Will generate 5 number characters e.g. '19094'
-- `(\L\d\L){5}` - Will generate 5 upper-case letter, number, upper-case letter items e.g. 'Q0DF0IO3ZW7FC1L'
-- `[ABC]{5}` - Will generate 5 items where each item will be either 'A','B' or 'C' e.g. 'CBCCA'
+
+|Repitition syntax|Description|Example|
+|----|------|-----|
+|`\d{5}`|Will generate 5 number characters.|'19094'|
+|`(\L\d\L){5}`|Will generate 5 upper-case letter, number, upper-case letter items.|'Q0DF0IO3ZW7FC1L'|
+|`[ABC]{5}`|Will generate 5 items where each item will be either 'A','B' or 'C'.|'CBCCA'|
 
 #### Random Quantity
-- `\d{5,10}` - Will generate between 5 and 10 number characters e.g. '3043330'
-- `(\L\d\L){5,10}` - Will generate  between 5 and 10 upper-case letter, number, upper-case letter items e.g. 'V8UC0XF8MH1DJ4JO3BE2LT1D'
-- `[ABC]{5,10}` - Will generate  between 5 and 10 items where each item will be either 'A','B' or 'C' e.g. 'CACBCCCBCA'
+
+|Random syntax|Description|Example|
+|----|------|-----|
+|`\d{5,10}`|Will generate between 5 and 10 number characters.|'3043330'|
+|`(\L\d\L){5,10}`|Will generate  between 5 and 10 upper-case letter, number, upper-case letter items.|'V8UC0XF8MH1DJ4JO3BE2LT1D'|
+|`[ABC]{5,10}`|Will generate  between 5 and 10 items where each item will be either 'A','B' or 'C'.|'CACBCCCBCA'|
 
 
 ## Template Syntax
@@ -118,16 +137,19 @@ You can supply configuration values to the generator either as an additional par
 You can use the `tdg.exe` application to generate test data from the command line.  It can handle provided templates directly from the command line or from a file. The tool also supports exporting the generated output to either the command line or another file.
 
 ### Parameters:
-- `-t, --template`    The template containing 1 or more patterns to use when producing data.
-- `-p  --pattern`       The pattern to use when producing data.
-- `-i  --inputfile`     The path of the input file.
-- `-o, --output`        The path of the output file.
-- `-c, --count`         The number of items to produce. Default is 1.
-- `-s, --seed`          Seed value for Random data generator, using the same seed value and pattern will produce the same output each time.
-- `-v, --verbose`       Verbose output including debug and performance information.
-- `-n, --namedpatterns` A list of ';' seperated file paths containing named patterns to be used in addition to default.tdg-patterns.
-- `-l, --listpatterns`  Outputs a list of the named patterns from the default.tdg-patterns file.  
-- `--help`              Display the help screen.
+
+|Parameter|Description|
+|------|-----|
+|`-t, --template`|The template containing 1 or more patterns to use when producing data.|
+|`-p  --pattern`|The pattern to use when producing data.|
+|`-i  --inputfile`|The path of the input file.|
+|`-o, --output`|The path of the output file.|
+|`-c, --count`|The number of items to produce. Default is 1.|
+|`-s, --seed`|Seed value for Random data generator, using the same seed value and pattern will produce the same output each time.|
+|`-v, --verbose`|Verbose output including debug and performance information.|
+|`-n, --namedpatterns`|A list of ';' seperated file paths containing named patterns to be used in addition to default.tdg-patterns.|
+|`-l, --listpatterns`|Outputs a list of the named patterns from the default.tdg-patterns file.|
+|`--help`|Display the help screen.|
   
 ### Pattern Files
 Pattern files contain Named Patterns which can be used within Templates. TDG comes with a few pattern files contained within the 'tdg-patterns' folder and you can add your own if you wish.  The files are structured as simple xml documents that should be pretty self explanatory.  To use a pattern file you have created you need to add its path to a GenerationConfig object when using the library or as part of the configuration directive at the start of a template.  You can also include them from the command line using the `-n` or `--namedpatterns` argument.
