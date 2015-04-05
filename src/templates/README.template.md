@@ -27,9 +27,9 @@ If you are familiar with Regular Expressions then most of the syntax used will b
 ### Symbols
 The following symbols are shorthand tokens which you can use in your generation patterns:
 
-Symbol|Description|Example
-------|-----------|-------
-`\.`|A single random character of any type.|<<\.>>
+|Symbol|Description|Represented characters|
+|------|-----------|-------|
+|`\.`|A single random character of any type.|abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_\|~/ and space|
 `\W`|A single random character from the following list ' .,;:\"'!&?£€$%^<>{}[]()*+-=\@#\|~/'.|<<\W>>
 `\w`|A single random upper-case or lower-case letter.|<<\w>>
 `\L`|A single random upper-case Letter.|<<\L>>
