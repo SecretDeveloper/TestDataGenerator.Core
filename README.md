@@ -29,7 +29,7 @@ The following symbols are shorthand tokens which you can use in your generation 
 
 |Symbol|Description|Represented characters|
 |------|-----------|-------|
-|`\.`|A single random character of any type.|abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_\|~/ and space|
+|`\.`|A single random character of any type.|abcdefghijklmnopqrstuvwxyz</br>ABCDEFGHIJKLMNOPQRSTUVWXYZ</br>0123456789</br>.,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_\|~/ and space|
 `\W`|A single random character from the following list ' .,;:\"'!&?£€$%^<>{}[]()*+-=\@#\|~/'.|?
 `\w`|A single random upper-case or lower-case letter.|g
 `\L`|A single random upper-case Letter.|M
