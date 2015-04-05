@@ -156,24 +156,17 @@ Pattern files contain Named Patterns which can be used within Templates. TDG com
 **If you are adding TDG to a project using nuget and wish to use some of the named patterns defined in default.tdg-patterns you will need to change its build settings to "Content" and "Copy Always" to ensure it gets deployed with your application.**
 
 ### Commandline examples
-- Single repeating symbols using the following syntax
-  - `tdg -t 'Letters \<<\L{20}>> and Numbers \<<\d{12}>>'`
-  - Produces items like *'Letters <<\L{20}>> and Numbers <<\d{12}>>'*.
-- Repeating patterns containing multiple letters or numbers of random length.
-  - `tdg -t '\<<(\L){5}>>'` - Will generate 5 random upper-case characters. e.g. *'<<(\L){5}>>'*
-  - `tdg -t '\<<(\L\L\d){24}>>'`  - Will generate 24 repeating letter-letter-number values e.g. *'<<(\L\L\d){24}>>'*
-- Variable length data can be generated also
-  - `tdg -t '\<<(\L){10,20}>>'` - Will generate a string containing between 10 and 20 characters of random value e.g. *'<<(\L){10,20}>>'*
-  - `tdg -t 'Letters \<<\L{2,20}>> and Numbers \<<\d{2,12}>>'` produces items like *'Letters <<\L{2,20}>> and Numbers <<\d{2,12}>>'*
-- Input can contain several placeholders.
-  - `tdg -t 'Hi there \<<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is \<<[1-9]\d\d-\d\d-\d\d\d\d>>.' -c 100` 
-  - Produces 100 items like *'Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is <<[1-9]\d\d-\d\d-\d\d\d\d>>.'*
-- Generate 100 SSN like values and output to console window.
-  - `tdg -t '\<<[1-9]\d\d-\d\d-\d\d\d\d>>' -c 100`
-  - Produces 100 items like *'<<[1-9]\d\d-\d\d-\d\d\d\d>>'*.
-- Generate 100 strings with random name like values and output to file.
-  - `tdg -t 'Hi there \<<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`
-  - Produces 100 items like *'<<\L\v\l\v \L\v\l\l\v\v\l\l\v>>'*.
-- `tdg -t '\<<Letters \w{2,20} and Numbers \d{2,12}\n>>'` produces the following output: *'<<Letters \w{2,20} and Numbers \d{2,12}\n>>'*
+
+|Commandline example|Description|Example|
+|--------|--------|-------|
+|`tdg -t 'Letters \<<\L{20}>> and Numbers \<<\d{12}>>'`|Single repeating symbols using the following syntax. |*'Letters <<\L{20}>> and Numbers <<\d{12}>>'*|
+|`tdg -t '\<<(\L){5}>>'`|Repeating patterns containing multiple letters or numbers of random length. Will generate 5 random upper-case characters.|*'<<(\L){5}>>'*|
+|`tdg -t '\<<(\L\L\d){24}>>'`|Will generate 24 repeating letter-letter-number values.|*'<<(\L\L\d){24}>>'*|
+|`tdg -t '\<<(\L){10,20}>>'`|Will generate a string containing between 10 and 20 characters of random value.|*'<<(\L){10,20}>>'*|
+|`tdg -t 'Letters \<<\L{2,20}>> and Numbers \<<\d{2,12}>>'`|Produces items like|*'Letters <<\L{2,20}>> and Numbers <<\d{2,12}>>'*|
+|`tdg -t 'Hi there \<<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is \<<[1-9]\d\d-\d\d-\d\d\d\d>>.' -c 100`|Input can contain several placeholders. Produces 100 items like|*'Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is <<[1-9]\d\d-\d\d-\d\d\d\d>>.'*|
+|`tdg -t '\<<[1-9]\d\d-\d\d-\d\d\d\d>>' -c 100`|- Generate 100 SSN like values and output to console window. Produces 100 items like|*'<<[1-9]\d\d-\d\d-\d\d\d\d>>'*|
+|`tdg -t 'Hi there \<<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`|Generate 100 strings with random name like values and output to file. Produces 100 items like|*'<<\L\v\l\v \L\v\l\l\v\v\l\l\v>>'*|
+|`tdg -t '\<<Letters \w{2,20} and Numbers \d{2,12}\n>>'`|Produces the following output:|*'<<Letters \w{2,20} and Numbers \d{2,12}\n>>'*|
 
 ## This README was generated using the generator.  See the unit tests for other examples.
