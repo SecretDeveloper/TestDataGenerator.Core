@@ -156,8 +156,8 @@ Pattern files contain Named Patterns which can be used within Templates. TDG com
 **If you are adding TDG to a project using nuget and wish to use some of the named patterns defined in default.tdg-patterns you will need to change its build settings to "Content" and "Copy Always" to ensure it gets deployed with your application.**
 
 ### Commandline examples
-<sub>
-|Commandline example|Description|Example|
+
+|Command|Description|Example|
 |--------|--------|-------|
 |`tdg -t 'Letters \<<\L{20}>> and Numbers \<<\d{12}>>'`|Single repeating symbols using the following syntax. |*'Letters <<\L{20}>> and Numbers <<\d{12}>>'*|
 |`tdg -t '\<<(\L){5}>>'`|Repeating patterns containing multiple letters or numbers of random length. Will generate 5 random upper-case characters.|*'<<(\L){5}>>'*|
@@ -168,6 +168,5 @@ Pattern files contain Named Patterns which can be used within Templates. TDG com
 |`tdg -t '\<<[1-9]\d\d-\d\d-\d\d\d\d>>' -c 100`|- Generate 100 SSN like values and output to console window. Produces 100 items like|*'<<[1-9]\d\d-\d\d-\d\d\d\d>>'*|
 |`tdg -t 'Hi there \<<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`|Generate 100 strings with random name like values and output to file. Produces 100 items like|*'<<\L\v\l\v \L\v\l\l\v\v\l\l\v>>'*|
 |`tdg -t '\<<Letters \w{2,20} and Numbers \d{2,12}\n>>'`|Produces the following output:|*'<<Letters \w{2,20} and Numbers \d{2,12}\n>>'*|
-</sub>
 
 ## This README was generated using the generator.  See the unit tests for other examples.
