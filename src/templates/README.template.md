@@ -135,9 +135,9 @@ You can supply configuration values to the generator either as an additional par
 ## CommandLine tool
 You can use the `tdg.exe` application to generate test data from the command line.  It can handle provided templates directly from the command line or from a file. The tool also supports exporting the generated output to either the command line or another file.
 
-### Parameters:
+### Arguments:
 
-|Parameter|Description|
+|Commandline argument |Description|
 |------|-----|
 |`-t, --template`|The template containing 1 or more patterns to use when producing data.|
 |`-p  --pattern`|The pattern to use when producing data.|
@@ -159,13 +159,13 @@ Pattern files contain Named Patterns which can be used within Templates. TDG com
 
 |Command|Description|Example|
 |--------|--------|-------|
-|`tdg -t 'Letters \<<\L{20}>> and Numbers \<<\d{12}>>'`|Single repeating symbols using the following syntax. |*'Letters <<\L{20}>> and </br>Numbers <<\d{12}>>'*|
+|`tdg -t 'Letters \<<\L{20}>> and Numbers \<<\d{12}>>'`|Single repeating symbols using the following syntax. |*'Letters <<\L{20}>> and Numbers <<\d{12}>>'*|
 |`tdg -t '\<<(\L){5}>>'`|Repeating patterns containing multiple letters or numbers of random length. </br>Will generate 5 random upper-case characters.|*'<<(\L){5}>>'*|
 |`tdg -t '\<<(\L\L\d){4}>>'`|Will generate 4 repeating letter-letter-number values.|*'<<(\L\L\d){4}>>'*|
-|`tdg -t '\<<(\L){10,20}>>'`|Will generate a string containing between 10 and 20 characters of random value.|*'<<(\L){10,20}>>'*|
+|`tdg -t '\<<(\L){10,20}>>'`|Will generate a string containing between 10 and 20 random upper-case characters.|*'<<(\L){10,20}>>'*|
 |`tdg -t 'Letters \<<\L{2,20}>> and Numbers \<<\d{2,12}>>'`|Produces items like|*'Letters <<\L{2,20}>> and Numbers <<\d{2,12}>>'*|
 |`tdg -t 'Hi there \<<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is \<<[1-9]\d\d-\d\d-\d\d\d\d>>.' -c 100`|Input can contain several placeholders. Produces 100 items like|*'Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  </br>Your SSN is <<[1-9]\d\d-\d\d-\d\d\d\d>>.'*|
-|`tdg -t '\<<[1-9]\d\d-\d\d-\d\d\d\d>>' -c 100`|- Generate 100 SSN like values and output to console window. Produces 100 items like|*'<<[1-9]\d\d-\d\d-\d\d\d\d>>'*|
+|`tdg -t '\<<[1-9]\d\d-\d\d-\d\d\d\d>>' -c 100`|Generate 100 SSN like values and output to console window. Produces 100 items like|*'<<[1-9]\d\d-\d\d-\d\d\d\d>>'*|
 |`tdg -t 'Hi there \<<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`|Generate 100 strings with random name like values and output to file. Produces 100 items like|*'<<\L\v\l\v \L\v\l\l\v\v\l\l\v>>'*|
 |`tdg -t '\<<Letters \w{2,20} and Numbers \d{2,12}\n>>'`|Produces the following output:|*'<<Letters \w{2,20} and Numbers \d{2,12}\n>>'*|
 
