@@ -29,21 +29,21 @@ The following symbols are shorthand tokens which you can use in your generation 
 
 |Symbol|Description|Represented characters|
 |------|-----------|-------|
-|`\.`|A single random character of any type.|abcdefghijklmnopqrstuvwxyz</br>ABCDEFGHIJKLMNOPQRSTUVWXYZ</br>0123456789</br>.,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_\|~/ and space|
-`\W`|A single random character from the following list ' .,;:\"'!&?£€$%^<>{}[]()*+-=\@#\|~/'.|?
-`\w`|A single random upper-case or lower-case letter.|g
-`\L`|A single random upper-case Letter.|M
-`\l`|A single random lower-case letter.|u
-`\V`|A single random upper-case Vowel.|O
-`\v`|A single random lower-case vowel.|i
-`\C`| - A single random upper-case Consonant.|K
-`\c`|A single random lower-case consonant.|y
-`\D`|A single random non number character.|i
-`\d`|A single random number, 1-9.|6
-`\S`|A single random non-whitespace character|c
-`\s`|A whitespace character (Tab, New Line, Space, Carriage Return or Form Feed)|	
-`\n`|A newline character.|
-`\t`|A tab character.|
+|`\.`|A single random character of any type.|abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 .,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_\|~/ and space|
+|`\W`|A single random character from the following list ' .,;:\"'!&?£€$%^<>{}[]()*+-=\@#\|~/'.|?
+|`\w`|A single random upper-case or lower-case letter.|g
+|`\L`|A single random upper-case Letter.|M
+|`\l`|A single random lower-case letter.|u
+|`\V`|A single random upper-case Vowel.|O
+|`\v`|A single random lower-case vowel.|i
+|`\C`| - A single random upper-case Consonant.|K
+|`\c`|A single random lower-case consonant.|y
+|`\D`|A single random non number character.|i
+|`\d`|A single random number, 1-9.|6
+|`\S`|A single random non-whitespace character|c
+|`\s`|A whitespace character (Tab, New Line, Space, Carriage Return or Form Feed)|	|
+|`\n`|A newline character.|[NEWLINE]|
+|`\t`|A tab character.|[TAB]|
 
 ### Groups
 Groups can contain multiple Symbols or characters and allows us to treat them as a single unit.  Their usage becomes apparent when using them with *repetitions* or *alternations*.  Groups are surrounded in () brackets.
