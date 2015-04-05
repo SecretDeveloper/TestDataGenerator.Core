@@ -159,7 +159,7 @@ Pattern files contain Named Patterns which can be used within Templates. TDG com
 
 |Command|Description|Example|
 |--------|--------|-------|
-|`tdg -t 'Letters \<<\L{20}>> and Numbers \<<\d{12}>>'`|Single repeating symbols using the following syntax. |*'Letters <<\L{20}>> and Numbers <<\d{12}>>'*|
+|`tdg -t 'Letters \<<\L{20}>> and Numbers \<<\d{12}>>'`|Single repeating symbols using the following syntax. |<sub>*'Letters <<\L{20}>> and Numbers <<\d{12}>>'*</sub>|
 |`tdg -t '\<<(\L){5}>>'`|Repeating patterns containing multiple letters or numbers of random length. Will generate 5 random upper-case characters.|*'<<(\L){5}>>'*|
 |`tdg -t '\<<(\L\L\d){24}>>'`|Will generate 24 repeating letter-letter-number values.|*'<<(\L\L\d){24}>>'*|
 |`tdg -t '\<<(\L){10,20}>>'`|Will generate a string containing between 10 and 20 characters of random value.|*'<<(\L){10,20}>>'*|
