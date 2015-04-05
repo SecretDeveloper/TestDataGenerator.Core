@@ -26,6 +26,12 @@ If you are familiar with Regular Expressions then most of the syntax used will b
 
 ### Symbols
 The following symbols are shorthand tokens which you can use in your generation patterns:
+
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
+
 Symbol|Description|Example
 ------|-----------|-------
 `\.`|A single random character of any type.|<<\.>>
