@@ -26,21 +26,23 @@ If you are familiar with Regular Expressions then most of the syntax used will b
 
 ### Symbols
 The following symbols are shorthand tokens which you can use in your generation patterns:
-- `\.` - A single random character of any type.
-- `\W` - A single random character from the following list ' .,;:\"'!&?£€$%^<>{}[]()*+-=\@#|~/'.
-- `\w` - A single random upper-case or lower-case letter.
-- `\L` - A single random upper-case Letter.
-- `\l` - A single random lower-case letter.
-- `\V` - A single random upper-case Vowel.
-- `\v` - A single random lower-case vowel.
-- `\C` - A single random upper-case Consonant.
-- `\c` - A single random lower-case consonant.
-- `\D` - A single random non number character.
-- `\d` - A single random number, 1-9.
-- `\S` - A single random non-whitespace character
-- `\s` - A whitespace character (Tab, New Line, Space, Carriage Return or Form Feed)
-- `\n` - A newline character.
-- `\t` - A tab character.
+Symbol|Description|Example
+------|-----------|-------
+`\.`|A single random character of any type.|<<\.>>
+`\W`|A single random character from the following list ' .,;:\"'!&?£€$%^<>{}[]()*+-=\@#|~/'.|<<\W>>
+`\w`|A single random upper-case or lower-case letter.|<<\w>>
+`\L`|A single random upper-case Letter.|<<\L>>
+`\l`|A single random lower-case letter.|<<\l>>
+`\V`|A single random upper-case Vowel.|<<\V>>
+`\v`|A single random lower-case vowel.|<<\v>>
+`\C`| - A single random upper-case Consonant.|<<\C>>
+`\c`|A single random lower-case consonant.|<<\c>>
+`\D`|A single random non number character.|<<\D>>
+`\d`|A single random number, 1-9.|<<\d>>
+`\S`|A single random non-whitespace character|<<\S>>
+`\s`|A whitespace character (Tab, New Line, Space, Carriage Return or Form Feed)|<<\s>>
+`\n`|A newline character.|
+`\t`|A tab character.|
 
 ### Groups
 Groups can contain multiple Symbols or characters and allows us to treat them as a single unit.  Their usage becomes apparent when using them with *repetitions* or *alternations*.  Groups are surrounded in () brackets.
