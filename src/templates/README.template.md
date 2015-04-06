@@ -33,17 +33,16 @@ The following symbols are shorthand tokens which you can use in your generation 
 |`\w`|A single random upper-case character, lower-case character, number or underscore.|abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 or _|
 |`\W`|A single random non AlphaNumeric, non Whitespace character|.,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_\|~/|
 |`\a`|A single random upper-case character or lower-case character.|abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ|
-|`\s`|A whitespace character|Tab, New Line, Space, Carriage Return or Form Feed|
+|`\s`|A whitespace character|SPACE TAB NEWLINE CARRAIGERETURN VERTICALTAB LINEFEED|
 |`\d`|A single random number|0-9|
-|`\D`|A single random non number character.|<<\D>>
-|`\L`|A single random upper-case Letter.|<<\L>>
-|`\l`|A single random lower-case letter.|<<\l>>
-|`\S`|A single random non-whitespace character|<<\S>>
-
-|`\V`|A single random upper-case Vowel.|<<\V>>
-|`\v`|A single random lower-case vowel.|<<\v>>
-|`\C`| - A single random upper-case Consonant.|<<\C>>
-|`\c`|A single random lower-case consonant.|<<\c>>
+|`\D`|A single random non number character.|abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ .,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_\|~/ or [SPACE]|
+|`\l`|A single random lower-case letter.|abcdefghijklmnopqrstuvwxyz|
+|`\L`|A single random upper-case Letter.|ABCDEFGHIJKLMNOPQRSTUVWXYZ|
+|`\S`|A single random non-whitespace character.|abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 .,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_\|~/|
+|`\V`|A single random upper-case Vowel.|AEIOU|
+|`\v`|A single random lower-case vowel.|aeiou|
+|`\C`|A single random upper-case Consonant.|BCDFGHJKLMNPQRSTVWXYZ|
+|`\c`|A single random lower-case consonant.|bcdfghjklmnpqrstvwxyz|
 |`\n`|A newline character.|[NEWLINE]|
 |`\t`|A tab character.|[TAB]|
 

@@ -33,17 +33,16 @@ The following symbols are shorthand tokens which you can use in your generation 
 |`\w`|A single random upper-case character, lower-case character, number or underscore.|abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 or _|
 |`\W`|A single random non AlphaNumeric, non Whitespace character|.,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_\|~/|
 |`\a`|A single random upper-case character or lower-case character.|abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ|
-|`\s`|A whitespace character|Tab, New Line, Space, Carriage Return or Form Feed|
+|`\s`|A whitespace character|SPACE TAB NEWLINE CARRAIGERETURN VERTICALTAB LINEFEED|
 |`\d`|A single random number|0-9|
-|`\D`|A single random non number character.|v
-|`\L`|A single random upper-case Letter.|C
-|`\l`|A single random lower-case letter.|m
-|`\S`|A single random non-whitespace character|$
-
-|`\V`|A single random upper-case Vowel.|O
-|`\v`|A single random lower-case vowel.|i
-|`\C`| - A single random upper-case Consonant.|K
-|`\c`|A single random lower-case consonant.|y
+|`\D`|A single random non number character.|abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ .,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_\|~/ or [SPACE]|
+|`\l`|A single random lower-case letter.|abcdefghijklmnopqrstuvwxyz|
+|`\L`|A single random upper-case Letter.|ABCDEFGHIJKLMNOPQRSTUVWXYZ|
+|`\S`|A single random non-whitespace character.|abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 .,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_\|~/|
+|`\V`|A single random upper-case Vowel.|AEIOU|
+|`\v`|A single random lower-case vowel.|aeiou|
+|`\C`|A single random upper-case Consonant.|BCDFGHJKLMNPQRSTVWXYZ|
+|`\c`|A single random lower-case consonant.|bcdfghjklmnpqrstvwxyz|
 |`\n`|A newline character.|[NEWLINE]|
 |`\t`|A tab character.|[TAB]|
 
@@ -53,9 +52,9 @@ Groups can contain multiple Symbols or characters and allows us to treat them as
 
 |Group|Description|Example|
 |----|------|-----|
-|`(\d)`|A number between 0 and 9.|'1'|
-|`(ABC\d)`|'ABC' followed by a number between 0 and 9.|ABC6|
-|`\L(\d)\L`|A upper-case letter, three digits between 0 and 9 and another upper-case letter.|A2I|
+|`(\d)`|A number between 0 and 9.|'2'|
+|`(ABC\d)`|'ABC' followed by a number between 0 and 9.|ABC1|
+|`\L(\d)\L`|A upper-case letter, three digits between 0 and 9 and another upper-case letter.|M7R|
 
 #### Alternations
 When a group contains alternations the patterns are divided by the | character, during processing one of the alternated patterns is selected at random. 
@@ -65,8 +64,8 @@ Groups can contain several individual symbols or groups of symbols and randomly 
 
 |Alternation|Description|Example|
 |----|------|-----|
-|`(\L\L|\d\d)`|Either two upper-case letters OR two numbers.|'66'|
-|`(\L\L|\d\d|[AEIOU]|[100-120])`|Either two upper-case letters OR two digits OR an upper-case vowel OR a number between 100 and 120.|'67'|
+|`(\L\L|\d\d)`|Either two upper-case letters OR two numbers.|'JY'|
+|`(\L\L|\d\d|[AEIOU]|[100-120])`|Either two upper-case letters OR two digits OR an upper-case vowel OR a number between 100 and 120.|'QA'|
 |`(\C|)`|Either a upper-case Consonant or nothing.||
 
 ### Ranges
@@ -75,24 +74,24 @@ Ranges can contain multiple characters or ranges of characters but no symbols (t
 
 |Character Range|Description|Example|
 |----|------|-----|
-|`[abc]`|Either 'a','b' or 'c'.|'c'|
-|`[a-z]`|A single lower-case letter between a and z.|'c'|
-|`[A-Z]`|A single upper-case letter between A and Z.|'J'|
-|`[A-D]`|A single upper-case letter between A and D.|'A'|
-|`[A-Da-z]`|A single character between A and D or between a and z.|'h'|
+|`[abc]`|Either 'a','b' or 'c'.|'a'|
+|`[a-z]`|A single lower-case letter between a and z.|'z'|
+|`[A-Z]`|A single upper-case letter between A and Z.|'R'|
+|`[A-D]`|A single upper-case letter between A and D.|'C'|
+|`[A-Da-z]`|A single character between A and D or between a and z.|'s'|
 
 #### Numeric ranges
 
 |Numeric Range|Description|Example|
 |----|------|-----|
-|`[1-5]`|A number between 1 and 5.|'5'|
-|`[100-500]`|A number between 100 and 500.|'387'|
-|`[1.25-5]`|A decimal number between 1.25 and 5. The scope or number of decimal places is taken from the first number defined (1.25 in this case) and the produced value will have the same number of decimal places.|'1.3'|
+|`[1-5]`|A number between 1 and 5.|'1'|
+|`[100-500]`|A number between 100 and 500.|'253'|
+|`[1.25-5]`|A decimal number between 1.25 and 5. The scope or number of decimal places is taken from the first number defined (1.25 in this case) and the produced value will have the same number of decimal places.|'1.89'|
 
 ### Named Parameters
 A named pattern is surrounded with @ characters and links to a predefined pattern loaded from a file. The `default.tdg-patterns` file located in the same directory as the tdg executable file contains a list of named patterns which can be used in other patterns you write.  For example to generate you could write something like `([1-9]\d\d-\d\d-\d\d\d\d)` or you can use the named parameter in the file `(@misc_ssn@)` to a similar value.  You can add more patterns to the file as you wish.  Named patterns can also include other named patterns if you so wish.  
 
-Take a look at the `@address_us_type1@` pattern in the file as an example of a compound pattern than uses other patterns to produce an output e.g. '8537 Glenwood Terrace, Marin County, North Dakota, 42351'
+Take a look at the `@address_us_type1@` pattern in the file as an example of a compound pattern than uses other patterns to produce an output e.g. '8579 Shady Lane, Howard County, Montana, 52963'
 
 ### Repetition
 Repetition is a powerful feature allowing for complicated data production. A Symbol, Group or Range can be repeated a set or random number of times by using the following syntax.
@@ -101,17 +100,17 @@ Repetition is a powerful feature allowing for complicated data production. A Sym
 
 |Repitition syntax|Description|Example|
 |----|------|-----|
-|`\d{5}`|Will generate 5 number characters.|'36319'|
-|`(\L\d\L){5}`|Will generate 5 upper-case letter, number, upper-case letter items.|'C9MQ0DF0IO3ZW7F'|
-|`[ABC]{5}`|Will generate 5 items where each item will be either 'A','B' or 'C'.|'AABCB'|
+|`\d{5}`|Will generate 5 number characters.|'46642'|
+|`(\L\d\L){5}`|Will generate 5 upper-case letter, number, upper-case letter items.|'J5EJ6KE9CZ4QB1F'|
+|`[ABC]{5}`|Will generate 5 items where each item will be either 'A','B' or 'C'.|'AABAC'|
 
 #### Random Quantity
 
 |Random syntax|Description|Example|
 |----|------|-----|
-|`\d{5,10}`|Will generate between 5 and 10 number characters.|'914304333'|
-|`(\L\d\L){5,10}`|Will generate  between 5 and 10 upper-case letter, number, upper-case letter items.|'Q8WU0AX2WM3DD3M'|
-|`[ABC]{5,10}`|Will generate  between 5 and 10 items where each item will be either 'A','B' or 'C'.|'BAAAABC'|
+|`\d{5,10}`|Will generate between 5 and 10 number characters.|'7211494791'|
+|`(\L\d\L){5,10}`|Will generate  between 5 and 10 upper-case letter, number, upper-case letter items.|'I0MJ3JA6VW7CA8FW4HD1J'|
+|`[ABC]{5,10}`|Will generate  between 5 and 10 items where each item will be either 'A','B' or 'C'.|'BBAAAAB'|
 
 
 ## Template Syntax
@@ -121,7 +120,7 @@ You can create template documents that contain multiple pattern syntax placehold
 
 ### Placeholders
 You can place your symbols and patterns within placeholders which will be replaced with the generated values.  These placeholders contain 1 or more symbols representing the desired output characters.  
-Within a template all text not within a placeholder is treated as normal text with no special handling taking place.  Patterns that need to be randomly generated should be placed inside '<< >>' tokens e.g. 'This is a template <<\L\L>>'  produces 'This is a template ED'. You can also escape placeholders by placing a '\' before them which will prevent them from being processed.  To place a '\' before a placeholder in the generated content you need to place 2 backslashes before the placeholder. 
+Within a template all text not within a placeholder is treated as normal text with no special handling taking place.  Patterns that need to be randomly generated should be placed inside '<< >>' tokens e.g. 'This is a template <<\L\L>>'  produces 'This is a template TE'. You can also escape placeholders by placing a '\' before them which will prevent them from being processed.  To place a '\' before a placeholder in the generated content you need to place 2 backslashes before the placeholder. 
 
 ### Configuration
 You can supply configuration values to the generator either as an additional parameter within the api or you can include it within the template string itself by wrapping it within '<# #>' tokens.  Configuration directives must appear as the first item with a template or else they will be ignored and removed.
@@ -161,10 +160,10 @@ Pattern files contain Named Patterns which can be used within Templates. TDG com
 
 |Command|Description|Example|
 |--------|--------|-------|
-|`tdg -t 'Letters <<\L{20}>> and Numbers <<\d{12}>>'`|Single repeating symbols using the following syntax. |*'Letters WZIZQWSYOREAADBHFCYM and Numbers 891869032710'*|
-|`tdg -t '<<(\L){5}>>'`|Repeating patterns containing multiple letters or numbers of random length. </br>Will generate 5 random upper-case characters.|*'RQGAO'*|
-|`tdg -t '<<(\L\L\d){4}>>'`|Will generate 4 repeating letter-letter-number values.|*'GF6PE5RI3NE9'*|
-|`tdg -t '<<(\L){10,20}>>'`|Will generate a string containing between 10 and 20 random upper-case characters.|*'BJVSIWWMHTUJTUNCIKX'*|
+|`tdg -t 'Letters <<\L{20}>> and Numbers <<\d{12}>>'`|Single repeating symbols using the following syntax. |*'Letters DWZIZQWSYOREAADBHFCY and Numbers 489186903271'*|
+|`tdg -t '<<(\L){5}>>'`|Repeating patterns containing multiple letters or numbers of random length. </br>Will generate 5 random upper-case characters.|*'CRQGA'*|
+|`tdg -t '<<(\L\L\d){4}>>'`|Will generate 4 repeating letter-letter-number values.|*'OG2QP1PR3JN1'*|
+|`tdg -t '<<(\L){10,20}>>'`|Will generate a string containing between 10 and 20 random upper-case characters.|*'WBJVSIWWMHTUJTUNCIKX'*|
 |`tdg -t 'Letters <<\L{2,20}>> and Numbers <<\d{2,12}>>'`|Produces items like|*'Letters SY and Numbers 38644533833'*|
 |`tdg -t 'Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is <<[1-9]\d\d-\d\d-\d\d\d\d>>.' -c 100`|Input can contain several placeholders. Produces 100 items like|*'Hi there Reue Emvue how are you doing?  </br>Your SSN is 112-91-0458.'*|
 |`tdg -t '<<[1-9]\d\d-\d\d-\d\d\d\d>>' -c 100`|Generate 100 SSN like values and output to console window. Produces 100 items like|*'549-93-9041'*|
