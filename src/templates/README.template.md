@@ -24,24 +24,26 @@ A library and command line tool that can be used to generate data for testing, t
 ### Pattern Composition
 If you are familiar with Regular Expressions then most of the syntax used will be familiar but there are significant differences in place given that regex is used to match a string against a pattern.  The generator instead uses simple patterns of symbols to produce strings, because of the difference in usage the syntaxes cannot match up entirely.  Patterns define what the generated values will be and can be composed using text and symbols.  Sections of the pattern can be repeated a specific number of times (they can also be repeated a random number of times by providing a min and max).  Patterns can also include alternate items that will be randomly selected, helping to produce relatively complicated outputs. 
 
-### Symbols
-The following symbols are shorthand tokens which you can use in your generation patterns:
+### Symbols (Character Classes)
+The following symbols are shorthand tokens which you can use in your generation patterns.  They follow most of the (Perl/Tcl)[http://en.wikipedia.org/wiki/Regular_expression#Character_classes] shorthand classifications but because our focus is on text production rather than searching/matching we have extended things a little with a few more shorthand items.
 
 |Symbol|Description|Represented characters|
 |------|-----------|-------|
 |`\.`|A single random character of any type.|abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 .,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_\|~/ and space|
-|`\W`|A single random character from the following list ' .,;:\"'!&?£€$%^<>{}[]()*+-=\@#\|~/'.|<<\W>>
-|`\w`|A single random upper-case or lower-case letter.|<<\w>>
+|`\w`|A single random upper-case character, lower-case character, number or underscore.|abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 or _|
+|`\W`|A single random non AlphaNumeric, non Whitespace character|.,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_\|~/|
+|`\a`|A single random upper-case character or lower-case character.|abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ|
+|`\s`|A whitespace character|Tab, New Line, Space, Carriage Return or Form Feed|
+|`\d`|A single random number|0-9|
+|`\D`|A single random non number character.|<<\D>>
 |`\L`|A single random upper-case Letter.|<<\L>>
 |`\l`|A single random lower-case letter.|<<\l>>
+|`\S`|A single random non-whitespace character|<<\S>>
+
 |`\V`|A single random upper-case Vowel.|<<\V>>
 |`\v`|A single random lower-case vowel.|<<\v>>
 |`\C`| - A single random upper-case Consonant.|<<\C>>
 |`\c`|A single random lower-case consonant.|<<\c>>
-|`\D`|A single random non number character.|<<\D>>
-|`\d`|A single random number, 1-9.|<<\d>>
-|`\S`|A single random non-whitespace character|<<\S>>
-|`\s`|A whitespace character (Tab, New Line, Space, Carriage Return or Form Feed)|<<\s>>|
 |`\n`|A newline character.|[NEWLINE]|
 |`\t`|A tab character.|[TAB]|
 

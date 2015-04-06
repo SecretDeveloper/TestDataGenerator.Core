@@ -18,6 +18,7 @@ namespace gk.DataGenerator.Generators
         private const string _AllWhitespaceCharacters = " \t\n\r\f";
         private const string _AllNonWhitespaceNonAlphaNumericCharacters = ".,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_|~/";
 
+        private const string _ShortHand_a = _AllLetters; // \a
         private const string _ShortHand_l = "abcdefghijklmnopqrstuvwxyz"; // \l
         private const string _ShortHand_L = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // \L
         private const string _ShortHand_V = "AEIOU"; // \V
@@ -28,9 +29,9 @@ namespace gk.DataGenerator.Generators
         private const string _ShortHand_d = _AllNumbers; // \d
         private const string _ShortHand_W = _AllNonWhitespaceNonAlphaNumericCharacters + " ";  // \W
         private const string _ShortHand_w = _AllLetters + _AllNumbers + "_"; // \w
-        private const string _ShortHand_s = _AllWhitespaceCharacters;  // \s
-        private const string _ShortHand_S = _AllLetters + _AllNumbers + _AllNonWhitespaceNonAlphaNumericCharacters;  // \S
-
+        private const string _ShortHand_S = _AllWhitespaceCharacters;  // \S
+        private const string _ShortHand_s = _AllLetters + _AllNumbers + _AllNonWhitespaceNonAlphaNumericCharacters;  // \s
+        
         private const string _Config_Start = "<#";
         private const string _Config_End = "#>";
 
@@ -765,6 +766,9 @@ namespace gk.DataGenerator.Generators
                     break;
                 case 'w':
                     AppendRandomCharacterFromString(sb, _ShortHand_w, random);
+                    break;
+                case 'a':
+                    AppendRandomCharacterFromString(sb, _ShortHand_a, random);
                     break;
                 case 'L':
                     AppendRandomCharacterFromString(sb, _ShortHand_L, random);
