@@ -25,7 +25,7 @@ A library and command line tool that can be used to generate data for testing, t
 If you are familiar with Regular Expressions then most of the syntax used will be familiar but there are significant differences in place given that regex is used to match a string against a pattern.  The generator instead uses simple patterns of symbols to produce strings, because of the difference in usage the syntaxes cannot match up entirely.  Patterns define what the generated values will be and can be composed using text and symbols.  Sections of the pattern can be repeated a specific number of times (they can also be repeated a random number of times by providing a min and max).  Patterns can also include alternate items that will be randomly selected, helping to produce relatively complicated outputs. 
 
 ### Symbols (Character Classes)
-The following symbols are shorthand tokens which you can use in your generation patterns.  They follow most of the (Perl/Tcl)[http://en.wikipedia.org/wiki/Regular_expression#Character_classes] shorthand classifications but because our focus is on text production rather than searching/matching we have extended things a little with a few more shorthand items.
+The following symbols are shorthand tokens which you can use in your generation patterns.  They follow most of the [Perl/Tcl](http://en.wikipedia.org/wiki/Regular_expression#Character_classes) shorthand classifications but because our focus is on text production rather than searching/matching we have extended things a little with a few more shorthand items.
 
 |Symbol|Description|Represented characters|
 |------|-----------|-------|
@@ -167,7 +167,9 @@ Pattern files contain Named Patterns which can be used within Templates. TDG com
 |`tdg -t 'Letters \<<\L{2,20}>> and Numbers \<<\d{2,12}>>'`|Produces items like|*'Letters <<\L{2,20}>> and Numbers <<\d{2,12}>>'*|
 |`tdg -t 'Hi there \<<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is \<<[1-9]\d\d-\d\d-\d\d\d\d>>.' -c 100`|Input can contain several placeholders. Produces 100 items like|*'Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  </br>Your SSN is <<[1-9]\d\d-\d\d-\d\d\d\d>>.'*|
 |`tdg -t '\<<[1-9]\d\d-\d\d-\d\d\d\d>>' -c 100`|Generate 100 SSN like values and output to console window. Produces 100 items like|*'<<[1-9]\d\d-\d\d-\d\d\d\d>>'*|
-|`tdg -t 'Hi there \<<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`|Generate 100 strings with random name like values and output to file. Produces 100 items like|*'<<\L\v\l\v \L\v\l\l\v\v\l\l\v>>'*|
-|`tdg -t '\<<Letters \w{2,20} and Numbers \d{2,12}\n>>'`|Produces the following output:|*'<<Letters \w{2,20} and Numbers \d{2,12}\n>>'*|
+|`tdg -t 'Hi there \<<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`|Generate 100 strings with random name like values and output to file. Produces 100 items like|*'<<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?'*|
+|`tdg -t '\<<Letters \w{2,20} and Numbers \d{2,12}>>'`|Produces the following output:|*'<<Letters \w{2,20} and Numbers \d{2,12}>>'*|
 
-## This README was generated using the generator.  See the unit tests for other examples.
+### Checkout the Examples folder for some further items and ideas.
+
+## This README was generated using the tdg.  See the unit tests for other examples.

@@ -14,7 +14,7 @@ namespace gk.DataGeneratorTests
     [TestClass]
     [ExcludeFromCodeCoverage]
     [DeploymentItem(@"..\templates\README.template.md")]
-    [DeploymentItem(@"tdg-patterns\default.tdg-pattern")]
+    //[DeploymentItem(@".\src\DataGenerator\gk.DataGenerator.CommandLine\tdg-patterns\default.tdg-pattern", "tdg-test")]
     public class TextTests
     {
         [TestMethod]
@@ -26,7 +26,6 @@ namespace gk.DataGeneratorTests
 
             var text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(text);
-
         }
 
         #region Template

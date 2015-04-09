@@ -79,7 +79,7 @@ function test{
         Write-host "TESTING FAILED!" -foregroundcolor:red
         $lastResult = $false
     }
-    $failedContent = ($content -match "^Failed")
+    $failedContent = ($content -match "Failed")
     $failedCount = $failedContent.Count
     if($failedCount -gt 0)
     {    
@@ -90,6 +90,18 @@ function test{
     {
         write-host $line -foregroundcolor:red
     }
+    $failedContent = ($content -match "Not Runnable")
+    $failedCount = $failedContent.Count
+    if($failedCount -gt 0)
+    {    
+        Write-host "TESTING FAILED!" -foregroundcolor:red
+        $lastResult = $false
+    }
+    Foreach ($line in $failedContent) 
+    {
+        write-host $line -foregroundcolor:red
+    }
+
     if($lastResult -eq $False){    
         exit
     }

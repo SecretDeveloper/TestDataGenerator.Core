@@ -14,7 +14,8 @@ namespace gk.DataGenerator.tdg
         private static void Main(string[] args)
         {
             var cla = new CommandLineArgs();
-            Stopwatch sw = null;
+            Stopwatch sw = sw = new Stopwatch();
+            sw.Start();
 
 #if DEBUG
             Debugger.Launch();
@@ -33,12 +34,8 @@ namespace gk.DataGenerator.tdg
                     Console.Write(cla.GetPatternUsage());
                     return;
                 }
-                
-                if (cla.Verbose)
-                {
-                    sw = new Stopwatch();
-                    sw.Start();
-                }
+
+                if(cla.Verbose)Console.WriteLine("{0} - ");
 
                 if (cla.ListNamedPatterns)
                 {
