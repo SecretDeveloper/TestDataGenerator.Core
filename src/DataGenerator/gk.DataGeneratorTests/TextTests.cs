@@ -14,7 +14,7 @@ namespace gk.DataGeneratorTests
     [TestClass]
     [ExcludeFromCodeCoverage]
     [DeploymentItem(@"..\templates\README.template.md")]
-    [DeploymentItem(@".\default.tdg-pattern")]
+    [DeploymentItem(@".\src\TestOutput\tdg-patterns\default.tdg-patterns")]
     public class TextTests
     {
         [TestMethod]
@@ -1121,6 +1121,11 @@ namespace gk.DataGeneratorTests
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text.ToLiteral());
             StringAssert.Matches(text, new Regex(@"^\n$"));
+
+            pattern = @"\r";
+            text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text.ToLiteral());
+            StringAssert.Matches(text, new Regex(@"^\r$"));
 
             pattern = @"\\";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);

@@ -801,7 +801,10 @@ namespace gk.DataGenerator.Generators
                     AppendRandomCharacterFromString(sb, _ShortHand_S, random);
                     break;
                 case 'n':
-                    sb.Append(Environment.NewLine);
+                    sb.Append("\n");
+                    break;
+                case 'r':
+                    sb.Append("\r");
                     break;
                 case 't':
                     sb.Append("\t");
