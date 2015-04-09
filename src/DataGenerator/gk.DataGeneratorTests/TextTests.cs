@@ -14,7 +14,7 @@ namespace gk.DataGeneratorTests
     [TestClass]
     [ExcludeFromCodeCoverage]
     [DeploymentItem(@"..\templates\README.template.md")]
-    //[DeploymentItem(@".\src\DataGenerator\gk.DataGenerator.CommandLine\tdg-patterns\default.tdg-pattern", "tdg-test")]
+    [DeploymentItem(@".\default.tdg-pattern")]
     public class TextTests
     {
         [TestMethod]
@@ -1052,6 +1052,11 @@ namespace gk.DataGeneratorTests
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             StringAssert.Matches(text, new Regex(@"^.$"));
 
+            pattern = @"\a";
+            text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
+            StringAssert.Matches(text, new Regex(@"^[A-Za-z]$"));
+
             pattern = @"\W";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
@@ -1111,6 +1116,11 @@ namespace gk.DataGeneratorTests
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text.ToLiteral());
             StringAssert.Matches(text, new Regex(@"^\t$"));
+
+            pattern = @"\n";
+            text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text.ToLiteral());
+            StringAssert.Matches(text, new Regex(@"^\n$"));
 
             pattern = @"\\";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
