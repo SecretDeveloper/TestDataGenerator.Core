@@ -14,7 +14,7 @@ namespace gk.DataGeneratorTests
     [TestClass]
     [ExcludeFromCodeCoverage]
     [DeploymentItem(@"..\templates\README.template.md")]
-    [DeploymentItem(@"tdg-patterns\default.tdg-pattern")]
+    [DeploymentItem(@".\src\TestOutput\tdg-patterns\default.tdg-patterns")]
     public class TextTests
     {
         [TestMethod]
@@ -26,7 +26,6 @@ namespace gk.DataGeneratorTests
 
             var text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(text);
-
         }
 
         #region Template
@@ -1053,6 +1052,11 @@ namespace gk.DataGeneratorTests
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             StringAssert.Matches(text, new Regex(@"^.$"));
 
+            pattern = @"\a";
+            text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
+            StringAssert.Matches(text, new Regex(@"^[A-Za-z]$"));
+
             pattern = @"\W";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
@@ -1112,6 +1116,16 @@ namespace gk.DataGeneratorTests
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text.ToLiteral());
             StringAssert.Matches(text, new Regex(@"^\t$"));
+
+            pattern = @"\n";
+            text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text.ToLiteral());
+            StringAssert.Matches(text, new Regex(@"^\n$"));
+
+            pattern = @"\r";
+            text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text.ToLiteral());
+            StringAssert.Matches(text, new Regex(@"^\r$"));
 
             pattern = @"\\";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);

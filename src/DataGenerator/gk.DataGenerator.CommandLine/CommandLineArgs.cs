@@ -35,19 +35,12 @@ namespace gk.DataGenerator.tdg
         
         [Option('v', "verbose", DefaultValue = false, HelpText = "Verbose output including debug and performance information.", Required = false)]
         public bool Verbose { get; set; }
-
+        
         [Option('n', "namedpatterns", DefaultValue = "", HelpText = "A list of ';' seperated file paths containing named patterns to be used in addition to default.tdg-patterns.", Required = false)]
         public string NamedPatterns { get; set; }
 
         [Option('l', "listnamedpatterns", DefaultValue = false, HelpText = "Outputs a list of the named patterns from the default.tdg-patterns file.", Required = false)]
         public bool ListNamedPatterns { get; set; }
-
-
-        public CommandLineArgs()
-        {
-            //Random random = new Random(DateTime.Now.Millisecond);
-            //this.Seed = random.Next(int.MinValue, int.MaxValue);
-        }
 
         [HelpOption]
         public string GetUsage()
@@ -56,7 +49,7 @@ namespace gk.DataGenerator.tdg
             var help = new HelpText
             {
                 Heading = new HeadingInfo("Test Data Generator", assemblyName.Version.ToString()),
-                Copyright = new CopyrightInfo("Gary Kenneally (@SecretDeveloper)", 2014),
+                Copyright = new CopyrightInfo("Gary Kenneally (@SecretDeveloper)", 2015),
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true
             };
@@ -65,11 +58,11 @@ namespace gk.DataGenerator.tdg
             help.AddPreOptionsLine("Commandline Arguments:");
 
             help.AddPostOptionsLine("Examples:");
-            help.AddPostOptionsLine("\t tdg -t '<<LL>>'");
-            help.AddPostOptionsLine("\t tdg -t '<<LL>>' -c 10");
-            help.AddPostOptionsLine("\t tdg -t '<<LL>>' -o 'c:\\test.txt' -c 10");
+            help.AddPostOptionsLine("\t tdg -t '<<\\L\\L>>'");
+            help.AddPostOptionsLine("\t tdg -t '<<\\L\\L>>' -c 10");
+            help.AddPostOptionsLine("\t tdg -t '<<\\L\\L>>' -o 'c:\\test.txt' -c 10");
             help.AddPostOptionsLine("\t tdg -i 'c:\\input.txt' -o 'c:\\test.txt' -c 10");
-            help.AddPostOptionsLine("Either a Template (-t), Pattern (-p) or input File (-i) value must be provided as input.");
+            help.AddPostOptionsLine("Either a template (-t), pattern (-p) or input file (-i) value must be provided as input.");
             
             help.AddOptions(this);
             return help;
@@ -84,13 +77,14 @@ namespace gk.DataGenerator.tdg
 
             sb.AppendLine("The following symbols can be used within a pattern to produce the desired output.");
             sb.AppendLine("\t\\. - A single random character of any type.");
+            sb.AppendLine("\t\\a - A single random upper-case or lower-case letter.");
             sb.AppendLine("\t\\W - A single random character from the following list ' .,;:'\"!&?£€$%^<>{}*+-=\\@#|~/'.");
-            sb.AppendLine("\t\\w - A single random upper-case or lower-case letter.");
-            sb.AppendLine("\t\\L - A single random upper-case Letter.");
+            sb.AppendLine("\t\\w - A single random upper-case, lower-case letter or number.");
+            sb.AppendLine("\t\\L - A single random upper-case letter.");
             sb.AppendLine("\t\\l - A single random lower-case letter.");
             sb.AppendLine("\t\\V - A single random upper-case Vowel.");
             sb.AppendLine("\t\\v - A single random lower-case vowel.");
-            sb.AppendLine("\t\\C - A single random upper-case Consonant.");
+            sb.AppendLine("\t\\C - A single random upper-case consonant.");
             sb.AppendLine("\t\\c - A single random lower-case consonant.");
             sb.AppendLine("\t\\D - A single random non number character.");
             sb.AppendLine("\t\\d - A single random number, 1-9.");
@@ -106,9 +100,9 @@ namespace gk.DataGenerator.tdg
             
             sb.AppendLine("Patterns and normal text can be combined in templates");
             sb.AppendLine("Template usage");
-            sb.AppendLine("\ttdg -t '<<Text containing a (\\L) pattern>>'");
-            sb.AppendLine("\ttdg -t '<<Text containing a (\\L){5} pattern>>'");
-            sb.AppendLine("\ttdg -t '<<Text containing a (\\L){10,20} pattern>>'");
+            sb.AppendLine("\ttdg -t 'Text containing a <<(\\L)>> pattern'");
+            sb.AppendLine("\ttdg -t 'Text containing a <<(\\L){5}>> repeating pattern'");
+            sb.AppendLine("\ttdg -t 'Text containing a <<(\\L){10,20}>> repeating pattern between 10 and 20 upper-case characters'");
             sb.AppendLine("View the Readme document for further examples");
 
             return sb.ToString();
