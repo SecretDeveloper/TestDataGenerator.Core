@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace TestDataGenerator
+namespace TestDataGenerator.Core
 {
     [DataContract]
     public class GenerationConfig

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 
-namespace TestDataGenerator.Generators
+namespace TestDataGenerator.Core.Generators
 {
     public static class Utility
     {

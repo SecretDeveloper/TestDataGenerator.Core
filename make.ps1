@@ -32,7 +32,7 @@ function build{
     # BUILD
     write-host "Building"  -foregroundcolor:blue
     $msbuild = "c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
-    $solutionPath = "$basePath\src\TestDataGenerator.sln"
+    $solutionPath = "$basePath\src\$projectName.sln"
     Invoke-expression "$msbuild $solutionPath /p:configuration=$buildType /t:Clean /t:Build /verbosity:q /nologo > $logPath\LogBuild.log"
 
     if($? -eq $False){
@@ -143,7 +143,7 @@ function deploy{
 $basePath = Get-Location
 $logPath = "$basePath\logs"
 $buildVersion = Get-Content .\VERSION
-$projectName = "TestDataGenerator"
+$projectName = "TestDataGenerator.Core"
 
 if($buildType -eq "package"){
     

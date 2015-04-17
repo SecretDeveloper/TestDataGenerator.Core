@@ -103,9 +103,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TestDataGenerator\TestDataGenerator.csproj">
+    <ProjectReference Include="..\TestDataGenerator.Core\TestDataGenerator.Core.csproj">
       <Project>{7e0afb0b-0000-4d8a-a3cc-eadd3bc14298}</Project>
-      <Name>TestDataGenerator</Name>
+      <Name>TestDataGenerator.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

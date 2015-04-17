@@ -5,8 +5,9 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Eloquent;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestDataGenerator.Exceptions;
-using TestDataGenerator.Generators;
+using TestDataGenerator.Core;
+using TestDataGenerator.Core.Exceptions;
+using TestDataGenerator.Core.Generators;
 
 namespace TestDataGenerator.Tests
 {

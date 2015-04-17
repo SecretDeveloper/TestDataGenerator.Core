@@ -4,9 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using TestDataGenerator.Exceptions;
+using TestDataGenerator.Core.Exceptions;
 
-namespace TestDataGenerator
+namespace TestDataGenerator.Core
 {
     public static class FileReader
     {

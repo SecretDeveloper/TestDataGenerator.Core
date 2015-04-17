@@ -8,8 +8,8 @@
     <ProjectGuid>{7E0AFB0B-0000-4D8A-A3CC-EADD3BC14298}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestDataGenerator</RootNamespace>
-    <AssemblyName>TestDataGenerator</AssemblyName>
+    <RootNamespace>TestDataGenerator.Core</RootNamespace>
+    <AssemblyName>TestDataGenerator.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>

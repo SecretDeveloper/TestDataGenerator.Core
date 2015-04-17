@@ -4,9 +4,9 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using Eloquent;
-using TestDataGenerator.Exceptions;
+using TestDataGenerator.Core.Exceptions;
 
-namespace TestDataGenerator.Generators
+namespace TestDataGenerator.Core.Generators
 {
     public static class AlphaNumericGenerator 
     {

@@ -1,4 +1,4 @@
-﻿namespace TestDataGenerator.Generators
+﻿namespace TestDataGenerator.Core.Generators
 {
     internal class ContentOptions
     {

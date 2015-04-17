@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TestDataGenerator.Exceptions
+namespace TestDataGenerator.Core.Exceptions
 {
     /// <summary>
     /// Used when a exception needs to be thrown by the test data generator.

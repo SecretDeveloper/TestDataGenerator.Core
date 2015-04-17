@@ -47,4 +47,4 @@ BuildOutput/
 releases/
 packages/
 _Resharper*/
-.nuget
+#.nuget
