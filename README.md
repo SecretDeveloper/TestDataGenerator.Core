@@ -1,7 +1,7 @@
 
 
-# ![TestDataGenerator](https://raw.githubusercontent.com/SecretDeveloper/TestDataGenerator/master/icon.png) TestDataGenerator
-A library and command line tool that can be used to generate data for testing, templating and other uses.  You provide it with a pattern containing symbols defining the output you want to produce and it will create random data to match that pattern.
+# ![TestDataGenerator.Core](https://raw.githubusercontent.com/SecretDeveloper/TestDataGenerator.Core/master/icon.png) TestDataGenerator.Core
+A library that can be used to generate data for testing, templating and other uses.  You provide it with a pattern containing symbols defining the output you want to produce and it will create random data to match that pattern.
 
 <image src="https://ci.appveyor.com/api/projects/status/p3ctf74q1brhklim?svg=true" width="300">
 
@@ -13,14 +13,7 @@ A library and command line tool that can be used to generate data for testing, t
 - Support for Named Patterns making reuse easy.
 - Ability to add your own named pattern collection files.
 - Fully featured library.
-- Fully featured commandline tool.
 - 100% code coverage!
-
-## Installation
- There are a few ways you can intall tdg.
-  - You can download the latest versions from the [releases](https://github.com/SecretDeveloper/TestDataGenerator/releases) which will contain all you need to run the command line tdg tool.
-  - You can install using Nuget by executing `nuget install tdg` in a terminal which will download and tdg and each of its required libraries to the current folder.
-  - You can run `install-package tdg` from the Nuget Package Management Console to add TDG to your project.
 
 ## Pattern Syntax
 ### Pattern Composition
@@ -135,43 +128,4 @@ You can supply configuration values to the generator either as an additional par
 - `<#{"seed":1}#>` - This configuration provides the Seed value for the random data generation.
 - `<#{ "patternfiles":["c:\mypatterns.tdg-patterns"], "seed":300 } #>` - This configuration provides a Seed value of 300 and a Pattern file that will include Named Patterns to be used by the template.
 
-## CommandLine tool
-You can use the `tdg.exe` application to generate test data from the command line.  It can handle provided templates directly from the command line or from a file. The tool also supports exporting the generated output to either the command line or another file.
-
-### Arguments:
-
-|Commandline argument |Description|
-|------|-----|
-|`-t, --template`|The template containing 1 or more patterns to use when producing data.|
-|`-p  --pattern`|The pattern to use when producing data.|
-|`-i  --inputfile`|The path of the input file.|
-|`-o, --output`|The path of the output file.|
-|`-c, --count`|The number of items to produce. Default is 1.|
-|`-s, --seed`|Seed value for Random data generator, using the same seed value and pattern will produce the same output each time.|
-|`-v, --verbose`|Verbose output including debug and performance information.|
-|`-n, --namedpatterns`|A list of ';' seperated file paths containing named patterns to be used in addition to default.tdg-patterns.|
-|`-l, --listpatterns`|Outputs a list of the named patterns from the default.tdg-patterns file.|
-|`--help`|Display the help screen.|
-  
-### Pattern Files
-Pattern files contain Named Patterns which can be used within Templates. TDG comes with a few pattern files contained within the 'tdg-patterns' folder and you can add your own if you wish.  The files are structured as simple xml documents that should be pretty self explanatory.  To use a pattern file you have created you need to add its path to a GenerationConfig object when using the library or as part of the configuration directive at the start of a template.  You can also include them from the command line using the `-n` or `--namedpatterns` argument.
-
-**If you are adding TDG to a project using nuget and wish to use some of the named patterns defined in default.tdg-patterns you will need to change its build settings to "Content" and "Copy Always" to ensure it gets deployed with your application.**
-
-### Commandline examples
-
-|Command|Description|Example|
-|--------|--------|-------|
-|`tdg -t 'Letters <<\L{20}>> and Numbers <<\d{12}>>'`|Single repeating symbols using the following syntax. |*'Letters DWZIZQWSYOREAADBHFCY and Numbers 489186903271'*|
-|`tdg -t '<<(\L){5}>>'`|Repeating patterns containing multiple letters or numbers of random length. </br>Will generate 5 random upper-case characters.|*'CRQGA'*|
-|`tdg -t '<<(\L\L\d){4}>>'`|Will generate 4 repeating letter-letter-number values.|*'OG2QP1PR3JN1'*|
-|`tdg -t '<<(\L){10,20}>>'`|Will generate a string containing between 10 and 20 random upper-case characters.|*'WBJVSIWWMHTUJTUNCIKX'*|
-|`tdg -t 'Letters <<\L{2,20}>> and Numbers <<\d{2,12}>>'`|Produces items like|*'Letters SY and Numbers 38644533833'*|
-|`tdg -t 'Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?  Your SSN is <<[1-9]\d\d-\d\d-\d\d\d\d>>.' -c 100`|Input can contain several placeholders. Produces 100 items like|*'Hi there Reue Emvue how are you doing?  </br>Your SSN is 112-91-0458.'*|
-|`tdg -t '<<[1-9]\d\d-\d\d-\d\d\d\d>>' -c 100`|Generate 100 SSN like values and output to console window. Produces 100 items like|*'549-93-9041'*|
-|`tdg -t 'Hi there <<\L\v\l\v \L\v\l\l\v\v\l\l\v>> how are you doing?' -c 100 -o C:\test1.txt`|Generate 100 strings with random name like values and output to file. Produces 100 items like|*'Ruja Nuqaeiqfo how are you doing?'*|
-|`tdg -t '<<Letters \w{2,20} and Numbers \d{2,12}>>'`|Produces the following output:|*'Letters svoLxlK and Numbers 71697'*|
-
 ### Checkout the Examples folder for some further items and ideas.
-
-## This README was generated using the tdg.  See the unit tests for other examples.
