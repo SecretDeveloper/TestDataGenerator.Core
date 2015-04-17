@@ -2,7 +2,9 @@
 <TestSettings name="Local Test Run" id="dbcca0d7-dc2e-440c-bd07-d9f37856c70a" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
   <Description>This is a default test run configuration for a local test run.</Description>
   <Deployment>
+    <DeploymentItem filename="gk.DataGenerator.CommandLine\tdg-patterns\default.tdg-patterns" />
     <DeploymentItem filename="gk.DataGenerator.CommandLine\tdg-patterns\" />
+    <DeploymentItem filename="gk.DataGenerator.CommandLine\tdg-patterns\language.tdg-patterns" />
   </Deployment>
   <Execution>
     <TestTypeSpecific>
@@ -18,4 +20,5 @@
     <AgentRule name="LocalMachineDefaultRole">
     </AgentRule>
   </Execution>
+  <Properties />
 </TestSettings>

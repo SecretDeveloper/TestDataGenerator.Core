@@ -61,6 +61,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Eloquent.1.0.1.0\lib\net45\Eloquent.dll</HintPath>
     </Reference>
+    <Reference Include="gk.DataGenerator, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BuildOutput\gk.DataGenerator.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -94,16 +98,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\gk.DataGenerator.CommandLine\gk.DataGenerator.tdg.csproj">
-      <Project>{655f996b-816e-49e7-8226-dea4f93bf22d}</Project>
-      <Name>gk.DataGenerator.tdg</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\gk.DataGenerator\gk.DataGenerator.csproj">
-      <Project>{7e0afb0b-0000-4d8a-a3cc-eadd3bc14298}</Project>
-      <Name>gk.DataGenerator</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="tdg-patterns\default.tdg-patterns">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="tdg-patterns\language.tdg-patterns">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
