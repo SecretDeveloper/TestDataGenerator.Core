@@ -3,6 +3,8 @@
 # ![TestDataGenerator](https://raw.githubusercontent.com/SecretDeveloper/TestDataGenerator/master/icon.png) TestDataGenerator
 A library and command line tool that can be used to generate data for testing, templating and other uses.  You provide it with a pattern containing symbols defining the output you want to produce and it will create random data to match that pattern.
 
+<image src="https://ci.appveyor.com/api/projects/status/p3ctf74q1brhklim?svg=true" width="300">
+
 ## Features
 - Easy to use syntax.
 - Regex-like expressions, familiar to many.
