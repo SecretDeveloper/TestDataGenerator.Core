@@ -6,23 +6,23 @@ param(
 function clean{
     # CLEAN
     write-host "Cleaning" -foregroundcolor:blue
-    if(!(Test-Path "$basePath\src\BuildOutput\"))
+    if(!(Test-Path "$basePath\BuildOutput\"))
     {
-        mkdir "$basePath\src\BuildOutput\"
+        mkdir "$basePath\BuildOutput\"
     }
     if(!(Test-Path "$logPath"))
     {
         mkdir "$logPath"
     }
-    if(!(Test-Path "$basePath\src\TestOutput\"))
+    if(!(Test-Path "$basePath\TestOutput\"))
     {
-        mkdir "$basePath\src\TestOutput\"
+        mkdir "$basePath\TestOutput\"
     }    
-    remove-item $basePath\src\BuildOutput\* -recurse
-    remove-item $basePath\src\TestOutput\* -recurse
-    if((Test-Path "$basePath\src\DataGenerator\TestResults\"))
+    remove-item $basePath\BuildOutput\* -recurse
+    remove-item $basePath\TestOutput\* -recurse
+    if((Test-Path "$basePath\TestResults\"))
     {
-        remove-item $basePath\src\DataGenerator\TestResults -recurse
+        remove-item $basePath\TestResults -recurse
     }
     remove-item $logPath\* -recurse
     $lastResult = $true
@@ -32,7 +32,7 @@ function build{
     # BUILD
     write-host "Building"  -foregroundcolor:blue
     $msbuild = "c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
-    $solutionPath = "$basePath\src\DataGenerator\DataGenerator.sln"
+    $solutionPath = "$basePath\src\TestDataGenerator.sln"
     Invoke-expression "$msbuild $solutionPath /p:configuration=$buildType /t:Clean /t:Build /verbosity:q /nologo > $logPath\LogBuild.log"
 
     if($? -eq $False){
@@ -63,27 +63,27 @@ function test{
     # TESTING
     write-host "Testing"  -foregroundcolor:blue
 
-    $trxPath = "$basePath\src\TestOutput\AllTest.trx"
+    $trxPath = "$basePath\TestOutput\AllTest.trx"
     $resultFile="/resultsfile:$trxPath"
 
-    $testDLLs = get-childitem -path "$basePath\src\TestOutput\*.*" -include "*Tests.dll"
-     
-    $arguments = " /testcontainer:" + $testDLLs + " /TestSettings:$basePath\src\DataGenerator\LocalTestRun.testrunconfig"
-
+    $testDLLs = get-childitem -path "$basePath\TestOutput\*.*" -include "*.Tests.dll"
+    
+    $arguments = " /testcontainer:" + $testDLLs + " /TestSettings:$basePath\src\LocalTestRun.testrunconfig"
+    #write-host "mstest $resultFile $arguments"
     Invoke-Expression "mstest $resultFile $arguments > $logPath\LogTest.log"
 
     $content = (Get-Content -Path "$logPath\LogTest.log")
     $passedContent = ($content -match "Passed")
     if($passedContent.Count -eq 0)
     {    
-        Write-host "TESTING FAILED!" -foregroundcolor:red
+        Write-host "TESTING FAILED1!" -foregroundcolor:red
         $lastResult = $false
     }
     $failedContent = ($content -match "Failed")
     $failedCount = $failedContent.Count
     if($failedCount -gt 0)
     {    
-        Write-host "TESTING FAILED!" -foregroundcolor:red
+        Write-host "TESTING FAILED2!" -foregroundcolor:red
         $lastResult = $false
     }
     Foreach ($line in $failedContent) 
@@ -94,7 +94,7 @@ function test{
     $failedCount = $failedContent.Count
     if($failedCount -gt 0)
     {    
-        Write-host "TESTING FAILED!" -foregroundcolor:red
+        Write-host "TESTING FAILED3!" -foregroundcolor:red
         $lastResult = $false
     }
     Foreach ($line in $failedContent) 
@@ -125,7 +125,7 @@ function document{
 function pack{
     # Packing
     write-host "Packing" -foregroundcolor:blue
-    nuget pack .\src\DataGenerator\gk.DataGenerator.CommandLine\gk.DataGenerator.tdg.csproj -OutputDirectory .\releases > $logPath\LogPacking.log     
+    nuget pack .\src\$projectName\$projectName.csproj -OutputDirectory .\releases > $logPath\LogPacking.log     
     if($? -eq $False){
         Write-host "PACK FAILED!"  -foregroundcolor:red
         exit
@@ -141,7 +141,7 @@ function deploy{
 }
 
 $basePath = Get-Location
-$logPath = "$basePath\src\logs"
+$logPath = "$basePath\logs"
 $buildVersion = Get-Content .\VERSION
 $projectName = "TestDataGenerator"
 
@@ -151,10 +151,8 @@ if($buildType -eq "package"){
 
     clean
     build
-    test
-    document
-    pack
-    deploy
+    test    
+    pack   
 
     exit
 }
@@ -163,16 +161,10 @@ if($buildType -eq "clean"){
     clean  
     exit
 }
-if($buildType -eq "document"){
-    
-    document
-    exit
-}
 else {
     clean
     build
     test    
-    document
 }
 Write-Host Finished -foregroundcolor:blue
 

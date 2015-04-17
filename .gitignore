@@ -44,6 +44,7 @@ obj/
 TestResults/
 TestOutput/
 BuildOutput/
+releases/
 packages/
 _Resharper*/
 .nuget

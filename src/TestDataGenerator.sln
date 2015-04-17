@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4C7BFE94-A402-499A-9A2C-BB0A44E261D5}"
+	ProjectSection(SolutionItems) = preProject
+		DataGenerator.vsmdi = DataGenerator.vsmdi
+		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
+		..\..\VERSION = ..\..\VERSION
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{3A492DFF-FDA0-4AC7-BD29-745203BDC70E}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDataGenerator", "TestDataGenerator\TestDataGenerator.csproj", "{7E0AFB0B-0000-4D8A-A3CC-EADD3BC14298}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDataGenerator.Tests", "TestDataGenerator.Tests\TestDataGenerator.Tests.csproj", "{1142072E-6FBE-4496-9356-7862723F40A1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7E0AFB0B-0000-4D8A-A3CC-EADD3BC14298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E0AFB0B-0000-4D8A-A3CC-EADD3BC14298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E0AFB0B-0000-4D8A-A3CC-EADD3BC14298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E0AFB0B-0000-4D8A-A3CC-EADD3BC14298}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1142072E-6FBE-4496-9356-7862723F40A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1142072E-6FBE-4496-9356-7862723F40A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1142072E-6FBE-4496-9356-7862723F40A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1142072E-6FBE-4496-9356-7862723F40A1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = DataGenerator.vsmdi
+	EndGlobalSection
+EndGlobal
