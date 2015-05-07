@@ -18,6 +18,10 @@ function clean{
     {
         mkdir "$basePath\TestOutput\"
     }    
+    if(!(Test-Path "$basePath\releases\"))
+    {
+        mkdir "$basePath\releases\"
+    }    
     remove-item $basePath\BuildOutput\* -recurse
     remove-item $basePath\TestOutput\* -recurse
     if((Test-Path "$basePath\TestResults\"))
@@ -35,10 +39,10 @@ function build{
     $solutionPath = "$basePath\src\$projectName.sln"
     Invoke-expression "$msbuild $solutionPath /p:configuration=$buildType /t:Clean /t:Build /verbosity:q /nologo > $logPath\LogBuild.log"
 
-    if($? -eq $False){
+    if(!$LastExitCode -eq 0){
         Write-host "BUILD FAILED!"
         exit
-    }
+    }    
     
     $content = (Get-Content -Path "$logPath\LogBuild.log")
     $failedContent = ($content -match "error")
@@ -72,29 +76,30 @@ function test{
     #write-host "mstest $resultFile $arguments"
     Invoke-Expression "mstest $resultFile $arguments > $logPath\LogTest.log"
 
-    $content = (Get-Content -Path "$logPath\LogTest.log")
-    $passedContent = ($content -match "Passed")
-    if($passedContent.Count -eq 0)
-    {    
-        Write-host "TESTING FAILED1!" -foregroundcolor:red
-        $lastResult = $false
+    if(!$LastExitCode -eq 0){
+        Write-host "TESTING FAILED0!" -foregroundcolor:red
+        $lastResult = $false                
     }
+
+    $content = (Get-Content -Path "$logPath\LogTest.log")
+
     $failedContent = ($content -match "Failed")
     $failedCount = $failedContent.Count
     if($failedCount -gt 0)
     {    
-        Write-host "TESTING FAILED2!" -foregroundcolor:red
+        Write-host "TESTING FAILED1!" -foregroundcolor:red
         $lastResult = $false
     }
     Foreach ($line in $failedContent) 
     {
         write-host $line -foregroundcolor:red
     }
+
     $failedContent = ($content -match "Not Runnable")
     $failedCount = $failedContent.Count
     if($failedCount -gt 0)
     {    
-        Write-host "TESTING FAILED3!" -foregroundcolor:red
+        Write-host "TESTING FAILED2!" -foregroundcolor:red
         $lastResult = $false
     }
     Foreach ($line in $failedContent) 

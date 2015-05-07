@@ -1567,6 +1567,38 @@ namespace TestDataGenerator.Tests
         }
 
         #endregion
+
+        #region "special functions"
+
+        [TestMethod]
+        [TestCategory("Pattern")]
+        public void Can_Generate_Anagram()
+        {
+            var pattern = @"[ABC]{:anagram:}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
+            Assert.AreEqual(3, text.Length);
+            Assert.IsTrue(text.Contains("A"));
+            Assert.IsTrue(text.Contains("B"));
+            Assert.IsTrue(text.Contains("C"));
+        }
+
+        [TestMethod]
+        [TestCategory("Pattern")]
+        public void Can_Generate_Anagram_Long()
+        {
+            var input = "abcdefghijklmnopqrstuvwxyz";
+            var pattern = @"["+input+"]{:anagram:}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
+            Assert.AreEqual(input.Length, text.Length);
+            foreach (var ch in input.ToCharArray())
+            {
+                Assert.IsTrue(text.Contains(ch.ToString()));  
+            }
+        }
+
+        #endregion
     }
 }
 

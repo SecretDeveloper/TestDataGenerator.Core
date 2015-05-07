@@ -83,6 +83,14 @@ Ranges can contain multiple characters or ranges of characters but no symbols (t
 |`[100-500]`|A number between 100 and 500.|'253'|
 |`[1.25-5]`|A decimal number between 1.25 and 5. The scope or number of decimal places is taken from the first number defined (1.25 in this case) and the produced value will have the same number of decimal places.|'1.89'|
 
+### Special Functions
+Certain special functions are supported
+
+#### Anagrams
+You can generate an anagram from a set of characters by using the following syntax:
+`[abc]{:anagram}`
+The produced string will contain each of the provided characters (used only once) in a random order.
+
 ### Named Parameters
 A named pattern is surrounded with @ characters and links to a predefined pattern loaded from a file. The `default.tdg-patterns` file located in the same directory as the tdg executable file contains a list of named patterns which can be used in other patterns you write.  For example to generate you could write something like `([1-9]\d\d-\d\d-\d\d\d\d)` or you can use the named parameter in the file `(@misc_ssn@)` to a similar value.  You can add more patterns to the file as you wish.  Named patterns can also include other named patterns if you so wish.  
 

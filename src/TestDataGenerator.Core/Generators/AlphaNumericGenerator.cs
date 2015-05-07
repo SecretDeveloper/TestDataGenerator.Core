@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Eloquent;
@@ -51,6 +52,8 @@ namespace TestDataGenerator.Core.Generators
 
         private const char _NamedPattern_Start = '@';
         private const char _NamedPattern_End = '@';
+
+        private const string _Anagram = ":anagram:";
 
         private const int _ErrorSnippet_ContextLength = 50;
 
@@ -479,6 +482,17 @@ namespace TestDataGenerator.Core.Generators
             }
         }
 
+        private static void GenerateFromAnagramPattern(StringBuilder sb, string exp, ContentOptions contentOptions, Random random)
+        {
+            for (int x = 0; x < contentOptions.Repeat; x++)
+            {
+                var arr = exp.ToCharArray();
+                arr = arr.OrderBy(r => random.Next()).ToArray();
+                foreach(var ch in arr)
+                    AppendCharacterDerivedFromSymbol(sb, ch, false, random);
+            }
+        }
+
         private static void AppendContentFromNamedPattern(StringBuilder sb, string characters, ref int index, NamedPatterns namedPatterns, Random random)
         {
             var ndx = index;
@@ -506,7 +520,13 @@ namespace TestDataGenerator.Core.Generators
         private static void AppendContentFromSetExpression(StringBuilder sb, string characters, ref int index, Random random)
         {
             var contentOptions = GetContentOptions(characters, ref index, _Set_Start.ToString(CultureInfo.InvariantCulture), _Set_End.ToString(CultureInfo.InvariantCulture), random);
-            
+
+            if (contentOptions.IsAnagram)
+            {
+                GenerateFromAnagramPattern(sb, contentOptions.Content, contentOptions, random);
+                return;
+            }
+
             if (contentOptions.Content.Contains("-")) // Ranged - [0-7] or [a-z] or [1-9A-Za-z] for fun.
             {
                 MatchCollection ranges = new Regex(@"[A-Za-z]-[A-Za-z]|\d+\.?\d*-\d+\.?\d*|.").Matches(contentOptions.Content);
@@ -673,21 +693,35 @@ namespace TestDataGenerator.Core.Generators
             var result = new ContentOptions();
             
             result.Content = GetContent(characters, ref index, openingContainerChar, closingContainerChar);
+            
+            result.ContainsAlternation = ContainsAlternations(result.Content);
+
             if (result.Content[0].Equals(_Negation))
             {
                 result.IsNegated = true;
                 result.Content = result.Content.Replace("^", "");
             }
 
-            if (characters.Length > index && characters[index].Equals(_Quantifier_Start))
+            if (characters.Length <= index || !characters[index].Equals(_Quantifier_Start)) return result;
+
+            result.QuantifierContent = GetContent(characters, ref index, _Quantifier_Start.ToString(CultureInfo.InvariantCulture), _Quantifier_End.ToString(CultureInfo.InvariantCulture));
+            
+            // check for special functions
+            if (result.QuantifierContent.Contains(":"))
             {
-                var repeatExpression = GetContent(characters, ref index, _Quantifier_Start.ToString(CultureInfo.InvariantCulture), _Quantifier_End.ToString(CultureInfo.InvariantCulture));
-                result.Repeat = GetRepeatValueFromRepeatExpression(repeatExpression, random);
+                result.IsAnagram = ContainsAnagram(result.QuantifierContent);
+            }
+            else
+            {
+                result.Repeat = GetRepeatValueFromRepeatExpression(result.QuantifierContent, random);    
             }
 
-            result.ContainsAlternation = ContainsAlternations(result.Content);
-
             return result;
+        }
+
+        private static bool ContainsAnagram(string content)
+        {
+            return content.ToLower().Equals(_Anagram);
         }
 
         private static string GetContent(string characters, ref int index, string openingContainerChar, string closingContainerChar)
