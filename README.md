@@ -87,8 +87,8 @@ Ranges can contain multiple characters or ranges of characters but no symbols (t
 Certain special functions are supported
 
 #### Anagrams
-You can generate an anagram from a set of characters by using the following syntax:
-`[abc]{:anagram}`
+You can generate an anagram from a set of characters by using the following syntax:  
+`[abc]{:anagram}`  
 The produced string will contain each of the provided characters (used only once) in a random order.
 
 ### Named Parameters
