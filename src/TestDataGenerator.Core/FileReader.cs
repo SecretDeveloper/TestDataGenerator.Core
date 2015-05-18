@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using TestDataGenerator.Core.Exceptions;
+using TestDataGenerator.Core;
 
 namespace TestDataGenerator.Core
 {

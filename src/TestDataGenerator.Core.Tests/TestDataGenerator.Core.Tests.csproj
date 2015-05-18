@@ -57,9 +57,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Eloquent, Version=1.0.1.1, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Eloquent, Version=1.0.2.0, Culture=neutral, PublicKeyToken=5ebc50475df79800, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Eloquent.1.0.1.1\lib\net45\Eloquent.dll</HintPath>
+      <HintPath>..\packages\Eloquent.1.0.2.0\lib\net45\Eloquent.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />

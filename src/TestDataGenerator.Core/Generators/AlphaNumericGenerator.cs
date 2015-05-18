@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Eloquent;
-using TestDataGenerator.Core.Exceptions;
+using TestDataGenerator.Core;
 
-namespace TestDataGenerator.Core.Generators
+namespace TestDataGenerator.Core
 {
-    public static class AlphaNumericGenerator 
+    public static class AlphanumericGenerator 
     {
         private const string _AllPossibleCharacters = _AllLetters + _AllNumbers + _AllNonWhitespaceNonAlphaNumericCharacters + " ";
         private const string _AllLetters = _ShortHand_l + _ShortHand_L;
@@ -219,9 +220,7 @@ namespace TestDataGenerator.Core.Generators
                 }
             }
         }
-
         
-
         private static GenerationConfig LoadAndRemoveConfigFromTemplate(ref string template)
         {
             int index = 0;
@@ -402,6 +401,14 @@ namespace TestDataGenerator.Core.Generators
             var contentOptions = GetContentOptions(characters, ref index, _Section_Start.ToString(CultureInfo.InvariantCulture), _Section_End.ToString(CultureInfo.InvariantCulture), random);
 
             var exp = contentOptions.Content;
+
+            // Anagram handling - "(ABC){:anagram:}"
+            if (contentOptions.IsAnagram)
+            {
+                GenerateAnagramFromSection(sb, exp, contentOptions, random);
+                return;
+            }
+
             if (contentOptions.ContainsAlternation) // contains alternations
             {
                 GenerateFromAlternatedPattern(sb, namedPatterns, exp, contentOptions, random);
@@ -482,7 +489,7 @@ namespace TestDataGenerator.Core.Generators
             }
         }
 
-        private static void GenerateFromAnagramPattern(StringBuilder sb, string exp, ContentOptions contentOptions, Random random)
+        private static void GenerateAnagramFromSet(StringBuilder sb, string exp, ContentOptions contentOptions, Random random)
         {
             for (int x = 0; x < contentOptions.Repeat; x++)
             {
@@ -491,6 +498,63 @@ namespace TestDataGenerator.Core.Generators
                 foreach(var ch in arr)
                     AppendCharacterDerivedFromSymbol(sb, ch, false, random);
             }
+        }
+
+        /// <summary>
+        /// Generate all possible anagram variants from the provided expression.
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="exp"></param>
+        /// <param name="contentOptions"></param>
+        /// <param name="random"></param>
+        private static void GenerateAnagramFromSection(StringBuilder sb, string exp, ContentOptions contentOptions, Random random)
+        {
+            if(exp.Length >7)
+                throw new GenerationException("Anagrams greater than 7 characters in length are not supported.");
+
+            foreach (var permutation in GetAllPermutations(exp))
+            {
+                sb.Append(contentOptions.Prefix);
+                foreach (var ch in permutation)
+                {
+                    AppendCharacterDerivedFromSymbol(sb, ch, false, random);
+                }
+                sb.Append(contentOptions.Suffix);
+            }
+        }
+
+        private static IEnumerable<string> GetAllPermutations(string exp)
+        {
+            var value = exp;
+            var maxDepth = value.Length - 1;
+            return GetAllPermutations(value.ToCharArray(), 0, maxDepth);
+        }
+
+        private static IEnumerable<string> GetAllPermutations(char[] value, int currentDepth, int maxDepth)
+        {
+            if (currentDepth == maxDepth)
+            {
+                yield return new string(value);
+            }
+
+            for (int i = currentDepth; i <= maxDepth; i++)
+            {
+                Swap(ref value[currentDepth], ref value[i]);
+                foreach (var item in GetAllPermutations(value, currentDepth + 1, maxDepth))
+                {
+                    yield return item;
+                }
+                Swap(ref value[currentDepth], ref value[i]);
+            }
+        }
+        
+        private static void Swap(ref char a, ref char b)
+        {
+            if (a == b) return;
+
+            a ^= b;
+            b ^= a;
+            a ^= b;
         }
 
         private static void AppendContentFromNamedPattern(StringBuilder sb, string characters, ref int index, NamedPatterns namedPatterns, Random random)
@@ -523,7 +587,7 @@ namespace TestDataGenerator.Core.Generators
 
             if (contentOptions.IsAnagram)
             {
-                GenerateFromAnagramPattern(sb, contentOptions.Content, contentOptions, random);
+                GenerateAnagramFromSet(sb, contentOptions.Content, contentOptions, random);
                 return;
             }
 
@@ -709,7 +773,18 @@ namespace TestDataGenerator.Core.Generators
             // check for special functions
             if (result.QuantifierContent.Contains(":"))
             {
-                result.IsAnagram = ContainsAnagram(result.QuantifierContent);
+                if (ContainsAnagram(result.QuantifierContent))
+                {
+                    result.IsAnagram = true;
+                    if (result.QuantifierContent.Contains(","))
+                    {
+                        var tmp = result.QuantifierContent.Replace(_Anagram, "").TrimStart();
+                        if (tmp[0] == ',')
+                        {
+                            result.Suffix = tmp.Substring(1);
+                        }
+                    }
+                }
             }
             else
             {
@@ -721,7 +796,7 @@ namespace TestDataGenerator.Core.Generators
 
         private static bool ContainsAnagram(string content)
         {
-            return content.ToLower().Equals(_Anagram);
+            return content.ToLower().Contains(_Anagram);
         }
 
         private static string GetContent(string characters, ref int index, string openingContainerChar, string closingContainerChar)

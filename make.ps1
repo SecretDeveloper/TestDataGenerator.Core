@@ -158,8 +158,6 @@ if($buildType -eq "package"){
     build
     test    
     pack   
-
-    exit
 }
 if($buildType -eq "clean"){
     

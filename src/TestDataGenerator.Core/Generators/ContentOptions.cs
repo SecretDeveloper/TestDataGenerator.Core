@@ -1,4 +1,6 @@
-﻿namespace TestDataGenerator.Core.Generators
+﻿using System.Net.NetworkInformation;
+
+namespace TestDataGenerator.Core
 {
     internal class ContentOptions
     {
@@ -9,6 +11,8 @@
         public bool IsAnagram { get; set; }
         public bool IsSpecialFunction { get { return IsAnagram; } }
         public string QuantifierContent { get; set; }
+        public string Prefix { get; set; }
+        public string Suffix { get; set; }
 
         public ContentOptions()
         {
@@ -17,6 +21,8 @@
             Content = "";
             ContainsAlternation = false;
             Repeat = 1;
+            Prefix = "";
+            Suffix = "";
         }
     }
 }
