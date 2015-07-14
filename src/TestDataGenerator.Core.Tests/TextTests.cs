@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Eloquent;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -1174,6 +1176,23 @@ namespace TestDataGenerator.Tests
 
         [TestMethod]
         [TestCategory("NamedPatterns")]
+        [ExpectedException(typeof(GenerationException))]
+        public void Can_Throw_Exception_Invalid_Named_Pattern()
+        {
+            var config = new GenerationConfig()
+            {
+                PatternFiles =
+                    new List<string>()
+                    {
+                        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tdg-patterns", "invalid.tdg-patterns")
+                    }
+            };
+
+            var text = AlphaNumericGenerator.GenerateFromPattern("@blah@", config);
+        }
+
+        [TestMethod]
+        [TestCategory("NamedPatterns")]
         public void Can_Generate_NamedPatterns_All_Defaults_Patterns()
         {
             var sw = new System.Diagnostics.Stopwatch();
@@ -1598,6 +1617,36 @@ namespace TestDataGenerator.Tests
             }
         }
 
+        #endregion
+
+        #region Randomness
+        [TestMethod]
+        [TestCategory("Randomness")]
+        public void Level_Of_Randomness()
+        {
+            var pattern = @"(\L\L\L\L\L\L-\L\L-\L\L\L\L\L\n){1000}";
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern, new GenerationConfig() { Seed = 100 });
+            var segments = new List<string>(text.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
+
+            Console.WriteLine(@"'{0}' produced {1} values, out of which, {2} are unique and {3} are duplicates.", pattern, segments.Count, segments.Distinct().Count(), segments.Count - segments.Distinct().Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Randomness")]
+        public void Level_Of_Loop()
+        {
+            var pattern = @"(\L\L\L\L\L\L-\L\L-\L\L\L\L\L)";
+            var segments = new List<string>();
+
+            var config = new GenerationConfig();
+
+            for (var i = 0; i < 1000; i++)
+            {
+                segments.Add(AlphaNumericGenerator.GenerateFromPattern(pattern, config));
+            }
+
+            Console.WriteLine(@"'{0}' produced {1} values, out of which, {2} are unique and {3} are duplicates.", pattern, segments.Count, segments.Distinct().Count(), segments.Count - segments.Distinct().Count());
+        }
         #endregion
     }
 }
