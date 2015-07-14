@@ -59,8 +59,7 @@ namespace TestDataGenerator.Core
                 if (File.Exists(path)) return path;
             }
 
-            var msg = String.Format("Unable to find pattern file '{0}'. Searched in the following locations:\n{1}", filePath, String.Join("\n", paths));
-            throw new GenerationException(msg);
+            return "";
         }
     }
 }
