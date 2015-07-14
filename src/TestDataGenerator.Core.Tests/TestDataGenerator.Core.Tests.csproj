@@ -95,6 +95,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="tdg-patterns\invalid.tdg-patterns">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="tdg-patterns\default.tdg-patterns">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
