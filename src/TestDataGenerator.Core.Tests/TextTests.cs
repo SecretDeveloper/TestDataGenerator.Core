@@ -1279,40 +1279,40 @@ namespace TestDataGenerator.Tests
         [TestCategory("Negation")]
         public void Can_Generate_Correct_Output_from_Negated_Set()
         {
-            var pattern = @"[^0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ]";
-            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            var pattern = @"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            var text = AlphaNumericGenerator.GenerateFromPattern("[^"+pattern+"]");
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            Assert.IsTrue(Regex.IsMatch(text, "^"+pattern+"$"));
+            Assert.IsTrue(pattern.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) == -1);
         }
 
         [TestMethod]
         [TestCategory("Negation")]
         public void Can_Generate_Correct_Output_from_Negated_Set_Range()
         {
-            var pattern = @"[^A-Z]";
-            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            var pattern = @"A-Z";
+            var text = AlphaNumericGenerator.GenerateFromPattern("[^" + pattern + "]");
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            Assert.IsTrue(Regex.IsMatch(text, "^" + pattern + "$"));
+            Assert.IsTrue(pattern.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) == -1);
         }
 
         [TestMethod]
         [TestCategory("Negation")]
         public void Can_Generate_Correct_Output_from_Negated_Set_Range2()
         {
-            var pattern = @"[^3-6]";
-            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            var pattern = @"3-6";
+            var text = AlphaNumericGenerator.GenerateFromPattern("[^" + pattern + "]");
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            Assert.IsTrue(Regex.IsMatch(text, "^" + pattern + "$"));
+            Assert.IsTrue("3456".IndexOf(text, StringComparison.InvariantCultureIgnoreCase) == -1);
         }
 
         [TestMethod]
         [TestCategory("Negation")]
         public void Can_Generate_Correct_Output_from_Negated_Set_Range_Multiple()
         {
-            var pattern = @"[^A-Za-z]";
-            var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+            var pattern = @"A-Za-z";
+            var text = AlphaNumericGenerator.GenerateFromPattern("[^" + pattern + "]");
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            Assert.IsTrue(Regex.IsMatch(text, "^" + pattern + "$"));
+            Assert.IsTrue("ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(text, StringComparison.InvariantCultureIgnoreCase) == -1);
         }
 
         [TestMethod]
@@ -1322,7 +1322,7 @@ namespace TestDataGenerator.Tests
             var pattern = @"[^3-6]{10}";
             var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            Assert.IsTrue(Regex.IsMatch(text, "^" + pattern + "$"));
+            Assert.IsTrue("3456".IndexOf(text, StringComparison.InvariantCultureIgnoreCase) == -1);
         }
 
         [TestMethod]
@@ -1332,7 +1332,7 @@ namespace TestDataGenerator.Tests
             var pattern = @"[^A-Za-z]{10}";
             var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            Assert.IsTrue(Regex.IsMatch(text, "^" + pattern + "$"));
+            Assert.IsTrue("ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(text, StringComparison.InvariantCultureIgnoreCase) == -1);
         }
         
         #endregion
