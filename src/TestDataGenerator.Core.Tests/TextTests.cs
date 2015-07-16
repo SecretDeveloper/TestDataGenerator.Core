@@ -401,6 +401,62 @@ namespace TestDataGenerator.Tests
             StringAssert.Matches(text, new Regex(@"^[W-X]$"));
         }
 
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Section_Repeated_Escape_Chars()
+        {
+            // empty repeat expressions should result in a single instance - {} == {1}
+            var template = @"(\\){10}";
+            string text = AlphaNumericGenerator.GenerateFromPattern(template);
+            Console.WriteLine(@"'{0}' produced '{1}'", template, text);
+            StringAssert.Matches(text, new Regex(template));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Repeated_Escape_Chars()
+        {
+            // empty repeat expressions should result in a single instance - {} == {1}
+            var template = @"\\{10}";
+            string text = AlphaNumericGenerator.GenerateFromPattern(template);
+            Console.WriteLine(@"'{0}' produced '{1}'", template, text);
+            StringAssert.Matches(text, new Regex(template));
+        }
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Range_Repeated_Chars()
+        {
+            // empty repeat expressions should result in a single instance - {} == {1}
+            var template = @"(a){10}";
+            string text = AlphaNumericGenerator.GenerateFromPattern(template);
+            Console.WriteLine(@"'{0}' produced '{1}'", template, text);
+            StringAssert.Matches(@"aaaaaaaaaa", new Regex(template));
+        }
+
+
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Negated_Range()
+        {
+            // empty repeat expressions should result in a single instance - {} == {1}
+            var template = @"[^5-9]";
+            string text = AlphaNumericGenerator.GenerateFromPattern(template);
+            Console.WriteLine(@"'{0}' produced '{1}'", template, text);
+            StringAssert.Matches(text, new Regex(template));
+        }
+        
+        [TestMethod]
+        [TestCategory("Sets")]
+        public void Can_Generate_Negated_Range_And_Characters()
+        {
+            // empty repeat expressions should result in a single instance - {} == {1}
+            var template = @"[^A-Z5-9!£$%^&*()_+]";
+            string text = AlphaNumericGenerator.GenerateFromPattern(template);
+            Console.WriteLine(@"'{0}' produced '{1}'", template, text);
+            StringAssert.Matches(text, new Regex(template));
+        }
+
 
         [TestMethod]
         [TestCategory("Sets")]
@@ -1547,6 +1603,7 @@ namespace TestDataGenerator.Tests
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
 
             Assert.AreEqual(text, @"Generated |k*XjUo6Eo");
+            //Assert.AreEqual(text, @"Generated |k)XjUo6Eo");
         }
 
         [TestMethod]

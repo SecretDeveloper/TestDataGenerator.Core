@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,25 +12,7 @@ namespace TestDataGenerator.Core.Generators
 {
     public static class AlphaNumericGenerator 
     {
-        private const string _AllPossibleCharacters = _AllLetters + _AllNumbers + _AllNonWhitespaceNonAlphaNumericCharacters + " ";
-        private const string _AllLetters = _ShortHand_l + _ShortHand_L;
-        private const string _AllNumbers = "0123456789";
-        private const string _AllWhitespaceCharacters = " \t\n\r\f";
-        private const string _AllNonWhitespaceNonAlphaNumericCharacters = ".,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_|~/";
-
-        private const string _ShortHand_a = _AllLetters; // \a
-        private const string _ShortHand_l = "abcdefghijklmnopqrstuvwxyz"; // \l
-        private const string _ShortHand_L = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // \L
-        private const string _ShortHand_V = "AEIOU"; // \V
-        private const string _ShortHand_v = "aeiou"; // \v
-        private const string _ShortHand_C = "BCDFGHJKLMNPQRSTVWXYZ"; // \C
-        private const string _ShortHand_c = "bcdfghjklmnpqrstvwxyz"; // \c
-        private const string _ShortHand_D = _AllLetters + _AllNonWhitespaceNonAlphaNumericCharacters + " "; // \D
-        private const string _ShortHand_d = _AllNumbers; // \d
-        private const string _ShortHand_W = _AllNonWhitespaceNonAlphaNumericCharacters + " ";  // \W
-        private const string _ShortHand_w = _AllLetters + _AllNumbers + "_"; // \w
-        private const string _ShortHand_s = _AllWhitespaceCharacters;  // \s
-        private const string _ShortHand_S = _AllLetters + _AllNumbers + _AllNonWhitespaceNonAlphaNumericCharacters;  // \S
+        private static Dictionary<string, string> _ShortHands = GetShortHandMap();
 
         private const string _Config_Start = "<#";
         private const string _Config_End = "#>";
@@ -56,8 +39,7 @@ namespace TestDataGenerator.Core.Generators
         private const string _Anagram = ":anagram:";
 
         private const int _ErrorSnippet_ContextLength = 50;
-
-
+        
         /// <summary>
         /// The number of characters before and after the problem location to include in error messages.
         /// Default is 50.
@@ -219,9 +201,7 @@ namespace TestDataGenerator.Core.Generators
                 }
             }
         }
-
         
-
         private static GenerationConfig LoadAndRemoveConfigFromTemplate(ref string template)
         {
             int index = 0;
@@ -302,8 +282,7 @@ namespace TestDataGenerator.Core.Generators
 
             ProcessPattern(sb, pattern, namedPatterns, random);
         }
-
-
+        
         private static int FindPositionOfNext(string template, int index, string toFind, string notBefore)
         {
             bool found = false;
@@ -425,16 +404,17 @@ namespace TestDataGenerator.Core.Generators
                 {
                     if (isEscaped)
                     {
+                        // "\\" handling
                         isEscaped = false;
-                        sb.Append(chx); // append escaped character.
-                        curNdx++;
-                        continue;
                     }
-                    isEscaped = true;
-                    curNdx++;
-                    continue;
+                    else
+                    {
+                        // "...\..." detected, entering escaped symbol handling on next pass.
+                        isEscaped = true;
+                        curNdx++;
+                        continue;    
+                    }
                 }
-
 
                 if (!isEscaped && chx == _Section_Start)
                 {
@@ -453,11 +433,12 @@ namespace TestDataGenerator.Core.Generators
                 if (!isEscaped && chx == _NamedPattern_Start)
                 {
                     AppendContentFromNamedPattern(sb, exp, ref curNdx, namedPatterns, random);
-                    continue;
+                    continue; 
                 }
 
                 // check are we entering a repeat symbol section
                 // Format = "L{4}" = repeat L symbol 4 times.
+                // Format = "\\{4}" = repeat \ symbol 4 times.
                 bool repeatSymbol = curNdx < exp.Length - 1 && exp[curNdx + 1] == _Quantifier_Start;
                 if (repeatSymbol)
                 {
@@ -532,14 +513,21 @@ namespace TestDataGenerator.Core.Generators
                 MatchCollection ranges = new Regex(@"[A-Za-z]-[A-Za-z]|\d+\.?\d*-\d+\.?\d*|.").Matches(contentOptions.Content);
                 if (contentOptions.IsNegated)
                 {
-                    var possibles = _AllPossibleCharacters;
+                    var possibles = _ShortHands["."];
                     foreach (var range in ranges)
                     {
-                        //TODO - Cleanup - Only here to throw an exception for invalid ranges
-                        GetRandomCharacterFromRange(range.ToString(), contentOptions.IsNegated, random);
-
-                        var regex = new Regex("[" + range + "]");
-                        possibles = regex.Replace(possibles, "");
+                        if (range.ToString().Contains("-"))
+                        {
+                            //TODO - Cleanup - Only here to throw an exception for invalid ranges
+                            GetRandomCharacterFromRange(range.ToString(), contentOptions.IsNegated, random);
+                            var regex = new Regex("[" + range + "]");
+                            possibles = regex.Replace(possibles, "");
+                        }
+                        else
+                        {
+                            // single character item to negate, just remove it from the list of possibles.
+                            possibles = possibles.Replace(range.ToString(), "");
+                        }
                     }
 
                     for (int i = 0; i < contentOptions.Repeat; i++)
@@ -560,7 +548,7 @@ namespace TestDataGenerator.Core.Generators
             {
                 var possibles = contentOptions.Content;
                 if (contentOptions.IsNegated)
-                    possibles = _AllPossibleCharacters.RegexReplace("[" + possibles + "]", "");
+                    possibles = _ShortHands["."].RegexReplace("[" + possibles + "]", "");
 
                 for (int i = 0; i < contentOptions.Repeat; i++)
                 {
@@ -579,30 +567,38 @@ namespace TestDataGenerator.Core.Generators
         private static string GetRandomCharacterFromRange(string range, bool isNegated, Random random)
         {
             string ret = "";
-            string possibles;
+            string possibles=_ShortHands["."];
             var items = range.Split('-');
+            double i = 0;
+            if (!Double.TryParse(items[0], out i))
+                ret = GetRandomAlphaItemFromRange(isNegated, random, items, possibles);
+            else
+                ret = GetRandomNumericItemFromRange(isNegated, random, items, possibles);
 
-            var start = _ShortHand_l.IndexOf(items[0].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+            return ret;
+        }
+
+        private static string GetRandomAlphaItemFromRange(bool isNegated, Random random, string[] items, string possibles)
+        {
+            string ret = "";
+            if (_ShortHands["l"].Contains(items[0])) possibles = _ShortHands["l"];
+            if (_ShortHands["L"].Contains(items[0])) possibles = _ShortHands["L"];
+
+            var start = possibles.IndexOf(items[0].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
             if (start > -1)
             {
-                var end = _ShortHand_l.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
-                possibles = _ShortHand_l.Substring(start, end - start+1);
-                if (isNegated) possibles = _AllPossibleCharacters.RegexReplace("[" + possibles + "]", "");
+                var end = possibles.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+                possibles = possibles.Substring(start, end - start + 1);
+                if (isNegated) possibles = _ShortHands["."].RegexReplace("[" + possibles + "]", "");
                 ret = possibles[random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
-                return ret;
             }
+            return ret;
+        }
 
-            start = _ShortHand_L.IndexOf(items[0].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
-            if (start > -1)
-            {
-                var end = _ShortHand_L.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
-                possibles = _ShortHand_L.Substring(start, end - start+1);
-                if (isNegated) possibles = _AllPossibleCharacters.RegexReplace("[" + possibles + "]", "");
-                ret = possibles[random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
-                return ret;
-            }
-            
-            // NUMERIC RANGES
+        private static string GetRandomNumericItemFromRange(bool isNegated, Random random, string[] items, string possibles)
+        {
+            string ret = "";
+
             double min;
             if (double.TryParse(items[0], out min))
             {
@@ -610,7 +606,7 @@ namespace TestDataGenerator.Core.Generators
                 if (double.TryParse(items[1], out max))
                 {
                     int scale = 0;
-                    if (items[0].Contains(".")) 
+                    if (items[0].Contains("."))
                         scale = items[0].Split('.')[1].Length;
 
                     if (isNegated)
@@ -618,8 +614,9 @@ namespace TestDataGenerator.Core.Generators
                         if (scale > 0 || min < 0 || min > 9 || max < 0 || max > 9)
                             throw new GenerationException("Negated numeric sets are restricted to integers between 1 and 9.");
 
-                        possibles = ExpandNegatedMinMax(min, max);
-                        possibles = "0123456789".RegexReplace("[" + possibles + "]", "");
+                        var negs = ExpandNegatedMinMax(min, max);
+                        possibles = possibles.RegexReplace("[" + negs + "]", "");
+                        if (possibles.Length == 0) return ""; // No allowable values remain - return empty string
                         ret = possibles[random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
                     }
                     else
@@ -630,7 +627,6 @@ namespace TestDataGenerator.Core.Generators
                     }
                 }
             }
-            
             return ret;
         }
 
@@ -686,8 +682,7 @@ namespace TestDataGenerator.Core.Generators
                 throw new GenerationException("Invalid repeat section, repeat value must not be less than zero. '"+repeatExpression+"'");
             return repeat;
         }
-
-
+        
         private static ContentOptions GetContentOptions(string characters, ref int index, string openingContainerChar, string closingContainerChar, Random random)
         {
             var result = new ContentOptions();
@@ -788,64 +783,51 @@ namespace TestDataGenerator.Core.Generators
                 return;
             }
 
-            switch (symbol)
+            if (_ShortHands.ContainsKey(symbol.ToString()))
             {
-                case '.':
-                    AppendRandomCharacterFromString(sb, _AllPossibleCharacters, random);
-                    break;
-                case 'W':
-                    AppendRandomCharacterFromString(sb, _ShortHand_W, random);
-                    break;
-                case 'w':
-                    AppendRandomCharacterFromString(sb, _ShortHand_w, random);
-                    break;
-                case 'a':
-                    AppendRandomCharacterFromString(sb, _ShortHand_a, random);
-                    break;
-                case 'L':
-                    AppendRandomCharacterFromString(sb, _ShortHand_L, random);
-                    break;
-                case 'l':
-                    AppendRandomCharacterFromString(sb, _ShortHand_l, random);
-                    break;
-                case 'V':
-                    AppendRandomCharacterFromString(sb, _ShortHand_V, random);
-                    break;
-                case 'v':
-                    AppendRandomCharacterFromString(sb, _ShortHand_v, random);
-                    break;
-                case 'C':
-                    AppendRandomCharacterFromString(sb, _ShortHand_C, random);
-                    break;
-                case 'c':
-                    AppendRandomCharacterFromString(sb, _ShortHand_c, random);
-                    break;
-                case 'D':
-                    AppendRandomCharacterFromString(sb, _ShortHand_D, random);
-                    break;
-                case 'd':
-                    AppendRandomCharacterFromString(sb, _ShortHand_d, random);
-                    break;
-                case 's':
-                    AppendRandomCharacterFromString(sb, _ShortHand_s, random);
-                    break;
-                case 'S':
-                    AppendRandomCharacterFromString(sb, _ShortHand_S, random);
-                    break;
-                case 'n':
-                    sb.Append("\n");
-                    break;
-                case 'r':
-                    sb.Append("\r");
-                    break;
-                case 't':
-                    sb.Append("\t");
-                    break;
-                default:
-                    // Just append the character as it is not a symbol.
-                    sb.Append(symbol);
-                    break;
+                AppendRandomCharacterFromString(sb, _ShortHands[symbol.ToString()], random);
             }
+            else
+            {
+                switch (symbol)
+                {
+                    case 'n':
+                        sb.Append("\n");
+                        break;
+                    case 'r':
+                        sb.Append("\r");
+                        break;
+                    case 't':
+                        sb.Append("\t");
+                        break;
+                    default:
+                        // Just append the character as it is not a symbol.
+                        sb.Append(symbol);
+                        break;
+                }
+            }
+        }
+
+        private static Dictionary<string, string> GetShortHandMap()
+        {
+            var shorthands = new Dictionary<string, string>();
+            shorthands["l"] = "abcdefghijklmnopqrstuvwxyz";
+            shorthands["L"] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            shorthands["V"] = "AEIOU";
+            shorthands["v"] = "aeiou";
+            shorthands["C"] = "BCDFGHJKLMNPQRSTVWXYZ";
+            shorthands["c"] = "bcdfghjklmnpqrstvwxyz";
+            var nonAlphaNonWhiteSpace = ".,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_|~/";
+            shorthands["W"] = nonAlphaNonWhiteSpace + " ";
+            shorthands["d"] = "0123456789";
+            shorthands["s"] = " \t\n\r\f";
+
+            shorthands["a"] = shorthands["l"]+shorthands["L"];
+            shorthands["D"] = shorthands["l"]+shorthands["L"]+shorthands["W"];
+            shorthands["w"] = shorthands["l"] + shorthands["L"] + shorthands["d"] + "_";
+            shorthands["S"] = shorthands["l"] + shorthands["L"] + shorthands["d"] + nonAlphaNonWhiteSpace;
+            shorthands["."] = shorthands["a"] + shorthands["d"] + shorthands["W"];
+            return shorthands;
         }
 
         private static void AppendRandomCharacterFromString(StringBuilder sb, string allowedCharacters, Random random)

@@ -1,4 +1,0 @@
-2015-05-07
-----------------
-Version 4.1.0.0
-	Added support for anagram sets using the following format: "[_CHARACTERS_]{:anagram:}".  The provided _CHARACTERS_ will be randomly sorted and each letter will be used only once.
