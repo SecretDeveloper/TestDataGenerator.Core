@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Eloquent;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestDataGenerator.Core;
 using TestDataGenerator.Core.Exceptions;
@@ -1155,27 +1154,27 @@ namespace TestDataGenerator.Tests
 
             pattern = @"\s";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
-            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text.ToLiteral());
+            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             StringAssert.Matches(text, new Regex(@"^\s$"));
             
             pattern = @"\t";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
-            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text.ToLiteral());
+            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             StringAssert.Matches(text, new Regex(@"^\t$"));
 
             pattern = @"\n";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
-            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text.ToLiteral());
+            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             StringAssert.Matches(text, new Regex(@"^\n$"));
 
             pattern = @"\r";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
-            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text.ToLiteral());
+            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             StringAssert.Matches(text, new Regex(@"^\r$"));
 
             pattern = @"\\";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
-            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text.ToLiteral());
+            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             StringAssert.Matches(text, new Regex(@"^\\$"));
         }
 

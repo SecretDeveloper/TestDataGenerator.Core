@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Eloquent;
 using TestDataGenerator.Core.Exceptions;
 
 namespace TestDataGenerator.Core.Generators
@@ -265,7 +264,7 @@ namespace TestDataGenerator.Core.Generators
 
         private static void InternalGenerateFromPattern(StringBuilder sb, string pattern, NamedPatterns namedPatterns, GenerationConfig config, Random random)
         {
-            if (pattern == null || pattern.IsNullOrEmpty())
+            if (pattern == null || string.IsNullOrEmpty(pattern))
                 throw new GenerationException("Argument 'pattern' cannot be null.");
 
             if (namedPatterns == null)
@@ -548,7 +547,7 @@ namespace TestDataGenerator.Core.Generators
             {
                 var possibles = contentOptions.Content;
                 if (contentOptions.IsNegated)
-                    possibles = _ShortHands["."].RegexReplace("[" + possibles + "]", "");
+                    possibles = Regex.Replace(_ShortHands["."], "[" + possibles + "]", "");
 
                 for (int i = 0; i < contentOptions.Repeat; i++)
                 {
@@ -589,7 +588,7 @@ namespace TestDataGenerator.Core.Generators
             {
                 var end = possibles.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
                 possibles = possibles.Substring(start, end - start + 1);
-                if (isNegated) possibles = _ShortHands["."].RegexReplace("[" + possibles + "]", "");
+                if (isNegated) possibles = Regex.Replace(_ShortHands["."],"[" + possibles + "]", "");
                 ret = possibles[random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
             }
             return ret;
@@ -615,7 +614,7 @@ namespace TestDataGenerator.Core.Generators
                             throw new GenerationException("Negated numeric sets are restricted to integers between 1 and 9.");
 
                         var negs = ExpandNegatedMinMax(min, max);
-                        possibles = possibles.RegexReplace("[" + negs + "]", "");
+                        possibles = Regex.Replace(possibles, "[" + negs + "]", "");
                         if (possibles.Length == 0) return ""; // No allowable values remain - return empty string
                         ret = possibles[random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
                     }
