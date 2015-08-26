@@ -255,9 +255,11 @@ namespace TestDataGenerator.Tests
         [TestCategory("Template")]
         public void Can_Generate_From_Pattern_With_Alternatives()
         {
-            var template = @"Alternatives <<\C|(\c){10}|\V\V\V|\v{2,3}>>";
-            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
+            var template = @"Alternatives <<(\C|(\c){10}|\V\V\V|\v{2,3})>>";
+            var config = new GenerationConfig();
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template, config);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
+            Console.WriteLine("Seed:{0}", config.Seed);
             StringAssert.Matches(text, new Regex(@"Alternatives ([BCDFGHJKLMNPQRSTVWXYZ]{1}|[bcdfghjklmnpqrstvwxyz]{10}|[AEIOU]{3}|[aeiou]{2,3})"));
         }
 
@@ -268,7 +270,7 @@ namespace TestDataGenerator.Tests
             var template = @"Alternatives <<(A|B){1000}>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
-            StringAssert.Matches(text, new Regex(@"Alternatives ([BCDFGHJKLMNPQRSTVWXYZ]{1}|[bcdfghjklmnpqrstvwxyz]{10}|[AEIOU]{3}|[aeiou]{2,3})"));
+            StringAssert.Matches(text, new Regex(@"Alternatives (A|B){1000}"));
         }
 
 
