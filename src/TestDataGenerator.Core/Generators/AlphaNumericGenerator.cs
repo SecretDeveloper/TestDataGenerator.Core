@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -171,7 +172,7 @@ namespace TestDataGenerator.Core.Generators
                 if (isEscaped)
                     sb.Append("<<"+pattern+">>");
                 else
-                    InternalGenerateFromPattern(sb, pattern, generationPatterns, null, random); // generate value from expression
+                    GenerateFromPattern(sb, pattern, generationPatterns, null, random); // generate value from expression
                 index = end+2; // update our index.
             }
 
@@ -227,45 +228,19 @@ namespace TestDataGenerator.Core.Generators
             return patterns;
         }
 
-        public static string GenerateFromPattern(string pattern)
+        public static string GenerateFromPattern(string pattern, NamedPatterns namedPatterns = null, GenerationConfig config = null, Random random = null)
         {
             var sb = new StringBuilder();
-            InternalGenerateFromPattern(sb, pattern, null, null, null);
+            GenerateFromPattern(sb, pattern, namedPatterns, config, random);
             return sb.ToString();
         }
 
-        public static string GenerateFromPattern(string pattern, GenerationConfig config)
-        {
-            var sb = new StringBuilder();
-            InternalGenerateFromPattern(sb, pattern, null, config, null);
-            return sb.ToString();
-        }
-        
-        public static string GenerateFromPattern(string pattern, NamedPatterns namedPatterns)
-        {
-            var sb = new StringBuilder();
-            InternalGenerateFromPattern(sb, pattern, namedPatterns, null, null);
-            return sb.ToString();
-        }
-
-        public static string GenerateFromPattern(string pattern, NamedPatterns namedPatterns, GenerationConfig config)
-        {
-            var sb = new StringBuilder();
-            InternalGenerateFromPattern(sb, pattern, namedPatterns, config, null);
-            return sb.ToString();
-        }
-
-        public static string GenerateFromPattern(string pattern, Random random)
-        {
-            var sb = new StringBuilder();
-            InternalGenerateFromPattern(sb, pattern, null, null, random);
-            return sb.ToString();
-        }
-
-        private static void InternalGenerateFromPattern(StringBuilder sb, string pattern, NamedPatterns namedPatterns, GenerationConfig config, Random random)
+        private static void GenerateFromPattern(StringBuilder sb, string pattern, NamedPatterns namedPatterns=null, GenerationConfig config=null, Random random=null)
         {
             if (pattern == null || string.IsNullOrEmpty(pattern))
                 throw new GenerationException("Argument 'pattern' cannot be null.");
+
+            
 
             if (namedPatterns == null)
             {
@@ -278,7 +253,7 @@ namespace TestDataGenerator.Core.Generators
             }
             if(config == null) config = new GenerationConfig();
             if (random == null) random = config.Random;
-
+            
             ProcessPattern(sb, pattern, namedPatterns, random);
         }
         
@@ -458,7 +433,7 @@ namespace TestDataGenerator.Core.Generators
             for (int x = 0; x < contentOptions.Repeat; x++)
             {
                 exp = alternates[random.Next(0, alternates.Length)];
-                InternalGenerateFromPattern(sb, exp, namedPatterns, null, random);
+                GenerateFromPattern(sb, exp, namedPatterns, null, random);
             }
         }
 
@@ -480,7 +455,7 @@ namespace TestDataGenerator.Core.Generators
             
             if (namedPatterns.HasPattern(tuple.Content)) // $namedPattern;
             {
-                InternalGenerateFromPattern(sb, namedPatterns.GetPattern(tuple.Content).Pattern, namedPatterns, null, random);
+                GenerateFromPattern(sb, namedPatterns.GetPattern(tuple.Content).Pattern, namedPatterns, null, random);
             }
             else
             {

@@ -722,7 +722,7 @@ namespace TestDataGenerator.Tests
         {
             var pattern = @"\L\L\L\L\L\L-\L\L-\L\L\L\L\L";
             var config = new GenerationConfig(){Seed = 300};
-            var text = AlphaNumericGenerator.GenerateFromPattern(pattern, config);
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern, config: config);
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             Assert.AreEqual(15, text.Length);
             Assert.AreEqual(text,"LVMPQS-IY-CXIRW");
@@ -766,7 +766,7 @@ namespace TestDataGenerator.Tests
 
             var random = new Random(1);
 
-            var text = AlphaNumericGenerator.GenerateFromPattern(pattern, random);
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern, random:random);
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             StringAssert.Matches(text, new Regex("^[A-Z]{2}$"));
             Assert.AreEqual("CU", text);
@@ -1243,7 +1243,7 @@ namespace TestDataGenerator.Tests
                     }
             };
 
-            var text = AlphaNumericGenerator.GenerateFromPattern("@blah@", config);
+            var text = AlphaNumericGenerator.GenerateFromPattern("@blah@", config:config);
         }
 
         [TestMethod]
@@ -1337,7 +1337,7 @@ namespace TestDataGenerator.Tests
             var pattern = @"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             var text = AlphaNumericGenerator.GenerateFromPattern("[^"+pattern+"]");
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            Assert.IsTrue(pattern.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) == -1);
+            Assert.IsTrue(pattern.IndexOf(text, StringComparison.InvariantCulture) == -1);
         }
 
         [TestMethod]
@@ -1347,7 +1347,7 @@ namespace TestDataGenerator.Tests
             var pattern = @"A-Z";
             var text = AlphaNumericGenerator.GenerateFromPattern("[^" + pattern + "]");
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            Assert.IsTrue(pattern.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) == -1);
+            Assert.IsTrue(pattern.IndexOf(text, StringComparison.InvariantCulture) == -1);
         }
 
         [TestMethod]
@@ -1681,7 +1681,7 @@ namespace TestDataGenerator.Tests
         public void Level_Of_Randomness()
         {
             var pattern = @"(\L\L\L\L\L\L-\L\L-\L\L\L\L\L\n){1000}";
-            var text = AlphaNumericGenerator.GenerateFromPattern(pattern, new GenerationConfig() { Seed = 100 });
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern, config:new GenerationConfig() { Seed = 100 });
             var segments = new List<string>(text.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
 
             Console.WriteLine(@"'{0}' produced {1} values, out of which, {2} are unique and {3} are duplicates.", pattern, segments.Count, segments.Distinct().Count(), segments.Count - segments.Distinct().Count());
@@ -1698,7 +1698,7 @@ namespace TestDataGenerator.Tests
 
             for (var i = 0; i < 1000; i++)
             {
-                segments.Add(AlphaNumericGenerator.GenerateFromPattern(pattern, config));
+                segments.Add(AlphaNumericGenerator.GenerateFromPattern(pattern, config:config));
             }
 
             Console.WriteLine(@"'{0}' produced {1} values, out of which, {2} are unique and {3} are duplicates.", pattern, segments.Count, segments.Distinct().Count(), segments.Count - segments.Distinct().Count());

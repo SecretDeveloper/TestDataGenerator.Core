@@ -7,16 +7,16 @@ namespace TestDataGenerator.Core
     [DataContract]
     public class GenerationConfig
     {
-        private int? mSeed;
+        private int? _seed;
 
         [DataMember(Name="seed")]
         public int? Seed
         {
-            get { return mSeed; }
+            get { return _seed; }
             set
             {
-                mSeed = value;
-                mRandom = new Random(mSeed.Value);
+                _seed = value;
+                if (_seed != null) mRandom = new Random(_seed.Value);
             }
         }
 
@@ -32,9 +32,8 @@ namespace TestDataGenerator.Core
 
         public GenerationConfig()
         {
-            this.mRandom = new Random(DateTime.Now.Millisecond);
-            this.mRandom = new Random(mRandom.Next(int.MinValue, int.MaxValue));
-            mSeed = mRandom.Next(int.MinValue, int.MaxValue);
+            this.mRandom = new Random();
+            _seed = mRandom.Next(int.MinValue, int.MaxValue);
 
             PatternFiles = new List<string>();
         }

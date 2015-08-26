@@ -112,6 +112,57 @@ function test{
     }
 }
 
+#vstest.console
+function vstest{
+    # TESTING
+    write-host "Testing"  -foregroundcolor:blue
+
+    $trxPath = "$basePath\TestOutput\AllTest.trx"
+    $resultFile="/resultsfile:$trxPath"
+
+    $testDLLs = get-childitem -path "$basePath\TestOutput\*.*" -include "*.Tests.dll"
+    #write-host "get-childitem -path $basePath\TestOutput\*.* -include *.Tests.dll"
+    
+    $arguments = "$testDLLs"
+    write-host "vstest.console.exe $arguments"
+    Invoke-Expression "vstest.console.exe $arguments > $logPath\LogTest.log"
+
+    if(!$LastExitCode -eq 0){
+        Write-host "TESTING FAILED0!" -foregroundcolor:red
+        $lastResult = $false                
+    }
+
+    $content = (Get-Content -Path "$logPath\LogTest.log")
+
+    $failedContent = ($content -match "Failed: 0")
+    $failedCount = $failedContent.Count    
+    if($failedCount -ne 1)
+    {    
+        Write-host "TESTING FAILED1!" -foregroundcolor:red
+        $lastResult = $false
+    }
+    Foreach ($line in $failedContent) 
+    {
+        write-host $line -foregroundcolor:blue
+    }
+
+    $failedContent = ($content -match "Not Runnable")
+    $failedCount = $failedContent.Count
+    if($failedCount -gt 0)
+    {    
+        Write-host "TESTING FAILED2!" -foregroundcolor:red
+        $lastResult = $false
+    }
+    Foreach ($line in $failedContent) 
+    {
+        write-host $line -foregroundcolor:red
+    }
+
+    if($lastResult -eq $False){    
+        exit
+    }
+}
+
 function document{
     # DOCUMENTING
     Write-Host "Documenting" -foregroundcolor:blue
@@ -137,12 +188,18 @@ function pack{
     }
 }
 
-function deploy{
+function createZip{
     # DEPLOYING
-    write-host "Deploying" -foregroundcolor:blue
-    $outputName = $projectName+"_V"+$buildVersion+"_BUILD.zip"
+    write-host "Creating zip" -foregroundcolor:blue
+    $outputName = $projectName+"_V"+$fullBuildVersion+"_BUILD.zip"
     zip a -tzip .\releases\$outputName -r .\src\BuildOutput\*.* >> $logPath\LogDeploy.log    
+}
 
+function publish{
+    # DEPLOYING
+    write-host "Publishing Nuget package" -foregroundcolor:blue
+    $outputName = ".\releases\$projectName.$fullBuildVersion.nupkg"
+    nuget push $outputName
 }
 
 $basePath = Get-Location
@@ -150,14 +207,15 @@ $logPath = "$basePath\logs"
 $buildVersion = Get-Content .\VERSION
 $projectName = "TestDataGenerator.Core"
 
-if($buildType -eq "package"){
+if($buildType -eq "publish"){
     
     $buildType="Release"
 
     clean
     build
-    test    
+    vstest    
     pack   
+    publish
 
     exit
 }
@@ -169,7 +227,8 @@ if($buildType -eq "clean"){
 else {
     clean
     build
-    test    
+    vstest    
+    pack
 }
 Write-Host Finished -foregroundcolor:blue
 
