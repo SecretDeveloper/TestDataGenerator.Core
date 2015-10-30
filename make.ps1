@@ -123,8 +123,9 @@ function vstest{
     $testDLLs = get-childitem -path "$basePath\TestOutput\*.*" -include "*.Tests.dll"
     #write-host "get-childitem -path $basePath\TestOutput\*.* -include *.Tests.dll"
     
-    $arguments = "$testDLLs"
-    write-host "vstest.console.exe $arguments"
+    #$arguments = "$testDLLs /Enablecodecoverage"
+    $arguments = "$testDLLs "
+    #write-host "vstest.console.exe $arguments"
     Invoke-Expression "vstest.console.exe $arguments > $logPath\LogTest.log"
 
     if(!$LastExitCode -eq 0){
