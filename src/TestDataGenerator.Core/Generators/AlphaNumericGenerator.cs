@@ -135,7 +135,7 @@ namespace TestDataGenerator.Core.Generators
             var random = generationConfig.Random;
 
             // PATTERNS
-            var generationPatterns = LoadDefaultNamedPatterns();
+            var generationPatterns = LoadDefaultNamedPatterns(generationConfig);
             // Load provided ones as well if there are any.
             if (namedPatterns != null && namedPatterns.Patterns != null)
             {
@@ -215,9 +215,11 @@ namespace TestDataGenerator.Core.Generators
             return config;
         }
 
-        private static NamedPatterns LoadDefaultNamedPatterns()
+        private static NamedPatterns LoadDefaultNamedPatterns(GenerationConfig generationConfig)
         {
             var patterns = new NamedPatterns();
+            if(generationConfig == null || generationConfig.LoadDefaultPatternFile == false)
+                return patterns; // Dont attempt to load default pattern files with every execution -- too slow.
 
             var path = FileReader.GetPatternFilePath("default");
             if (File.Exists(path))
@@ -239,12 +241,10 @@ namespace TestDataGenerator.Core.Generators
         {
             if (pattern == null || string.IsNullOrEmpty(pattern))
                 throw new GenerationException("Argument 'pattern' cannot be null.");
-
             
-
             if (namedPatterns == null)
             {
-                namedPatterns = LoadDefaultNamedPatterns();
+                namedPatterns = LoadDefaultNamedPatterns(config);
             }
             if (config != null && config.PatternFiles != null)
             {
@@ -791,16 +791,18 @@ namespace TestDataGenerator.Core.Generators
             shorthands["v"] = "aeiou";
             shorthands["C"] = "BCDFGHJKLMNPQRSTVWXYZ";
             shorthands["c"] = "bcdfghjklmnpqrstvwxyz";
-            var nonAlphaNonWhiteSpace = ".,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#_|~/";
-            shorthands["W"] = nonAlphaNonWhiteSpace + " ";
+            shorthands["s"] = " \f\n\r\t\v​";
             shorthands["d"] = "0123456789";
-            shorthands["s"] = " \t\n\r\f";
 
-            shorthands["a"] = shorthands["l"]+shorthands["L"];
-            shorthands["D"] = shorthands["l"]+shorthands["L"]+shorthands["W"];
-            shorthands["w"] = shorthands["l"] + shorthands["L"] + shorthands["d"] + "_";
-            shorthands["S"] = shorthands["l"] + shorthands["L"] + shorthands["d"] + nonAlphaNonWhiteSpace;
+            var nonAlphaNonWhiteSpace = ".,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#|~/";
+            shorthands["W"] = shorthands["s"] + nonAlphaNonWhiteSpace + " "; // [^A-Za-z0-9_].
+
+            shorthands["a"] = shorthands["l"] + shorthands["L"];
+            shorthands["D"] = shorthands["l"] + shorthands["L"] + shorthands["W"];
+            shorthands["w"] = shorthands["l"] + shorthands["L"] + shorthands["d"] + "_"; // [A-Za-z0-9_].
+            shorthands["S"] = shorthands["l"] + shorthands["L"] + shorthands["d"] + "_" + nonAlphaNonWhiteSpace;  // [^ \f\n\r\t\v​\u00a0\u1680​\u180e\u2000-\u200a​\u2028\u2029​\u202f\u205f​\u3000\ufeff]
             shorthands["."] = shorthands["a"] + shorthands["d"] + shorthands["W"];
+
             return shorthands;
         }
 

@@ -16,24 +16,34 @@ namespace TestDataGenerator.Core
             set
             {
                 _seed = value;
-                if (_seed != null) mRandom = new Random(_seed.Value);
+                if (_seed != null) _Random = new Random(_seed.Value);
             }
         }
 
         [DataMember(Name = "patternfiles")]
         public List<string> PatternFiles{get;set;}
-        
-        private Random mRandom;
+
+        private bool _loadDefaultPatternFile;
+
+        [DataMember(Name = "LoadDefaultPatternFile")]
+        public bool LoadDefaultPatternFile
+        {
+            get { return _loadDefaultPatternFile; }
+            set { _loadDefaultPatternFile = value; }
+        }
+
+        private Random _Random;
         public Random Random
         {
-            get { return mRandom; }
-            set { mRandom = value; }
+            get { return _Random; }
+            set { _Random = value; }
         }
 
         public GenerationConfig()
         {
-            this.mRandom = new Random();
-            _seed = mRandom.Next(int.MinValue, int.MaxValue);
+            _Random = new Random();
+            _seed = _Random.Next(int.MinValue, int.MaxValue);
+            _loadDefaultPatternFile = false;
 
             PatternFiles = new List<string>();
         }

@@ -1191,7 +1191,7 @@ namespace TestDataGenerator.Tests
             //var namedPatterns = FileReader.LoadNamedPatterns("default.tdg-patterns");
 
             var pattern = @"<<(@name_firstname_male@)>>";
-            var text = AlphaNumericGenerator.GenerateFromTemplate(pattern);
+            var text = AlphaNumericGenerator.GenerateFromTemplate(pattern, new GenerationConfig(){LoadDefaultPatternFile = true});
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             Assert.IsTrue(text.Length>0);
             
@@ -1204,7 +1204,7 @@ namespace TestDataGenerator.Tests
             //var namedPatterns = FileReader.LoadNamedPatterns("default.tdg-patterns");
 
             var pattern = @"<<(@address_us_type1@)>>";
-            var text = AlphaNumericGenerator.GenerateFromTemplate(pattern);
+            var text = AlphaNumericGenerator.GenerateFromTemplate(pattern, new GenerationConfig(){LoadDefaultPatternFile = true});
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             Assert.IsTrue(text.Length>0);
             
@@ -1221,7 +1221,7 @@ namespace TestDataGenerator.Tests
 
             foreach (var dic in namedPatterns.Patterns)
             {
-                var text = AlphaNumericGenerator.GenerateFromPattern("@"+dic.Name+"@");
+                var text = AlphaNumericGenerator.GenerateFromPattern("@"+dic.Name+"@", config: new GenerationConfig(){LoadDefaultPatternFile = true});
                 Console.WriteLine(@"'{0}' produced '{1}'", dic.Name, text);
                 Assert.IsTrue(text.Length > 0);
             }
@@ -1259,7 +1259,7 @@ namespace TestDataGenerator.Tests
 
             foreach (var dic in namedPatterns.Patterns)
             {
-                var text = AlphaNumericGenerator.GenerateFromPattern(dic.Pattern);
+                var text = AlphaNumericGenerator.GenerateFromPattern(dic.Pattern, config:new GenerationConfig() { LoadDefaultPatternFile = true });
                 Console.WriteLine(@"'{0}' produced '{1}'", dic.Name, text);
                 Assert.IsTrue(text.Length > 0);
             }
@@ -1321,6 +1321,57 @@ namespace TestDataGenerator.Tests
             for (var i = 0; i < testLimit; i++)
             {
                 var text = AlphaNumericGenerator.GenerateFromTemplate(pattern);
+                //Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
+            }
+            sw.Stop();
+            Console.WriteLine(@"{0} instances of the following template generated in {1} milliseconds.\n'{2}'", testLimit, sw.ElapsedMilliseconds, pattern);
+        }
+
+        [TestMethod]
+        [TestCategory("Profiling")]
+        public void Profile_Large_NonRandom_NonSeeded_Repeat()
+        {
+            var pattern = @"(\w){64}";
+            var testLimit = 10000;
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            for (var i = 0; i < testLimit; i++)
+            {
+                var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
+                //Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
+            }
+            sw.Stop();
+            Console.WriteLine(@"{0} instances of the following template generated in {1} milliseconds.\n'{2}'", testLimit, sw.ElapsedMilliseconds, pattern);
+        }
+
+        [TestMethod]
+        [TestCategory("Profiling")]
+        public void Profile_Large_NonRandom_Seeded_Repeat()
+        {
+            var pattern = @"(\w){64}";
+            var testLimit = 10000;
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            for (var i = 0; i < testLimit; i++)
+            {
+                var text = AlphaNumericGenerator.GenerateFromPattern(pattern, config: new GenerationConfig(){Seed = 100});
+                //Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
+            }
+            sw.Stop();
+            Console.WriteLine(@"{0} instances of the following template generated in {1} milliseconds.\n'{2}'", testLimit, sw.ElapsedMilliseconds, pattern);
+        }
+
+        [TestMethod]
+        [TestCategory("Profiling")]
+        public void Profile_Small_NonRandom_Seeded_Repeat()
+        {
+            var pattern = @"(\w){64}";
+            var testLimit = 100;
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            for (var i = 0; i < testLimit; i++)
+            {
+                var text = AlphaNumericGenerator.GenerateFromPattern(pattern, config: new GenerationConfig() { Seed = 100 });
                 //Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             }
             sw.Stop();
@@ -1600,11 +1651,10 @@ namespace TestDataGenerator.Tests
         public void Can_Configure_And_Produce_Output_With_Seed2()
         {
             var template = @"<# { 'Seed':100 } #>Generated <<\.\w\W\L\l\V\v\d\D\S\s>>";
-            string text = AlphaNumericGenerator.GenerateFromTemplate(template);
-            Console.WriteLine(@"'{0}' produced '{1}'", template, text);
+            string actual = AlphaNumericGenerator.GenerateFromTemplate(template);
+            Console.WriteLine(@"'{0}' produced '{1}'", template, actual);
 
-            Assert.AreEqual(text, @"Generated |k*XjUo6Eo");
-            //Assert.AreEqual(text, @"Generated |k)XjUo6Eo");
+            Assert.AreEqual(@"Generated |k]XjUo6Go​", actual);
         }
 
         [TestMethod]
@@ -1640,7 +1690,7 @@ namespace TestDataGenerator.Tests
             var configStr = Utility.SerializeJson(config);
             Console.WriteLine("SerializeJson produced" + configStr);
             Assert.IsNotNull(configStr);
-            Assert.AreEqual("{\"patternfiles\":[],\"seed\":300}", configStr);
+            Assert.AreEqual("{\"LoadDefaultPatternFile\":false,\"patternfiles\":[],\"seed\":300}", configStr);
         }
 
         #endregion
