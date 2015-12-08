@@ -206,6 +206,7 @@ function publish{
 $basePath = Get-Location
 $logPath = "$basePath\logs"
 $buildVersion = Get-Content .\VERSION
+$fullBuildVersion = "$buildVersion.0"
 $projectName = "TestDataGenerator.Core"
 
 if($buildType -eq "publish"){
