@@ -1,0 +1,10 @@
+init:
+  - git config --global core.autocrlf true
+
+before_build:
+  - nuget restore .\src
+
+test:
+  # assemblies to test - optional
+  assemblies:
+    - 'TestOutput\*.Tests.dll'
