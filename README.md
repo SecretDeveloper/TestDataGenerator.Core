@@ -4,7 +4,7 @@
 A library that can be used to generate data for testing, templating and other uses.  You provide it with a pattern containing symbols defining the output you want to produce and it will create random data to match that pattern.
 
 [<img src="https://ci.appveyor.com/api/projects/status/p3ctf74q1brhklim?svg=true">](https://ci.appveyor.com/project/SecretDeveloper/testdatagenerator)
-[<img src="https://img.shields.io/nuget/dt/TestDataGenerator.Core.svg">](https://www.nuget.org/packages/TestDataGenerator.Core/)
+[<img src="https://img.shields.io/nuget/v/TestDataGenerator.Core.svg">](https://www.nuget.org/packages/TestDataGenerator.Core/)
 
 ## Features
 - Easy to use syntax.
