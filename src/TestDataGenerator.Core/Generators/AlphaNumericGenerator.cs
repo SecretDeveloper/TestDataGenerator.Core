@@ -544,7 +544,7 @@ namespace TestDataGenerator.Core.Generators
             string possibles=_ShortHands["."];
             var items = range.Split('-');
             double i = 0;
-            if (!Double.TryParse(items[0], out i))
+            if (!Double.TryParse(items[0], NumberStyles.Any, CultureInfo.InvariantCulture, out i))
                 ret = GetRandomAlphaItemFromRange(isNegated, random, items, possibles);
             else
                 ret = GetRandomNumericItemFromRange(isNegated, random, items, possibles);
@@ -574,10 +574,10 @@ namespace TestDataGenerator.Core.Generators
             string ret = "";
 
             double min;
-            if (double.TryParse(items[0], out min))
+            if (double.TryParse(items[0], NumberStyles.Any, CultureInfo.InvariantCulture, out min))
             {
                 double max;
-                if (double.TryParse(items[1], out max))
+                if (double.TryParse(items[1], NumberStyles.Any, CultureInfo.InvariantCulture, out max))
                 {
                     int scale = 0;
                     if (items[0].Contains("."))
@@ -641,7 +641,7 @@ namespace TestDataGenerator.Core.Generators
                 var vals = repeatExpression.Split(',');
                 int min, max;
 
-                if (vals.Length < 2 || !int.TryParse(vals[0], out min) || !int.TryParse(vals[1], out max) || min > max || min < 0)
+                if (vals.Length < 2 || !int.TryParse(vals[0], NumberStyles.Any, CultureInfo.InvariantCulture, out min) || !int.TryParse(vals[1], NumberStyles.Any, CultureInfo.InvariantCulture, out max) || min > max || min < 0)
                 {
                     var msg = "Invalid repeat section, random length parameters must be in the format {min,max} where min and max are greater than zero and min is less than max.\n";
                     msg += BuildErrorSnippet(repeatExpression, 0);
@@ -650,7 +650,8 @@ namespace TestDataGenerator.Core.Generators
 
                 repeat = random.Next(min, max + 1);
             }
-            else if (!int.TryParse(repeatExpression, out repeat)) repeat = -1;
+            else if (!int.TryParse(repeatExpression, NumberStyles.Any, CultureInfo.InvariantCulture, out repeat))
+                repeat = -1;
 
             if (repeat < 0)
                 throw new GenerationException("Invalid repeat section, repeat value must not be less than zero. '"+repeatExpression+"'");
