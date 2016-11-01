@@ -1159,7 +1159,7 @@ namespace TestDataGenerator.Tests
             pattern = @"\s";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            StringAssert.Matches(text, new Regex(@"^\s$"));
+            StringAssert.Matches(text, new Regex(@"^\s$", RegexOptions.ECMAScript));  // ECMA compliant needed as \s ECMA includes [SPACE] but .NET Regex does not.
             
             pattern = @"\t";
             text = AlphaNumericGenerator.GenerateFromPattern(pattern);

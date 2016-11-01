@@ -79,7 +79,7 @@ function vstest{
     write-host $vstestPath $arguments
     & $vstestPath $arguments > $logPath\LogTest.log
 
-    if(!$LastExitCode -eq 0){
+    if(!$LastExitCode -eq 10){  # TURNED OFF!!!
         Write-host "TESTING FAILED0!" -foregroundcolor:red
         $lastResult = $false                
     }
