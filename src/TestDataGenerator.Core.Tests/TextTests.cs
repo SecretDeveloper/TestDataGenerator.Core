@@ -518,11 +518,13 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             double d;
-            if (!double.TryParse(text, out d))
+            if (!double.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out d))
                 Assert.Fail();
-            if(d<1.00 || d>10.00d) Assert.Fail();
+            if(d<1.00d || d>10.00d)
+                Assert.Fail();
         }
 
+ 
         [TestMethod]
         [TestCategory("Sets")]
         public void Can_Generate_Range_Numeric_DecimalFormat2()
@@ -531,7 +533,7 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             double d;
-            if (!double.TryParse(text, out d))
+            if (!double.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out d))
                 Assert.Fail();
             if (d < 1.00 || d > 2.00d) Assert.Fail();
         }
@@ -544,7 +546,7 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             double d;
-            if (!double.TryParse(text, out d))
+            if (!double.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out d))
                 Assert.Fail();
             if (d < 1.1 || d > 1.2d) Assert.Fail();
         }
@@ -557,7 +559,7 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             double d;
-            if (!double.TryParse(text, out d))
+            if (!double.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out d))
                 Assert.Fail();
             if (d < 12345.12345 || d > 12345.12346d) Assert.Fail();
         }
@@ -570,7 +572,7 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             double d;
-            if (!double.TryParse(text, out d))
+            if (!double.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out d))
                 Assert.Fail();
             if (d < 12345.9999d || d > 12346d) Assert.Fail();
         }

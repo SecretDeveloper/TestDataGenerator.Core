@@ -574,10 +574,10 @@ namespace TestDataGenerator.Core.Generators
             string ret = "";
 
             double min;
-            if (double.TryParse(items[0], out min))
+            if (double.TryParse(items[0], NumberStyles.Number, CultureInfo.InvariantCulture, out min))
             {
                 double max;
-                if (double.TryParse(items[1], out max))
+                if (double.TryParse(items[1], NumberStyles.Number, CultureInfo.InvariantCulture, out max))
                 {
                     int scale = 0;
                     if (items[0].Contains("."))

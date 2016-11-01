@@ -63,55 +63,6 @@ function build{
     } 
 }
 
-function test{
-    # TESTING
-    write-host "Testing"  -foregroundcolor:blue
-
-    $trxPath = "$basePath\TestOutput\AllTest.trx"
-    $resultFile="/resultsfile:$trxPath"
-
-    $testDLLs = get-childitem -path "$basePath\TestOutput\*.*" -include "*.Tests.dll"
-    
-    $arguments = " /testcontainer:" + $testDLLs + " /TestSettings:$basePath\src\LocalTestRun.testrunconfig"
-    #write-host "mstest $resultFile $arguments"
-    Invoke-Expression "mstest $resultFile $arguments > $logPath\LogTest.log"
-
-    if(!$LastExitCode -eq 0){
-        Write-host "TESTING FAILED0!" -foregroundcolor:red
-        $lastResult = $false                
-    }
-
-    $content = (Get-Content -Path "$logPath\LogTest.log")
-
-    $failedContent = ($content -match "Failed")
-    $failedCount = $failedContent.Count
-    if($failedCount -gt 0)
-    {    
-        Write-host "TESTING FAILED1!" -foregroundcolor:red
-        $lastResult = $false
-    }
-    Foreach ($line in $failedContent) 
-    {
-        write-host $line -foregroundcolor:red
-    }
-
-    $failedContent = ($content -match "Not Runnable")
-    $failedCount = $failedContent.Count
-    if($failedCount -gt 0)
-    {    
-        Write-host "TESTING FAILED2!" -foregroundcolor:red
-        $lastResult = $false
-    }
-    Foreach ($line in $failedContent) 
-    {
-        write-host $line -foregroundcolor:red
-    }
-
-    if($lastResult -eq $False){    
-        exit
-    }
-}
-
 #vstest.console
 function vstest{
     # TESTING
@@ -124,9 +75,9 @@ function vstest{
     #write-host "get-childitem -path $basePath\TestOutput\*.* -include *.Tests.dll"
     
     #$arguments = "$testDLLs /Enablecodecoverage"
-    $arguments = "$testDLLs "
-    #write-host "vstest.console.exe $arguments"
-    Invoke-Expression "vstest.console.exe $arguments > $logPath\LogTest.log"
+    [Array]$arguments = "$testDLLs "
+    write-host $vstestPath $arguments
+    & $vstestPath $arguments > $logPath\LogTest.log
 
     if(!$LastExitCode -eq 0){
         Write-host "TESTING FAILED0!" -foregroundcolor:red
@@ -208,6 +159,7 @@ $logPath = "$basePath\logs"
 $buildVersion = Get-Content .\VERSION
 $fullBuildVersion = "$buildVersion.0"
 $projectName = "TestDataGenerator.Core"
+$vstestPath = "C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe"
 
 if($buildType -eq "publish"){
     
