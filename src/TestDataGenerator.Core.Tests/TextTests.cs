@@ -21,21 +21,21 @@ namespace TestDataGenerator.Tests
 
         [TestMethod]
         [TestCategory("Template")]
-        public void Can_GenerateFromTemplate_Overload()
+        public void Can_GenerateFromTemplate_Overload1()
         {
             var template = @"Generated <<\L\L>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             StringAssert.Matches(text, new Regex(@"Generated [A-Z]{2}"));
         }
-
+        
         [TestMethod]
         [TestCategory("Template")]
         public void Can_GenerateFromTemplate_Overload2()
         {
             var template = @"Generated <<\L\L>>";
-            var random = new Random(100);
-            string text = AlphaNumericGenerator.GenerateFromTemplate(template, random);
+            var config = new GenerationConfig() {Seed = "100"};
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template, config);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             StringAssert.Matches(text, new Regex(@"Generated [A-Z]{2}"));
         }
@@ -44,40 +44,15 @@ namespace TestDataGenerator.Tests
         [TestCategory("Template")]
         public void Can_GenerateFromTemplate_Overload3()
         {
-            var template = @"Generated <<\L\L>>";
-            var config = new GenerationConfig() {Seed = 100};
+            var template = @"<<@superhero@>>";
+
+            var config = new GenerationConfig();
+            config.NamedPatterns.Patterns.Add(new NamedPattern(){Name = "superhero", Pattern = "(Batman|Superman|Spiderman)"});
             string text = AlphaNumericGenerator.GenerateFromTemplate(template, config);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
-            StringAssert.Matches(text, new Regex(@"Generated [A-Z]{2}"));
-        }
-
-        [TestMethod]
-        [TestCategory("Template")]
-        public void Can_GenerateFromTemplate_Overload4()
-        {
-            var template = @"<<@superhero@>>";
-            
-            var namedPatterns = new NamedPatterns();
-            namedPatterns.Patterns.Add(new NamedPattern(){Name = "superhero", Pattern = "(Batman|Superman|Spiderman)"});
-            string text = AlphaNumericGenerator.GenerateFromTemplate(template, namedPatterns);
-            Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             StringAssert.Matches(text, new Regex(@"(Batman|Superman|Spiderman)"));
         }
-
-        [TestMethod]
-        [TestCategory("Template")]
-        public void Can_GenerateFromTemplate_Overload5()
-        {
-            var template = @"<<@superhero@>>";
-
-            var namedPatterns = new NamedPatterns();
-            namedPatterns.Patterns.Add(new NamedPattern() { Name = "superhero", Pattern = "(Batman|Superman|Spiderman)" });
-            var config = new GenerationConfig() { Seed = 100 };
-            string text = AlphaNumericGenerator.GenerateFromTemplate(template, namedPatterns, config);
-            Console.WriteLine(@"'{0}' produced '{1}'", template, text);
-            StringAssert.Matches(text, new Regex(@"(Batman|Superman|Spiderman)"));
-        }
-
+        
         [TestMethod]
         [TestCategory("Template")]
         public void Can_Load_File_Supplied_In_Config_Absolute()
@@ -85,7 +60,7 @@ namespace TestDataGenerator.Tests
             var template = @"<<@noun@ @verb@ @noun@ @verb@>>";
 
             var random = new Random(100);
-            var config = new GenerationConfig() { Seed = 200 };
+            var config = new GenerationConfig() { Seed = "200" };
             config.Random = random;
             config.PatternFiles.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tdg-patterns", "language.tdg-patterns"));
 
@@ -100,7 +75,7 @@ namespace TestDataGenerator.Tests
         {
             var template = @"<<@noun@ @verb@ @noun@ @verb@>>";
 
-            var config = new GenerationConfig() { Seed = 100 };
+            var config = new GenerationConfig() { Seed = "100" };
             config.PatternFiles.Add("language.tdg-patterns");
 
             string text = AlphaNumericGenerator.GenerateFromTemplate(template, config);
@@ -114,7 +89,7 @@ namespace TestDataGenerator.Tests
         {
             var template = @"<<@noun@ @verb@ @noun@ @verb@>>";
 
-            var config = new GenerationConfig() { Seed = 100 };
+            var config = new GenerationConfig() { Seed = "100" };
             config.PatternFiles.Add("language");
 
             string text = AlphaNumericGenerator.GenerateFromTemplate(template, config);
@@ -725,74 +700,12 @@ namespace TestDataGenerator.Tests
         public void GeneratePattern_Overloads2()
         {
             var pattern = @"\L\L\L\L\L\L-\L\L-\L\L\L\L\L";
-            var config = new GenerationConfig(){Seed = 300};
+            var config = new GenerationConfig(){Seed = "300"};
             var text = AlphaNumericGenerator.GenerateFromPattern(pattern, config: config);
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             Assert.AreEqual(15, text.Length);
             Assert.AreEqual(text,"LVMPQS-IY-CXIRW");
         }
-
-
-        [TestMethod]
-        [TestCategory("Pattern")]
-        public void GeneratePattern_Overloads3()
-        {
-            var pattern = @"@superhero@";
-
-            var namedPatterns = new NamedPatterns();
-            namedPatterns.Patterns.Add(new NamedPattern(){Name = "superhero", Pattern = "(Batman|Superman|Spiderman)"});
-            
-            var text = AlphaNumericGenerator.GenerateFromPattern(pattern, namedPatterns);
-            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            StringAssert.Matches(text, new Regex("^(Batman|Superman|Spiderman)$"));
-        }
-
-        [TestMethod]
-        [TestCategory("Pattern")]
-        public void GeneratePattern_Overloads4()
-        {
-            var pattern = @"@superhero@";
-
-            var namedPatterns = new NamedPatterns();
-            namedPatterns.Patterns.Add(new NamedPattern() { Name = "superhero", Pattern = "(Batman|Superman|Spiderman)" });
-            var config = new GenerationConfig() {Seed = 300};
-
-            var text = AlphaNumericGenerator.GenerateFromPattern(pattern, namedPatterns,config);
-            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            StringAssert.Matches(text, new Regex("^(Batman|Superman|Spiderman)$"));
-        }
-
-        [TestMethod]
-        [TestCategory("Pattern")]
-        public void GeneratePattern_Overloads5()
-        {
-            var pattern = @"[A-Z]{2}";
-
-            var random = new Random(1);
-
-            var text = AlphaNumericGenerator.GenerateFromPattern(pattern, random:random);
-            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            StringAssert.Matches(text, new Regex("^[A-Z]{2}$"));
-            Assert.AreEqual("CU", text);
-        }
-
-        [TestMethod]
-        [TestCategory("Pattern")]
-        public void GeneratePattern_Overloads6()
-        {
-            var pattern = @"@superhero@";
-
-            var namedPatterns = new NamedPatterns();
-            namedPatterns.Patterns.Add(new NamedPattern() { Name = "superhero", Pattern = "(Batman|Superman|Spiderman)" });
-
-            var config = new GenerationConfig() {Seed = 300};
-
-            var text = AlphaNumericGenerator.GenerateFromPattern(pattern, namedPatterns, config);
-            Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            StringAssert.Matches(text, new Regex("^(Batman|Superman|Spiderman)$"));
-            Assert.AreEqual("Superman", text);
-        }
-
 
         [TestMethod]
         [TestCategory("Pattern")]
@@ -1247,7 +1160,7 @@ namespace TestDataGenerator.Tests
                     }
             };
 
-            var text = AlphaNumericGenerator.GenerateFromPattern("@blah@", config:config);
+            AlphaNumericGenerator.GenerateFromPattern("@blah@", config:config);
         }
 
         [TestMethod]
@@ -1356,7 +1269,7 @@ namespace TestDataGenerator.Tests
             sw.Start();
             for (var i = 0; i < testLimit; i++)
             {
-                var text = AlphaNumericGenerator.GenerateFromPattern(pattern, config: new GenerationConfig(){Seed = 100});
+                var text = AlphaNumericGenerator.GenerateFromPattern(pattern, config: new GenerationConfig(){Seed = "100"});
                 //Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             }
             sw.Stop();
@@ -1373,7 +1286,7 @@ namespace TestDataGenerator.Tests
             sw.Start();
             for (var i = 0; i < testLimit; i++)
             {
-                var text = AlphaNumericGenerator.GenerateFromPattern(pattern, config: new GenerationConfig() { Seed = 100 });
+                var text = AlphaNumericGenerator.GenerateFromPattern(pattern, config: new GenerationConfig() { Seed = "100" });
                 //Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
             }
             sw.Stop();
@@ -1593,10 +1506,11 @@ namespace TestDataGenerator.Tests
             var namedPatterns = new NamedPatterns();
             namedPatterns.Patterns.Add(new NamedPattern() { Name = "superhero", Pattern = "(Batman|Superman|Spiderman)" });
 
-            var config = new GenerationConfig() { Seed = 100 };
+            var config = new GenerationConfig() { Seed = "100" };
             config.PatternFiles.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tdg-patterns", "notpresent.tdg-pattern"));
+            config.NamedPatterns = namedPatterns;
 
-            string text = AlphaNumericGenerator.GenerateFromTemplate(template, namedPatterns, config);
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template, config);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             StringAssert.Matches(text, new Regex(@"(Batman|Superman|Spiderman)"));
         }
@@ -1612,10 +1526,11 @@ namespace TestDataGenerator.Tests
             var namedPatterns = new NamedPatterns();
             namedPatterns.Patterns.Add(new NamedPattern() { Name = "superhero", Pattern = "(Batman|Superman|Spiderman)" });
 
-            var config = new GenerationConfig() { Seed = 100 };
+            var config = new GenerationConfig() { Seed = "100" };
             config.PatternFiles.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tdg.exe"));
+            config.NamedPatterns = namedPatterns;
 
-            string text = AlphaNumericGenerator.GenerateFromTemplate(template, namedPatterns, config);
+            string text = AlphaNumericGenerator.GenerateFromTemplate(template, config);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             StringAssert.Matches(text, new Regex(@"(Batman|Superman|Spiderman)"));
         }
@@ -1633,7 +1548,7 @@ namespace TestDataGenerator.Tests
             var configStr = "<# { 'Seed':100 } #>";
             var template = configStr+@"Generated <<L\L>>";
             var config = AlphaNumericGenerator.GetConfiguration(template, ref ndx);
-            Assert.AreEqual(100, config.Seed);
+            Assert.AreEqual("100", config.Seed);
             Assert.AreEqual(configStr.Length, ndx);
         }
 
@@ -1641,7 +1556,7 @@ namespace TestDataGenerator.Tests
         [TestCategory("ConfigurationTesting")]
         public void Can_Configure_And_Produce_Output_With_Seed()
         {
-            var template = @"<# { 'Seed':100 } #>Generated <<L\L>>";
+            var template = "<# { \"Seed\":\"100\" } #>Generated <<L\\L>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
 
@@ -1678,9 +1593,9 @@ namespace TestDataGenerator.Tests
         [TestCategory("UtilityTesting")]
         public void Can_Deserialize()
         {
-            var config = Utility.DeserializeJson<GenerationConfig>("{\"seed\":100}");
+            var config = Utility.DeserializeJson<GenerationConfig>("{\"seed\":\"100\"}");
             Assert.IsNotNull(config);
-            Assert.AreEqual(100, config.Seed);
+            Assert.AreEqual("100", config.Seed);
         }
 
         [TestMethod]
@@ -1688,11 +1603,11 @@ namespace TestDataGenerator.Tests
         public void Can_Serialize()
         {
             var config = new GenerationConfig();
-            config.Seed = 300;
+            config.Seed = "300";
             var configStr = Utility.SerializeJson(config);
             Console.WriteLine("SerializeJson produced" + configStr);
             Assert.IsNotNull(configStr);
-            Assert.AreEqual("{\"LoadDefaultPatternFile\":false,\"patternfiles\":[],\"seed\":300}", configStr);
+            Assert.AreEqual("{\"LoadDefaultPatternFile\":false,\"NamedPatterns\":{\"Patterns\":[]},\"patternfiles\":[],\"seed\":\"300\"}", configStr);
         }
 
         #endregion
@@ -1735,7 +1650,7 @@ namespace TestDataGenerator.Tests
         public void Level_Of_Randomness()
         {
             var pattern = @"(\L\L\L\L\L\L-\L\L-\L\L\L\L\L\n){1000}";
-            var text = AlphaNumericGenerator.GenerateFromPattern(pattern, config:new GenerationConfig() { Seed = 100 });
+            var text = AlphaNumericGenerator.GenerateFromPattern(pattern, config:new GenerationConfig() { Seed = "100" });
             var segments = new List<string>(text.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
 
             Console.WriteLine(@"'{0}' produced {1} values, out of which, {2} are unique and {3} are duplicates.", pattern, segments.Count, segments.Distinct().Count(), segments.Count - segments.Distinct().Count());

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -12,7 +11,7 @@ namespace TestDataGenerator.Core.Generators
 {
     public static class AlphaNumericGenerator 
     {
-        private static Dictionary<string, string> _ShortHands = GetShortHandMap();
+        private static readonly Dictionary<string, string> _ShortHands = GetShortHandMap();
 
         private const string _Config_Start = "<#";
         private const string _Config_End = "#>";
@@ -63,6 +62,7 @@ namespace TestDataGenerator.Core.Generators
             try
             {
                 config = Utility.DeserializeJson<GenerationConfig>(configString);
+                if(config.NamedPatterns == null) config.NamedPatterns = new NamedPatterns();
             }
             catch (Exception ex)
             {
@@ -76,73 +76,24 @@ namespace TestDataGenerator.Core.Generators
         /// Takes in a string that contains 0 or more &lt;&lt;placeholder&gt;&gt; values and replaces the placeholder item with the expression it defines.
         /// </summary>
         /// <param name="template"></param>
-        /// <returns></returns>
-        public static string GenerateFromTemplate(string template)
-        {
-            return GenerateFromTemplate(template, null, null);
-        }
-
-        /// <summary>
-        /// Takes in a string that contains 0 or more &lt;&lt;placeholder&gt;&gt; values and replaces the placeholder item with the expression it defines.
-        /// </summary>
-        /// <param name="template"></param>
-        /// <param name="config"></param>
-        /// <returns></returns>
-        public static string GenerateFromTemplate(string template, GenerationConfig config)
-        {
-            return GenerateFromTemplate(template, null, config);
-        }
-
-        /// <summary>
-        /// Takes in a string that contains 0 or more &lt;&lt;placeholder&gt;&gt; values and replaces the placeholder item with the expression it defines.
-        /// </summary>
-        /// <param name="template"></param>
-        /// <param name="namedPatterns"></param>
-        /// <returns></returns>
-        public static string GenerateFromTemplate(string template, NamedPatterns namedPatterns)
-        {
-            return GenerateFromTemplate(template, namedPatterns, null);
-        }
-        
-        /// <summary>
-        /// Takes in a string that contains 0 or more &lt;&lt;placeholder&gt;&gt; values and replaces the placeholder item with the expression it defines.
-        /// </summary>
-        /// <param name="template"></param>
-        /// <param name="random"></param>
-        /// <returns></returns>
-        public static string GenerateFromTemplate(string template, Random random)
-        {
-            var config = new GenerationConfig();
-            config.Random = random;
-            return GenerateFromTemplate(template, null, config);
-        }
-
-        /// <summary>
-        /// Takes in a string that contains 0 or more &lt;&lt;placeholder&gt;&gt; values and replaces the placeholder item with the expression it defines.
-        /// </summary>
-        /// <param name="template"></param>
         /// <param name="namedPatterns"></param>
         /// <param name="generationConfig"></param>
         /// <returns></returns>
-        public static string GenerateFromTemplate(string template, NamedPatterns namedPatterns, GenerationConfig generationConfig)
+        public static string GenerateFromTemplate(string template, GenerationConfig generationConfig=null)
         {
             int index = 0;
             
             // CONFIG
             if (generationConfig == null) generationConfig = LoadAndRemoveConfigFromTemplate(ref template);
             if (generationConfig == null) generationConfig = new GenerationConfig();
-            
-            var random = generationConfig.Random;
 
             // PATTERNS
-            var generationPatterns = LoadDefaultNamedPatterns(generationConfig);
             // Load provided ones as well if there are any.
-            if (namedPatterns != null && namedPatterns.Patterns != null)
-            {
-                namedPatterns.Patterns.ForEach(generationPatterns.Patterns.Add);
-            }
+            var defaultPatterns = GetDefaultNamedPatterns(generationConfig);
+            defaultPatterns.Patterns.ForEach(generationConfig.NamedPatterns.Patterns.Add);
+
             // Load all from the PatternFiles in config
-            AppendPatternsFromConfigToCollection(generationConfig, generationPatterns);
+            AppendPatternsFromConfigToCollection(generationConfig, generationConfig.NamedPatterns);
             
             var sb = new StringBuilder();
 
@@ -172,12 +123,42 @@ namespace TestDataGenerator.Core.Generators
                 if (isEscaped)
                     sb.Append("<<"+pattern+">>");
                 else
-                    GenerateFromPattern(sb, pattern, generationPatterns, null, random); // generate value from expression
+                    GenerateFromPattern(sb, pattern, generationConfig); // generate value from expression
                 index = end+2; // update our index.
             }
 
             return sb.ToString();
         }
+
+        public static string GenerateFromPattern(string pattern, GenerationConfig config = null)
+        {
+            if (config == null) config = new GenerationConfig();
+            var sb = new StringBuilder();
+
+            // add default pattern file entries
+            if (config.LoadDefaultPatternFile)
+            {
+                GetDefaultNamedPatterns(config).Patterns.ForEach(config.NamedPatterns.Patterns.Add);
+            }
+
+            if (config.PatternFiles != null)
+            {
+                // Load all from the PatternFiles in config
+                AppendPatternsFromConfigToCollection(config, config.NamedPatterns);
+            }
+
+            GenerateFromPattern(sb, pattern, config);
+            return sb.ToString();
+        }
+
+        private static void GenerateFromPattern(StringBuilder sb, string pattern, GenerationConfig config)
+        {
+            if (string.IsNullOrEmpty(pattern))
+                throw new GenerationException("Argument 'pattern' cannot be null.");
+
+            ProcessPattern(sb, pattern, config);
+        }
+
 
         private static void AppendPatternsFromConfigToCollection(GenerationConfig config, NamedPatterns patternCollection)
         {
@@ -201,7 +182,7 @@ namespace TestDataGenerator.Core.Generators
                 }
             }
         }
-        
+
         private static GenerationConfig LoadAndRemoveConfigFromTemplate(ref string template)
         {
             int index = 0;
@@ -215,10 +196,10 @@ namespace TestDataGenerator.Core.Generators
             return config;
         }
 
-        private static NamedPatterns LoadDefaultNamedPatterns(GenerationConfig generationConfig)
+        private static NamedPatterns GetDefaultNamedPatterns(GenerationConfig generationConfig)
         {
             var patterns = new NamedPatterns();
-            if(generationConfig == null || generationConfig.LoadDefaultPatternFile == false)
+            if (generationConfig == null || generationConfig.LoadDefaultPatternFile == false)
                 return patterns; // Dont attempt to load default pattern files with every execution -- too slow.
 
             var path = FileReader.GetPatternFilePath("default");
@@ -230,33 +211,7 @@ namespace TestDataGenerator.Core.Generators
             return patterns;
         }
 
-        public static string GenerateFromPattern(string pattern, NamedPatterns namedPatterns = null, GenerationConfig config = null, Random random = null)
-        {
-            var sb = new StringBuilder();
-            GenerateFromPattern(sb, pattern, namedPatterns, config, random);
-            return sb.ToString();
-        }
 
-        private static void GenerateFromPattern(StringBuilder sb, string pattern, NamedPatterns namedPatterns=null, GenerationConfig config=null, Random random=null)
-        {
-            if (pattern == null || string.IsNullOrEmpty(pattern))
-                throw new GenerationException("Argument 'pattern' cannot be null.");
-            
-            if (namedPatterns == null)
-            {
-                namedPatterns = LoadDefaultNamedPatterns(config);
-            }
-            if (config != null && config.PatternFiles != null)
-            {
-                // Load all from the PatternFiles in config
-                AppendPatternsFromConfigToCollection(config, namedPatterns);
-            }
-            if(config == null) config = new GenerationConfig();
-            if (random == null) random = config.Random;
-            
-            ProcessPattern(sb, pattern, namedPatterns, random);
-        }
-        
         private static int FindPositionOfNext(string template, int index, string toFind, string notBefore)
         {
             bool found = false;
@@ -328,17 +283,17 @@ namespace TestDataGenerator.Core.Generators
         /// <param name="index"></param>
         /// <param name="isEscaped">
         /// True if the the previous character was an escape char.</param>
-        /// <param name="random"></param>
+        /// <param name="config"></param>
         /// <returns></returns>
-        private static void AppendRepeatedSymbol(StringBuilder sb, string characters, ref int index, bool isEscaped, Random random)
+        private static void AppendRepeatedSymbol(StringBuilder sb, string characters, ref int index, bool isEscaped, GenerationConfig config)
         {
             var symbol = characters[index++];
             var repeatExpression = GetContent(characters, ref index, _Quantifier_Start.ToString(CultureInfo.InvariantCulture), _Quantifier_End.ToString(CultureInfo.InvariantCulture));
-            var repeat = GetRepeatValueFromRepeatExpression(repeatExpression, random);
+            var repeat = GetRepeatValueFromRepeatExpression(repeatExpression, config);
             
             for (int x = 0; x < repeat; x++)
             {
-                AppendCharacterDerivedFromSymbol(sb, symbol, isEscaped, random);
+                AppendCharacterDerivedFromSymbol(sb, symbol, isEscaped, config);
             }
         }
 
@@ -349,25 +304,25 @@ namespace TestDataGenerator.Core.Generators
         /// <param name="characters"></param>
         /// <param name="index"></param>
         /// <param name="namedPatterns"></param>
-        /// <param name="random"></param>
-        private static void AppendContentFromSectionExpression(StringBuilder sb, string characters, ref int index, NamedPatterns namedPatterns, Random random)
+        /// <param name="config"></param>
+        private static void AppendContentFromSectionExpression(StringBuilder sb, string characters, ref int index, GenerationConfig config)
         {
-            var contentOptions = GetContentOptions(characters, ref index, _Section_Start.ToString(CultureInfo.InvariantCulture), _Section_End.ToString(CultureInfo.InvariantCulture), random);
+            var contentOptions = GetContentOptions(characters, ref index, _Section_Start.ToString(CultureInfo.InvariantCulture), _Section_End.ToString(CultureInfo.InvariantCulture), config);
 
             var exp = contentOptions.Content;
             if (contentOptions.ContainsAlternation) // contains alternations
             {
-                GenerateFromAlternatedPattern(sb, namedPatterns, exp, contentOptions, random);
+                GenerateFromAlternatedPattern(sb, exp, contentOptions, config);
                 return;
             }
             
             for (int x = 0; x < contentOptions.Repeat; x++)
             {
-                ProcessPattern(sb, exp, namedPatterns, random);
+                ProcessPattern(sb, exp, config);
             }
         }
 
-        private static void ProcessPattern(StringBuilder sb, string exp, NamedPatterns namedPatterns, Random random)
+        private static void ProcessPattern(StringBuilder sb, string exp, GenerationConfig config)
         {
             bool isEscaped = false;
             var curNdx = 0;
@@ -392,7 +347,7 @@ namespace TestDataGenerator.Core.Generators
 
                 if (!isEscaped && chx == _Section_Start)
                 {
-                    AppendContentFromSectionExpression(sb, exp, ref curNdx, namedPatterns, random);
+                    AppendContentFromSectionExpression(sb, exp, ref curNdx, config);
                     continue; // skip to next character - index has already been forwarded to new position
                 }
 
@@ -400,13 +355,13 @@ namespace TestDataGenerator.Core.Generators
                 // Format = "[Vv]{4}" = generate 4 random ordered characters comprising of either V or v characters
                 if (!isEscaped && chx == _Set_Start)
                 {
-                    AppendContentFromSetExpression(sb, exp, ref curNdx, random);
+                    AppendContentFromSetExpression(sb, exp, ref curNdx, config);
                     continue; // skip to next character - index has already been forwarded to new position
                 }
 
                 if (!isEscaped && chx == _NamedPattern_Start)
                 {
-                    AppendContentFromNamedPattern(sb, exp, ref curNdx, namedPatterns, random);
+                    AppendContentFromNamedPattern(sb, exp, ref curNdx, config);
                     continue; 
                 }
 
@@ -416,46 +371,46 @@ namespace TestDataGenerator.Core.Generators
                 bool repeatSymbol = curNdx < exp.Length - 1 && exp[curNdx + 1] == _Quantifier_Start;
                 if (repeatSymbol)
                 {
-                    AppendRepeatedSymbol(sb, exp, ref curNdx, isEscaped, random);
+                    AppendRepeatedSymbol(sb, exp, ref curNdx, isEscaped, config);
                     isEscaped = false;
                     continue; // skip to next character - index has already been forwarded to new position
                 }
 
-                AppendCharacterDerivedFromSymbol(sb, chx, isEscaped, random);
+                AppendCharacterDerivedFromSymbol(sb, chx, isEscaped, config);
                 curNdx++; // increment to move to next character.
                 isEscaped = false;
             }
         }
 
-        private static void GenerateFromAlternatedPattern(StringBuilder sb, NamedPatterns namedPatterns, string exp, ContentOptions contentOptions, Random random)
+        private static void GenerateFromAlternatedPattern(StringBuilder sb, string exp, ContentOptions contentOptions, GenerationConfig config)
         {
             var alternates = exp.Split(_Alternation);
             for (int x = 0; x < contentOptions.Repeat; x++)
             {
-                exp = alternates[random.Next(0, alternates.Length)];
-                GenerateFromPattern(sb, exp, namedPatterns, null, random);
+                exp = alternates[config.Random.Next(0, alternates.Length)];
+                GenerateFromPattern(sb, exp, config);
             }
         }
 
-        private static void GenerateFromAnagramPattern(StringBuilder sb, string exp, ContentOptions contentOptions, Random random)
+        private static void GenerateFromAnagramPattern(StringBuilder sb, string exp, ContentOptions contentOptions, GenerationConfig config)
         {
             for (int x = 0; x < contentOptions.Repeat; x++)
             {
                 var arr = exp.ToCharArray();
-                arr = arr.OrderBy(r => random.Next()).ToArray();
+                arr = arr.OrderBy(r => config.Random.Next()).ToArray();
                 foreach(var ch in arr)
-                    AppendCharacterDerivedFromSymbol(sb, ch, false, random);
+                    AppendCharacterDerivedFromSymbol(sb, ch, false, config);
             }
         }
 
-        private static void AppendContentFromNamedPattern(StringBuilder sb, string characters, ref int index, NamedPatterns namedPatterns, Random random)
+        private static void AppendContentFromNamedPattern(StringBuilder sb, string characters, ref int index, GenerationConfig config)
         {
             var ndx = index;
-            var tuple = GetContentOptions(characters, ref index, _NamedPattern_Start.ToString(CultureInfo.InvariantCulture), _NamedPattern_End.ToString(CultureInfo.InvariantCulture), random);
+            var tuple = GetContentOptions(characters, ref index, _NamedPattern_Start.ToString(CultureInfo.InvariantCulture), _NamedPattern_End.ToString(CultureInfo.InvariantCulture), config);
             
-            if (namedPatterns.HasPattern(tuple.Content)) // $namedPattern;
+            if (config.NamedPatterns.HasPattern(tuple.Content)) // $namedPattern;
             {
-                GenerateFromPattern(sb, namedPatterns.GetPattern(tuple.Content).Pattern, namedPatterns, null, random);
+                GenerateFromPattern(sb, config.NamedPatterns.GetPattern(tuple.Content).Pattern, config);
             }
             else
             {
@@ -471,14 +426,14 @@ namespace TestDataGenerator.Core.Generators
         /// <param name="sb"></param>
         /// <param name="characters"></param>
         /// <param name="index"></param>
-        /// <param name="random"></param>
-        private static void AppendContentFromSetExpression(StringBuilder sb, string characters, ref int index, Random random)
+        /// <param name="config"></param>
+        private static void AppendContentFromSetExpression(StringBuilder sb, string characters, ref int index, GenerationConfig config)
         {
-            var contentOptions = GetContentOptions(characters, ref index, _Set_Start.ToString(CultureInfo.InvariantCulture), _Set_End.ToString(CultureInfo.InvariantCulture), random);
+            var contentOptions = GetContentOptions(characters, ref index, _Set_Start.ToString(CultureInfo.InvariantCulture), _Set_End.ToString(CultureInfo.InvariantCulture), config);
 
             if (contentOptions.IsAnagram)
             {
-                GenerateFromAnagramPattern(sb, contentOptions.Content, contentOptions, random);
+                GenerateFromAnagramPattern(sb, contentOptions.Content, contentOptions, config);
                 return;
             }
 
@@ -493,7 +448,7 @@ namespace TestDataGenerator.Core.Generators
                         if (range.ToString().Contains("-"))
                         {
                             //TODO - Cleanup - Only here to throw an exception for invalid ranges
-                            GetRandomCharacterFromRange(range.ToString(), contentOptions.IsNegated, random);
+                            GetRandomCharacterFromRange(range.ToString(), contentOptions.IsNegated, config);
                             var regex = new Regex("[" + range + "]");
                             possibles = regex.Replace(possibles, "");
                         }
@@ -506,15 +461,15 @@ namespace TestDataGenerator.Core.Generators
 
                     for (int i = 0; i < contentOptions.Repeat; i++)
                     {
-                        sb.Append(possibles[random.Next(0, possibles.Length)]);
+                        sb.Append(possibles[config.Random.Next(0, possibles.Length)]);
                     }
                 }
                 else
                 {
                     for (int i = 0; i < contentOptions.Repeat; i++)
                     {
-                        var range = ranges[random.Next(0, ranges.Count)].ToString();
-                        sb.Append(range.Contains("-") ? GetRandomCharacterFromRange(range, contentOptions.IsNegated, random) : range);
+                        var range = ranges[config.Random.Next(0, ranges.Count)].ToString();
+                        sb.Append(range.Contains("-") ? GetRandomCharacterFromRange(range, contentOptions.IsNegated, config) : range);
                     }
                 }
             }
@@ -526,33 +481,33 @@ namespace TestDataGenerator.Core.Generators
 
                 for (int i = 0; i < contentOptions.Repeat; i++)
                 {
-                    sb.Append(possibles[random.Next(0, possibles.Length)]);
+                    sb.Append(possibles[config.Random.Next(0, possibles.Length)]);
                 }
             }
         }
-        
+
         /// <summary>
         /// Recieves a "A-Z" type string and returns the appropriate list of characters.
         /// </summary>
         /// <param name="range"></param>
         /// <param name="isNegated"></param>
-        /// <param name="random"></param>
+        /// <param name="config"></param>
         /// <returns></returns>
-        private static string GetRandomCharacterFromRange(string range, bool isNegated, Random random)
+        private static string GetRandomCharacterFromRange(string range, bool isNegated, GenerationConfig config)
         {
-            string ret = "";
+            string ret;
             string possibles=_ShortHands["."];
             var items = range.Split('-');
-            double i = 0;
+            double i;
             if (!Double.TryParse(items[0], out i))
-                ret = GetRandomAlphaItemFromRange(isNegated, random, items, possibles);
+                ret = GetRandomAlphaItemFromRange(isNegated, config, items, possibles);
             else
-                ret = GetRandomNumericItemFromRange(isNegated, random, items, possibles);
+                ret = GetRandomNumericItemFromRange(isNegated, config, items, possibles);
 
             return ret;
         }
 
-        private static string GetRandomAlphaItemFromRange(bool isNegated, Random random, string[] items, string possibles)
+        private static string GetRandomAlphaItemFromRange(bool isNegated, GenerationConfig config, string[] items, string possibles)
         {
             string ret = "";
             if (_ShortHands["l"].Contains(items[0])) possibles = _ShortHands["l"];
@@ -564,12 +519,12 @@ namespace TestDataGenerator.Core.Generators
                 var end = possibles.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
                 possibles = possibles.Substring(start, end - start + 1);
                 if (isNegated) possibles = Regex.Replace(_ShortHands["."],"[" + possibles + "]", "");
-                ret = possibles[random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
+                ret = possibles[config.Random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
             }
             return ret;
         }
 
-        private static string GetRandomNumericItemFromRange(bool isNegated, Random random, string[] items, string possibles)
+        private static string GetRandomNumericItemFromRange(bool isNegated, GenerationConfig config, string[] items, string possibles)
         {
             string ret = "";
 
@@ -591,11 +546,11 @@ namespace TestDataGenerator.Core.Generators
                         var negs = ExpandNegatedMinMax(min, max);
                         possibles = Regex.Replace(possibles, "[" + negs + "]", "");
                         if (possibles.Length == 0) return ""; // No allowable values remain - return empty string
-                        ret = possibles[random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
+                        ret = possibles[config.Random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
                     }
                     else
                     {
-                        var t = random.NextDouble();
+                        var t = config.Random.NextDouble();
                         min = min + (t*(max - min));
                         ret = min.ToString(GenerateFloatingFormatWithScale(scale), CultureInfo.InvariantCulture);
                     }
@@ -628,9 +583,9 @@ namespace TestDataGenerator.Core.Generators
         /// Dervives the correct repeat value from the provided expression.
         /// </summary>
         /// <param name="repeatExpression">String in the form of '{n}' or '{n,m}' where n and m are integers</param>
-        /// <param name="random"></param>
+        /// <param name="config"></param>
         /// <returns></returns>
-        private static int GetRepeatValueFromRepeatExpression(string repeatExpression, Random random)
+        private static int GetRepeatValueFromRepeatExpression(string repeatExpression, GenerationConfig config)
         {
             if (string.IsNullOrWhiteSpace(repeatExpression)) return 1; 
 
@@ -648,7 +603,7 @@ namespace TestDataGenerator.Core.Generators
                     throw new GenerationException(msg);
                 }
 
-                repeat = random.Next(min, max + 1);
+                repeat = config.Random.Next(min, max + 1);
             }
             else if (!int.TryParse(repeatExpression, out repeat)) repeat = -1;
 
@@ -657,12 +612,13 @@ namespace TestDataGenerator.Core.Generators
             return repeat;
         }
         
-        private static ContentOptions GetContentOptions(string characters, ref int index, string openingContainerChar, string closingContainerChar, Random random)
+        private static ContentOptions GetContentOptions(string characters, ref int index, string openingContainerChar, string closingContainerChar, GenerationConfig config)
         {
-            var result = new ContentOptions();
-            
-            result.Content = GetContent(characters, ref index, openingContainerChar, closingContainerChar);
-            
+            var result = new ContentOptions
+            {
+                Content = GetContent(characters, ref index, openingContainerChar, closingContainerChar)
+            };
+
             result.ContainsAlternation = ContainsAlternations(result.Content);
 
             if (result.Content[0].Equals(_Negation))
@@ -682,7 +638,7 @@ namespace TestDataGenerator.Core.Generators
             }
             else
             {
-                result.Repeat = GetRepeatValueFromRepeatExpression(result.QuantifierContent, random);    
+                result.Repeat = GetRepeatValueFromRepeatExpression(result.QuantifierContent, config);    
             }
 
             return result;
@@ -749,7 +705,7 @@ namespace TestDataGenerator.Core.Generators
             return false;
         }
 
-        private static void AppendCharacterDerivedFromSymbol(StringBuilder sb, char symbol, bool isEscaped, Random random)
+        private static void AppendCharacterDerivedFromSymbol(StringBuilder sb, char symbol, bool isEscaped, GenerationConfig config)
         {
             if (!isEscaped)
             {
@@ -759,7 +715,7 @@ namespace TestDataGenerator.Core.Generators
 
             if (_ShortHands.ContainsKey(symbol.ToString()))
             {
-                AppendRandomCharacterFromString(sb, _ShortHands[symbol.ToString()], random);
+                AppendRandomCharacterFromString(sb, _ShortHands[symbol.ToString()], config);
             }
             else
             {
@@ -806,9 +762,9 @@ namespace TestDataGenerator.Core.Generators
             return shorthands;
         }
 
-        private static void AppendRandomCharacterFromString(StringBuilder sb, string allowedCharacters, Random random)
+        private static void AppendRandomCharacterFromString(StringBuilder sb, string allowedCharacters, GenerationConfig config)
         {
-            sb.Append(allowedCharacters[random.Next(allowedCharacters.Length)]);
+            sb.Append(allowedCharacters[config.Random.Next(allowedCharacters.Length)]);
         }
     }
 }

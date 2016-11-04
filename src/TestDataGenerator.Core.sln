@@ -1,14 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4C7BFE94-A402-499A-9A2C-BB0A44E261D5}"
 	ProjectSection(SolutionItems) = preProject
 		DataGenerator.vsmdi = DataGenerator.vsmdi
 		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
 		Performance1.psess = Performance1.psess
-		..\..\VERSION = ..\..\VERSION
+		..\VERSION = ..\VERSION
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{3A492DFF-FDA0-4AC7-BD29-745203BDC70E}"
