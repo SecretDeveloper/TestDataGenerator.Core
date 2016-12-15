@@ -54,7 +54,7 @@ namespace TestDataGenerator.Core
         {
             int hash;
             if (int.TryParse(value, out hash)) return hash;
-            return hash.GetHashCode();
+            return value.GetHashCode();
         }
 
     }

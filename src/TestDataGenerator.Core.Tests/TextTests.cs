@@ -1571,7 +1571,7 @@ namespace TestDataGenerator.Tests
             string actual = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, actual);
 
-            Assert.AreEqual(@"Generated |k]XjUo6Go​", actual);
+            Assert.AreEqual(@"Generated |k]XjUo6Go", actual);
         }
 
         [TestMethod]
@@ -1672,7 +1672,39 @@ namespace TestDataGenerator.Tests
 
             Console.WriteLine(@"'{0}' produced {1} values, out of which, {2} are unique and {3} are duplicates.", pattern, segments.Count, segments.Distinct().Count(), segments.Count - segments.Distinct().Count());
         }
-        #endregion
-    }
+
+        [TestMethod]
+        [TestCategory("Randomness")]
+        public void Seed_As_String_IsUsed()
+        {
+            var pattern = @"(\L\L\L\L\L\L-\L\L-\L\L\L\L\L)";
+            var config = new GenerationConfig();
+
+            var segments = new Dictionary<string, string>();
+            for (var i = 0; i < 1000; i++)
+            {
+                segments.Add(AlphaNumericGenerator.GenerateFromPattern(pattern, config: config), "");
+                config.Seed += "a"; // reset the seed each loop which should result in new random generations.
+            }
+            Console.WriteLine(@"'{0}' produced {1} values, out of which, {2} are unique and {3} are duplicates.", pattern, segments.Count, segments.Distinct().Count(), segments.Count - segments.Distinct().Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Randomness")]public void Weird_s_shortkey_bug()
+        {
+            var pattern = @"\s";
+            var config = new GenerationConfig();
+            for (var i = 0; i < 1000; i++)
+            {
+                config.Seed = i.ToString();
+                var text = AlphaNumericGenerator.GenerateFromPattern(pattern, config);
+                Console.WriteLine(@"'{0}' with seed '{1}' produced '{2}'", pattern, config.Seed, text);
+                StringAssert.Matches(text, new Regex(@"^\s$", RegexOptions.ECMAScript));  // ECMA compliant needed as \s ECMA includes [SPACE] but .NET Regex does not.
+                config.Seed += "a"; // reset the seed each loop which should result in new random generations.
+            }
+
+        }
+    #endregion
+}
 }
 

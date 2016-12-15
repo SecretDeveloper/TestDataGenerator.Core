@@ -713,9 +713,11 @@ namespace TestDataGenerator.Core.Generators
                 return;
             }
 
-            if (_ShortHands.ContainsKey(symbol.ToString()))
+            var symbolAsString = symbol.ToString();
+
+            if (_ShortHands.ContainsKey(symbolAsString))
             {
-                AppendRandomCharacterFromString(sb, _ShortHands[symbol.ToString()], config);
+                AppendRandomCharacterFromString(sb, _ShortHands[symbolAsString], config);
             }
             else
             {
@@ -747,7 +749,7 @@ namespace TestDataGenerator.Core.Generators
             shorthands["v"] = "aeiou";
             shorthands["C"] = "BCDFGHJKLMNPQRSTVWXYZ";
             shorthands["c"] = "bcdfghjklmnpqrstvwxyz";
-            shorthands["s"] = " \f\n\r\t\v​";
+            shorthands["s"] = " \f\n\r\t\v";
             shorthands["d"] = "0123456789";
 
             var nonAlphaNonWhiteSpace = ".,;:\"'!&?£$€$%^<>{}[]()*\\+-=@#|~/";
