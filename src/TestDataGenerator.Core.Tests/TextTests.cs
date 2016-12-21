@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestDataGenerator.Core;
@@ -16,7 +17,8 @@ namespace TestDataGenerator.Tests
     [ExcludeFromCodeCoverage]
     public class TextTests
     {
-        
+        private const int _ErrorSnippet_ContextLength = 50;
+
         #region Template
 
         [TestMethod]
@@ -28,7 +30,7 @@ namespace TestDataGenerator.Tests
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             StringAssert.Matches(text, new Regex(@"Generated [A-Z]{2}"));
         }
-        
+
         [TestMethod]
         [TestCategory("Template")]
         public void Can_GenerateFromTemplate_Overload2()
@@ -47,12 +49,16 @@ namespace TestDataGenerator.Tests
             var template = @"<<@superhero@>>";
 
             var config = new GenerationConfig();
-            config.NamedPatterns.Patterns.Add(new NamedPattern(){Name = "superhero", Pattern = "(Batman|Superman|Spiderman)"});
+            config.NamedPatterns.Patterns.Add(new NamedPattern()
+            {
+                Name = "superhero",
+                Pattern = "(Batman|Superman|Spiderman)"
+            });
             string text = AlphaNumericGenerator.GenerateFromTemplate(template, config);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             StringAssert.Matches(text, new Regex(@"(Batman|Superman|Spiderman)"));
         }
-        
+
         [TestMethod]
         [TestCategory("Template")]
         public void Can_Load_File_Supplied_In_Config_Absolute()
@@ -60,7 +66,7 @@ namespace TestDataGenerator.Tests
             var template = @"<<@noun@ @verb@ @noun@ @verb@>>";
 
             var random = new Random(100);
-            var config = new GenerationConfig() { Seed = "200" };
+            var config = new GenerationConfig() {Seed = "200"};
             config.Random = random;
             config.PatternFiles.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tdg-patterns", "language.tdg-patterns"));
 
@@ -75,7 +81,7 @@ namespace TestDataGenerator.Tests
         {
             var template = @"<<@noun@ @verb@ @noun@ @verb@>>";
 
-            var config = new GenerationConfig() { Seed = "100" };
+            var config = new GenerationConfig() {Seed = "100"};
             config.PatternFiles.Add("language.tdg-patterns");
 
             string text = AlphaNumericGenerator.GenerateFromTemplate(template, config);
@@ -89,7 +95,7 @@ namespace TestDataGenerator.Tests
         {
             var template = @"<<@noun@ @verb@ @noun@ @verb@>>";
 
-            var config = new GenerationConfig() { Seed = "100" };
+            var config = new GenerationConfig() {Seed = "100"};
             config.PatternFiles.Add("language");
 
             string text = AlphaNumericGenerator.GenerateFromTemplate(template, config);
@@ -140,7 +146,7 @@ namespace TestDataGenerator.Tests
         {
             var template = "Generated <<LL>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
-            Console.WriteLine(@"'{0}' produced '{1}'", template, text);            
+            Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             StringAssert.Matches(text, new Regex(@"Generated [L]{2}"));
         }
 
@@ -151,7 +157,9 @@ namespace TestDataGenerator.Tests
             var template = @"Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing?";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
-            StringAssert.Matches(text, new Regex(@"Hi there [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou] [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou]{0,2}[a-z]{0,2}[a-z] how are you doing\?"));
+            StringAssert.Matches(text,
+                new Regex(
+                    @"Hi there [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou] [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou]{0,2}[a-z]{0,2}[a-z] how are you doing\?"));
         }
 
         [TestMethod]
@@ -167,13 +175,16 @@ namespace TestDataGenerator.Tests
         [TestMethod]
         [TestCategory("Template")]
         public void Can_Generate_From_Template_for_ReadMe3()
-        { 
-            
-            var template = @"Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing? Your SSN is <<[1-9]\d\d-\d\d-\d\d\d\d>>";
+        {
+
+            var template =
+                @"Hi there <<\L\v{0,2}\l{0,2}\v \L\v{0,2}\l{0,2}\v{0,2}\l{0,2}\l>> how are you doing? Your SSN is <<[1-9]\d\d-\d\d-\d\d\d\d>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
-            
-            StringAssert.Matches(text, new Regex(@"Hi there [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou] [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou]{0,2}[a-z]{0,2}[a-z] how are you doing\? Your SSN is [1-9]\d{2}-\d{2}-\d{4}"));
+
+            StringAssert.Matches(text,
+                new Regex(
+                    @"Hi there [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou] [A-Z][aeiou]{0,2}[a-z]{0,2}[aeiou]{0,2}[a-z]{0,2}[a-z] how are you doing\? Your SSN is [1-9]\d{2}-\d{2}-\d{4}"));
         }
 
         [TestMethod]
@@ -200,10 +211,13 @@ namespace TestDataGenerator.Tests
         [TestCategory("Template")]
         public void Can_Generate_From_Template_Harder()
         {
-            var template = @"This is a very basic <<(\l){10}>> which can be used to create <<\l\l\l\l>> of varying <<\l\l\l\l\l>>. The main purpose is to generate dummy <<\L\l\l\l>> which can be used for <<\l\l\l\l\l\l\l>>.";
+            var template =
+                @"This is a very basic <<(\l){10}>> which can be used to create <<\l\l\l\l>> of varying <<\l\l\l\l\l>>. The main purpose is to generate dummy <<\L\l\l\l>> which can be used for <<\l\l\l\l\l\l\l>>.";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
-            StringAssert.Matches(text, new Regex(@"This is a very basic [a-z]{10} which can be used to create [a-z]{4} of varying [a-z]{5}. The main purpose is to generate dummy [A-Z][a-z]{3} which can be used for [a-z]{7}."));
+            StringAssert.Matches(text,
+                new Regex(
+                    @"This is a very basic [a-z]{10} which can be used to create [a-z]{4} of varying [a-z]{5}. The main purpose is to generate dummy [A-Z][a-z]{3} which can be used for [a-z]{7}."));
         }
 
         [TestMethod]
@@ -213,7 +227,8 @@ namespace TestDataGenerator.Tests
             var template = @"<<\C|\c{10}|\V\V\V|\v{2,3}>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
-            StringAssert.Matches(text, new Regex(@"[BCDFGHJKLMNPQRSTVWXYZ]{1}|[bcdfghjklmnpqrstvwxyz]{10}|[AEIOU]{3}|[aeiou]{2,3}"));
+            StringAssert.Matches(text,
+                new Regex(@"[BCDFGHJKLMNPQRSTVWXYZ]{1}|[bcdfghjklmnpqrstvwxyz]{10}|[AEIOU]{3}|[aeiou]{2,3}"));
         }
 
         [TestMethod]
@@ -223,9 +238,10 @@ namespace TestDataGenerator.Tests
             var template = @"<<(\C)|\c{10}|(\V\V\V){20}|(\v\v\v\v\v){2,3}>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
-            StringAssert.Matches(text, new Regex(@"[BCDFGHJKLMNPQRSTVWXYZ]{1}|[bcdfghjklmnpqrstvwxyz]{10}|[AEIOU]{60}|[aeiou]{10,15}"));
+            StringAssert.Matches(text,
+                new Regex(@"[BCDFGHJKLMNPQRSTVWXYZ]{1}|[bcdfghjklmnpqrstvwxyz]{10}|[AEIOU]{60}|[aeiou]{10,15}"));
         }
-        
+
         [TestMethod]
         [TestCategory("Template")]
         public void Can_Generate_From_Pattern_With_Alternatives()
@@ -235,7 +251,9 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template, config);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             Console.WriteLine("Seed:{0}", config.Seed);
-            StringAssert.Matches(text, new Regex(@"Alternatives ([BCDFGHJKLMNPQRSTVWXYZ]{1}|[bcdfghjklmnpqrstvwxyz]{10}|[AEIOU]{3}|[aeiou]{2,3})"));
+            StringAssert.Matches(text,
+                new Regex(
+                    @"Alternatives ([BCDFGHJKLMNPQRSTVWXYZ]{1}|[bcdfghjklmnpqrstvwxyz]{10}|[AEIOU]{3}|[aeiou]{2,3})"));
         }
 
         [TestMethod]
@@ -256,7 +274,9 @@ namespace TestDataGenerator.Tests
             var template = @"Alternatives <<(\C{1}|\c{10}|\V{3}|\v{2,3})>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
-            StringAssert.Matches(text, new Regex(@"Alternatives ([BCDFGHJKLMNPQRSTVWXYZ]{1})|([bcdfghjklmnpqrstvwxyz]{10})|([AEIOU]{3}|[aeiou]{2,3})"));
+            StringAssert.Matches(text,
+                new Regex(
+                    @"Alternatives ([BCDFGHJKLMNPQRSTVWXYZ]{1})|([bcdfghjklmnpqrstvwxyz]{10})|([AEIOU]{3}|[aeiou]{2,3})"));
             if (text.Contains("|")) Assert.Fail(text);
         }
 
@@ -271,10 +291,10 @@ namespace TestDataGenerator.Tests
             if (text.Contains("|")) Assert.Fail(text);
         }
 
-#endregion
+        #endregion
 
         #region Sets
-        
+
         [TestMethod]
         [TestCategory("Sets")]
         public void Can_Escape_Sets()
@@ -421,7 +441,7 @@ namespace TestDataGenerator.Tests
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             StringAssert.Matches(text, new Regex(template));
         }
-        
+
         [TestMethod]
         [TestCategory("Sets")]
         public void Can_Generate_Negated_Range_And_Characters()
@@ -462,7 +482,7 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             int e = int.Parse(text);
-            if(e < 100 || e>150) Assert.Fail("Number not between 100 and 150.");
+            if (e < 100 || e > 150) Assert.Fail("Number not between 100 and 150.");
         }
 
         [TestMethod]
@@ -495,11 +515,11 @@ namespace TestDataGenerator.Tests
             double d;
             if (!double.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out d))
                 Assert.Fail();
-            if(d<1.00d || d>10.00d)
+            if (d < 1.00d || d > 10.00d)
                 Assert.Fail();
         }
 
- 
+
         [TestMethod]
         [TestCategory("Sets")]
         public void Can_Generate_Range_Numeric_DecimalFormat2()
@@ -551,7 +571,7 @@ namespace TestDataGenerator.Tests
                 Assert.Fail();
             if (d < 12345.9999d || d > 12346d) Assert.Fail();
         }
-        
+
         [TestMethod]
         [TestCategory("Sets")]
         public void Can_Generate_MultipleRange_Set()
@@ -569,7 +589,8 @@ namespace TestDataGenerator.Tests
             var template = @"<<[1-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
-            StringAssert.Matches(text, new Regex(@"^[1-9]{1}[0-9]{1}[0-9]{1}-[0-9]{1}[0-9]{1}-[0-9]{1}[0-9]{1}[0-9]{1}[0-9]{1}$"));
+            StringAssert.Matches(text,
+                new Regex(@"^[1-9]{1}[0-9]{1}[0-9]{1}-[0-9]{1}[0-9]{1}-[0-9]{1}[0-9]{1}[0-9]{1}[0-9]{1}$"));
         }
 
         [TestMethod]
@@ -580,8 +601,10 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             DateTime dt;
-            if(DateTime.TryParseExact(text, @"d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out dt) == false) Assert.Fail("invalid Date");
-        
+            if (
+                DateTime.TryParseExact(text, @"d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal,
+                    out dt) == false) Assert.Fail("invalid Date");
+
         }
 
         [TestMethod]
@@ -592,7 +615,7 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             StringAssert.Matches(text, new Regex(@"^[a-c1-3_]{100}$"));
-            Assert.IsTrue(text.Contains("_"));  // check that we have produced at least 1 underscore.
+            Assert.IsTrue(text.Contains("_")); // check that we have produced at least 1 underscore.
         }
 
         [TestMethod]
@@ -619,67 +642,25 @@ namespace TestDataGenerator.Tests
         [TestCategory("ErrorMessages")]
         public void Can_BuildErrorSnippet_Start()
         {
-            var template = @"This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  ";
-            int ndx = 0;
-            string text = AlphaNumericGenerator.BuildErrorSnippet(template, ndx);
-            Console.WriteLine(@"Error Snippet for '{0}'
- at index {1} produced 
-'{2}'", template, ndx, text);
-            Assert.AreEqual(AlphaNumericGenerator.ErrorContext*2+4, text.Length);
-        }
+            var template = @"[a-z";
+            int ndx = 4;
 
-        [TestMethod]
-        [TestCategory("ErrorMessages")]
-        public void Can_BuildErrorSnippet_End()
-        {
-            var template = @"This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  ";
-            int ndx = template.Length-1;
-            string text = AlphaNumericGenerator.BuildErrorSnippet(template, ndx);
-            Console.WriteLine(@"Error Snippet for '{0}'
- at index {1} produced 
-'{2}'", template, ndx, text);
-            Assert.AreEqual(AlphaNumericGenerator.ErrorContext*2+4, text.Length);
-        }
-
-        [TestMethod]
-        [TestCategory("ErrorMessages")]
-        public void Can_BuildErrorSnippet_Middle()
-        {
-            var template = @"This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  This is a long string.  ";
-            int ndx = AlphaNumericGenerator.ErrorContext + 20;
-            string text = AlphaNumericGenerator.BuildErrorSnippet(template, ndx);
-            Console.WriteLine(@"Error Snippet for '{0}'
- at index {1} produced 
-'{2}'", template, ndx, text);
-            Assert.AreEqual(AlphaNumericGenerator.ErrorContext * 4 + 4, text.Length);
+            try
+            {
+                string text = AlphaNumericGenerator.GenerateFromPattern(template);
+            }
+            catch (GenerationException genEx)
+            {
+                Assert.AreEqual(@"Expected ']' but it was not found.
+[a-
+ ^   ", genEx.Message);
+            }
+            catch (Exception)
+            {
+                Assert.Fail("Incorrect exception thrown.");
+            }
         }
         
-        [TestMethod]
-        [TestCategory("ErrorMessages")]
-        public void Can_BuildErrorSnippet1()
-        {
-            var template = @"([100-900]{40])";
-            int ndx = 12;
-            string text = AlphaNumericGenerator.BuildErrorSnippet(template, ndx);
-            Console.WriteLine(@"Error Snippet for '{0}'
- at index {1} produced 
-'{2}'", template, ndx, text);
-            Assert.AreEqual(template.Length*2+2, text.Length);
-        }
-
-        [TestMethod]
-        [TestCategory("ErrorMessages")]
-        public void Can_BuildErrorSnippet2()
-        {
-            var template = @"([100-900]{40])";
-            int ndx = 12;
-            string text = AlphaNumericGenerator.BuildErrorSnippet(template, ndx);
-            Console.WriteLine(@"Error Snippet for '{0}'
- at index {1} produced 
-'{2}'", template, ndx, text);
-            Assert.AreEqual(template.Length * 2 + 2, text.Length);
-        }
-
         #endregion
 
         #region Pattern
@@ -1227,10 +1208,45 @@ namespace TestDataGenerator.Tests
 
         [TestMethod]
         [TestCategory("Profiling")]
+        public void Profile_NonRandom_Repeat_LowVolume()
+        {
+            var pattern = @"<<\L{50}>>";
+            var testLimit = 2;
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            for (var i = 0; i < testLimit; i++)
+            {
+                var text = AlphaNumericGenerator.GenerateFromTemplate(pattern);
+                //Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
+            }
+            sw.Stop();
+
+            Console.WriteLine(@"{0} instances of the following template generated in {1} milliseconds.\n'{2}'", testLimit, sw.ElapsedMilliseconds, pattern);
+        }
+
+        [TestMethod]
+        [TestCategory("Profiling")]
         public void Profile_Large_NonRandom_Repeat()
         {
             var pattern = @"<<\L{1}\d{1}\L{2}\d{2}\L{4}\d{4}\L{8}\d{8}\L{16}\d{16}\L{32}\d{32}\L{64}\d{64}\L{128}\d{128}\L{256}\d{256}\L{512}\d{512}\L{1024}\d{1024}>>";
             var testLimit = 1000;
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            for (var i = 0; i < testLimit; i++)
+            {
+                var text = AlphaNumericGenerator.GenerateFromTemplate(pattern);
+                //Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
+            }
+            sw.Stop();
+            Console.WriteLine(@"{0} instances of the following template generated in {1} milliseconds.\n'{2}'", testLimit, sw.ElapsedMilliseconds, pattern);
+        }
+
+        [TestMethod]
+        [TestCategory("Profiling")]
+        public void Profile_Large_NonRandom_Repeat_LowVolume()
+        {
+            var pattern = @"<<\L{1}\d{1}\L{2}\d{2}\L{4}\d{4}\L{8}\d{8}\L{16}\d{16}\L{32}\d{32}\L{64}\d{64}\L{128}\d{128}\L{256}\d{256}\L{512}\d{512}\L{1024}\d{1024}>>";
+            var testLimit = 1;
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             for (var i = 0; i < testLimit; i++)
@@ -1292,7 +1308,54 @@ namespace TestDataGenerator.Tests
             sw.Stop();
             Console.WriteLine(@"{0} instances of the following template generated in {1} milliseconds.\n'{2}'", testLimit, sw.ElapsedMilliseconds, pattern);
         }
-        
+
+
+        [TestMethod]
+        [TestCategory("Profiling")]
+        public void Profile_Comparison_With_String_Append()
+        {
+            var testIterations = 100000;
+            var pattern = @"(A){100}";
+            var patternOutput = "A";
+            var patternCount = 100;
+            
+            // Control
+            var sb = new StringBuilder();
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Reset();
+            sw.Start();
+            for (var i = 0; i < testIterations; i++)
+            {
+                for (var j = 0; j < patternCount; j++)
+                {
+                    sb.Append(patternOutput);
+                }
+            }
+            sw.Stop();
+            Console.WriteLine(@"StringBuilder - {0} iterations of the following pattern {1} completed in {2} milliseconds.", testIterations, pattern, sw.ElapsedMilliseconds);
+
+            sw.Reset();
+            sw.Start();
+            for (var i = 0; i < testIterations; i++)
+            {
+                AlphaNumericGenerator.GenerateFromPattern(pattern);
+            }
+            sw.Stop();
+            Console.WriteLine(@"GenerateFromPattern(pattern) - {0} iterations of the following pattern {1} completed in {2} milliseconds.", testIterations, pattern, sw.ElapsedMilliseconds);
+
+
+            var config = new GenerationConfig() {Seed = "100"};
+            sw.Reset();
+            sw.Start();
+            for (var i = 0; i < testIterations; i++)
+            {
+                AlphaNumericGenerator.GenerateFromPattern(pattern, config);
+            }
+            sw.Stop();
+            Console.WriteLine(@"GenerateFromPattern(pattern, config) - {0} iterations of the following pattern {1} completed in {2} milliseconds.", testIterations, pattern, sw.ElapsedMilliseconds);
+
+        }
+
         #endregion
 
         #region Negation
@@ -1538,7 +1601,7 @@ namespace TestDataGenerator.Tests
         #endregion
 
         #region ConfigurationTesting
-
+        /*
         [TestMethod]
         [TestCategory("ConfigurationTesting")]
         public void Can_Configure_Random_Seed_From_Config()
@@ -1551,6 +1614,7 @@ namespace TestDataGenerator.Tests
             Assert.AreEqual("100", config.Seed);
             Assert.AreEqual(configStr.Length, ndx);
         }
+        */
 
         [TestMethod]
         [TestCategory("ConfigurationTesting")]
@@ -1574,6 +1638,7 @@ namespace TestDataGenerator.Tests
             Assert.AreEqual(@"Generated |k]XjUo6Go", actual);
         }
 
+        /*
         [TestMethod]
         [TestCategory("ConfigurationTesting")]
         public void Can_Catch_Config_Not_At_Beginning_Template()
@@ -1583,7 +1648,7 @@ namespace TestDataGenerator.Tests
             var config = AlphaNumericGenerator.GetConfiguration(template, ref index);
             Assert.IsNull(config);
         }
-
+        */
 
         #endregion
 
