@@ -9,7 +9,7 @@ using TestDataGenerator.Core.Exceptions;
 
 namespace TestDataGenerator.Core.Generators
 {
-    public static class AlphaNumericGenerator 
+    public static class AlphaNumericGenerator
     {
         private static readonly Dictionary<string, string> _ShortHands = GetShortHandMap();
 
@@ -36,21 +36,23 @@ namespace TestDataGenerator.Core.Generators
         private const char _NamedPattern_End = '@';
 
         private const string _Anagram = ":anagram:";
+        private const string _Shuffle = ":shuffle:";
+        private const string _Shuffle2 = ":shuffle2:";
 
         private const int _ErrorSnippet_ContextLength = 50;
 
         #region public
-        
+
         /// <summary>
         /// Takes in a string that contains 0 or more &lt;&lt;placeholder&gt;&gt; values and replaces the placeholder item with the expression it defines.
         /// </summary>
         /// <param name="template"></param>
         /// <param name="generationConfig"></param>
         /// <returns></returns>
-        public static string GenerateFromTemplate(string template, GenerationConfig generationConfig=null)
+        public static string GenerateFromTemplate(string template, GenerationConfig generationConfig = null)
         {
             int index = 0;
-            
+
             // CONFIG
             if (generationConfig == null) generationConfig = LoadAndRemoveConfigFromTemplate(ref template);
             if (generationConfig == null) generationConfig = new GenerationConfig();
@@ -62,7 +64,7 @@ namespace TestDataGenerator.Core.Generators
 
             // Load all from the PatternFiles in config
             AppendPatternsFromConfigToCollection(generationConfig, generationConfig.NamedPatterns);
-            
+
             var sb = new StringBuilder();
 
             while (index < template.Length)
@@ -80,19 +82,19 @@ namespace TestDataGenerator.Core.Generators
                 sb.Append(template.Substring(index, start - index)); // Append everything up to start as it is.
                 if (isEscaped) start = start + 1;
                 start = start + _Placeholder_Start.Length; // move past '<<' to start of expression
-                
+
                 int end = FindPositionOfNext(template, start, _Placeholder_End, _Placeholder_Start); // find end of placeholder
                 if (end == -1)
                 {
-                    throw new GenerationException("Unable to find closing placeholder after "+start);
+                    throw new GenerationException("Unable to find closing placeholder after " + start);
                 }
 
                 var pattern = template.Substring(start, end - start); // grab our expression
                 if (isEscaped)
-                    sb.Append("<<"+pattern+">>");
+                    sb.Append("<<" + pattern + ">>");
                 else
                     GenerateFromPattern(sb, pattern, generationConfig); // generate value from expression
-                index = end+2; // update our index.
+                index = end + 2; // update our index.
             }
 
             return sb.ToString();
@@ -130,7 +132,7 @@ namespace TestDataGenerator.Core.Generators
 
             ProcessPattern(sb, pattern, config);
         }
-        
+
         private static void GenerateFromAlternatedPattern(StringBuilder sb, string exp, ContentOptions contentOptions, GenerationConfig config)
         {
             var alternates = exp.Split(_Alternation);
@@ -147,7 +149,7 @@ namespace TestDataGenerator.Core.Generators
             {
                 var arr = exp.ToCharArray();
                 arr = arr.OrderBy(r => config.Random.Next()).ToArray();
-                foreach(var ch in arr)
+                foreach (var ch in arr)
                     AppendCharacterDerivedFromSymbol(sb, ch, false, config);
             }
         }
@@ -176,7 +178,7 @@ namespace TestDataGenerator.Core.Generators
         private static string GetRandomCharacterFromRange(string range, bool isNegated, GenerationConfig config)
         {
             string ret;
-            string possibles=_ShortHands["."];
+            string possibles = _ShortHands["."];
             var items = range.Split('-');
             double i;
             if (!Double.TryParse(items[0], out i))
@@ -222,7 +224,7 @@ namespace TestDataGenerator.Core.Generators
             {
                 var end = possibles.IndexOf(items[1].ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
                 possibles = possibles.Substring(start, end - start + 1);
-                if (isNegated) possibles = Regex.Replace(_ShortHands["."],"[" + possibles + "]", "");
+                if (isNegated) possibles = Regex.Replace(_ShortHands["."], "[" + possibles + "]", "");
                 ret = possibles[config.Random.Next(0, possibles.Length)].ToString(CultureInfo.InvariantCulture);
             }
             return ret;
@@ -255,7 +257,7 @@ namespace TestDataGenerator.Core.Generators
                     else
                     {
                         var t = config.Random.NextDouble();
-                        min = min + (t*(max - min));
+                        min = min + (t * (max - min));
                         ret = min.ToString(GenerateFloatingFormatWithScale(scale), CultureInfo.InvariantCulture);
                     }
                 }
@@ -404,7 +406,7 @@ namespace TestDataGenerator.Core.Generators
         #endregion
 
         #region Utility
-        
+
         private static GenerationConfig LoadAndRemoveConfigFromTemplate(ref string template)
         {
             int index = 0;
@@ -568,7 +570,7 @@ namespace TestDataGenerator.Core.Generators
             }
             catch (Exception ex)
             {
-                return "An error occured close to index " + ndx;
+                return "An error occured close to index " + ndx + "\n" + ex.Message;
             }
         }
 
@@ -764,7 +766,7 @@ namespace TestDataGenerator.Core.Generators
                 }
             }
         }
-        
+
         private static void AppendRandomCharacterFromString(StringBuilder sb, string allowedCharacters, GenerationConfig config)
         {
             sb.Append(allowedCharacters[config.Random.Next(allowedCharacters.Length)]);

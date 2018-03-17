@@ -481,8 +481,10 @@ namespace TestDataGenerator.Tests
             var template = @"<<[100-150]>>";
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
-            int e = int.Parse(text);
-            if (e < 100 || e > 150) Assert.Fail("Number not between 100 and 150.");
+
+            int e = int.Parse(text, CultureInfo.InvariantCulture);
+            if(e < 100 || e>150) Assert.Fail("Number not between 100 and 150.");
+
         }
 
         [TestMethod]
@@ -513,6 +515,7 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             double d;
+
             if (!double.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out d))
                 Assert.Fail();
             if (d < 1.00d || d > 10.00d)
@@ -528,6 +531,7 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             double d;
+
             if (!double.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out d))
                 Assert.Fail();
             if (d < 1.00 || d > 2.00d) Assert.Fail();
@@ -541,6 +545,7 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             double d;
+
             if (!double.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out d))
                 Assert.Fail();
             if (d < 1.1 || d > 1.2d) Assert.Fail();
@@ -554,6 +559,7 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             double d;
+
             if (!double.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out d))
                 Assert.Fail();
             if (d < 12345.12345 || d > 12345.12346d) Assert.Fail();
@@ -567,6 +573,7 @@ namespace TestDataGenerator.Tests
             string text = AlphaNumericGenerator.GenerateFromTemplate(template);
             Console.WriteLine(@"'{0}' produced '{1}'", template, text);
             double d;
+
             if (!double.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out d))
                 Assert.Fail();
             if (d < 12345.9999d || d > 12346d) Assert.Fail();
@@ -643,7 +650,6 @@ namespace TestDataGenerator.Tests
         public void Can_BuildErrorSnippet_Start()
         {
             var template = @"[a-z";
-            int ndx = 4;
 
             try
             {
@@ -1378,7 +1384,7 @@ namespace TestDataGenerator.Tests
             var pattern = @"A-Z";
             var text = AlphaNumericGenerator.GenerateFromPattern("[^" + pattern + "]");
             Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
-            Assert.IsTrue(pattern.IndexOf(text, StringComparison.InvariantCulture) == -1);
+            Assert.IsTrue("ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(text, StringComparison.InvariantCulture) == -1);
         }
 
         [TestMethod]
