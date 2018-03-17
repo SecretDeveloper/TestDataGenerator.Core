@@ -35,9 +35,9 @@ namespace TestDataGenerator.Core.Generators
         private const char _NamedPattern_Start = '@';
         private const char _NamedPattern_End = '@';
 
-        private const string _Anagram = ":anagram:";
-        private const string _Shuffle = ":shuffle:";
-        private const string _Shuffle2 = ":shuffle2:";
+        private const string _Anagram = ":anagram";
+        private const string _Shuffle = ":shuffle";
+        private const string _Shuffle2 = ":shuffle2";
 
         private const int _ErrorSnippet_ContextLength = 50;
 
@@ -152,6 +152,55 @@ namespace TestDataGenerator.Core.Generators
                 foreach (var ch in arr)
                     AppendCharacterDerivedFromSymbol(sb, ch, false, config);
             }
+        }
+
+        /// <summary>
+        /// Simple (naive) algorithm for randomly sorting an array of values.
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="expression"></param>
+        /// <param name="contentOptions"></param>
+        /// <param name="config"></param>
+        private static void ShuffleContent(StringBuilder sb, string expression, ContentOptions contentOptions, GenerationConfig config)
+        {
+            var content = expression.ToCharArray();
+
+            for (int x = 0; x < contentOptions.Repeat; x++)
+            {
+                for (int i = 0; i < content.Length - 1; i++)
+                {
+                    var randomIndex = config.Random.Next(content.Length);
+                    var tmp = content[i];
+                    content[i] = content[randomIndex];
+                    content[randomIndex] = tmp;
+                }
+            }
+            sb.Append(content);
+        }
+
+        /// <summary>
+        /// Shuffle function implementing the Fisher-Yates shuffle algorithm
+        /// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="expression"></param>
+        /// <param name="contentOptions"></param>
+        /// <param name="config"></param>
+        private static void Shuffle2Content(StringBuilder sb, string expression, ContentOptions contentOptions, GenerationConfig config)
+        {
+            var content = expression.ToCharArray();
+            for (int x = 0; x < contentOptions.Repeat; x++)
+            {
+                for (int i = content.Length - 1; i > 0; i--)
+                {
+                    var randomIndex = config.Random.Next(i + 1);
+                        // notice that each iteration reduces the range of randomly selected indexes (as i decrements).
+                    var tmp = content[i];
+                    content[i] = content[randomIndex];
+                    content[randomIndex] = tmp;
+                }
+            }
+            sb.Append(content);
         }
 
         private static string GenerateFloatingFormatWithScale(int scale)
@@ -355,6 +404,8 @@ namespace TestDataGenerator.Core.Generators
             if (result.QuantifierContent.Contains(":"))
             {
                 result.IsAnagram = ContainsAnagram(result.QuantifierContent);
+                result.IsShuffle = ContainsShuffle(result.QuantifierContent);
+                result.IsShuffle2 = ContainsShuffle2(result.QuantifierContent);
             }
             else
             {
@@ -529,7 +580,17 @@ namespace TestDataGenerator.Core.Generators
 
         private static bool ContainsAnagram(string content)
         {
-            return content.ToLower().Equals(_Anagram);
+            return content.ToLower().Contains(_Anagram);
+        }
+
+        private static bool ContainsShuffle(string content)
+        {
+            return content.ToLower().Contains(_Shuffle);
+        }
+
+        private static bool ContainsShuffle2(string content)
+        {
+            return content.ToLower().Contains(_Shuffle2);
         }
 
         private static bool ContainsAlternations(string characters)
@@ -683,6 +744,18 @@ namespace TestDataGenerator.Core.Generators
                 return;
             }
 
+            if (contentOptions.IsShuffle)
+            {
+                ShuffleContent(sb, contentOptions.Content, contentOptions, config);
+                return;
+            }
+
+            if (contentOptions.IsShuffle2)
+            {
+                Shuffle2Content(sb, contentOptions.Content, contentOptions, config);
+                return;
+            }
+
             if (contentOptions.Content.Contains("-")) // Ranged - [0-7] or [a-z] or [1-9A-Za-z] for fun.
             {
                 MatchCollection ranges = new Regex(@"[A-Za-z]-[A-Za-z]|\d+\.?\d*-\d+\.?\d*|.").Matches(contentOptions.Content);
@@ -731,7 +804,8 @@ namespace TestDataGenerator.Core.Generators
                 }
             }
         }
-
+      
+        
         private static void AppendCharacterDerivedFromSymbol(StringBuilder sb, char symbol, bool isEscaped, GenerationConfig config)
         {
             if (!isEscaped)

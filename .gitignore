@@ -48,3 +48,5 @@ releases/
 packages/
 _Resharper*/
 #.nuget
+.vscode/
+src/.vs/

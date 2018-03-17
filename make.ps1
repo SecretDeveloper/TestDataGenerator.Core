@@ -151,8 +151,8 @@ function createZip{
 function publish{
     # DEPLOYING
     write-host "Publishing Nuget package" -foregroundcolor:blue
-    $outputName = ".\releases\$projectName.$fullBuildVersion.nupkg"
-    nuget push $outputName
+    $outputName = ".\releases\$projectName.$buildVersion.nupkg"
+    nuget push -source "https://nuget.org" $outputName
 }
 
 $basePath = Get-Location
