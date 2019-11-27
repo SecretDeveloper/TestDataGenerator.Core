@@ -1,13 +1,12 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿/*
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestDataGenerator.Core;
 using TestDataGenerator.Core.Generators;
 
 namespace TestDataGenerator.Tests
 {
-  [TestClass]
   public class BenchmarkInit
   {
     //[TestMethod]
@@ -21,7 +20,6 @@ namespace TestDataGenerator.Tests
   {
     public GenerationConfig _GenerationConfig;
 
-    [Setup]
     public void SetupData()
     {
       _GenerationConfig = new GenerationConfig();
@@ -259,3 +257,5 @@ namespace TestDataGenerator.Tests
 
   }
 }
+
+*/
