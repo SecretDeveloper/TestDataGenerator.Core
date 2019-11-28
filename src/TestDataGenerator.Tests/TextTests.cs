@@ -604,7 +604,7 @@ namespace TestDataGenerator.Tests
       string text = AlphaNumericGenerator.GenerateFromTemplate(template);
       Console.WriteLine(@"'{0}' produced '{1}'", template, text);
       Assert.Matches(new Regex(@"^[a-c1-3_]{100}$"), text);
-      Assert.Contains(text, "_"); // check that we have produced at least 1 underscore.
+      Assert.Contains("_", text); // check that we have produced at least 1 underscore.
     }
 
     [Fact]
@@ -615,12 +615,12 @@ namespace TestDataGenerator.Tests
       string text = AlphaNumericGenerator.GenerateFromTemplate(template);
       Console.WriteLine(@"'{0}' produced '{1}'", template, text);
       Assert.Matches(new Regex(@"^[a-c1-3_*?ABC]{100}$"), text);
-      Assert.Contains(text, "_");
-      Assert.Contains(text, "*");
-      Assert.Contains(text, "?");
-      Assert.Contains(text, "A");
-      Assert.Contains(text, "B");
-      Assert.Contains(text, "C");
+      Assert.Contains("_", text);
+      Assert.Contains("*", text);
+      Assert.Contains("?", text);
+      Assert.Contains("A", text);
+      Assert.Contains("B", text);
+      Assert.Contains("C", text);
     }
 
     #endregion
@@ -1671,9 +1671,9 @@ namespace TestDataGenerator.Tests
       var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
       Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
       Assert.Equal(3, text.Length);
-      Assert.Contains(text, "A");
-      Assert.Contains(text, "B");
-      Assert.Contains(text, "C");
+      Assert.Contains("A", text);
+      Assert.Contains("B", text);
+      Assert.Contains("C", text);
     }
 
     [Fact]
@@ -1687,7 +1687,7 @@ namespace TestDataGenerator.Tests
       Assert.Equal(input.Length, text.Length);
       foreach (var ch in input.ToCharArray())
       {
-        Assert.Contains(text, ch.ToString());
+        Assert.Contains(ch.ToString(), text);
       }
     }
 
