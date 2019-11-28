@@ -107,7 +107,7 @@ namespace TestDataGenerator.Tests
       var template = @"Generated \<<\L\L>>";
       string text = AlphaNumericGenerator.GenerateFromTemplate(template);
       Console.WriteLine(@"'{0}' produced '{1}'", template, text);
-      Assert.Equal(text, @"Generated <<\L\L>>");
+      Assert.Equal(@"Generated <<\L\L>>", text);
     }
 
     [Fact]
@@ -604,7 +604,7 @@ namespace TestDataGenerator.Tests
       string text = AlphaNumericGenerator.GenerateFromTemplate(template);
       Console.WriteLine(@"'{0}' produced '{1}'", template, text);
       Assert.Matches(new Regex(@"^[a-c1-3_]{100}$"), text);
-      Assert.True(text.Contains("_")); // check that we have produced at least 1 underscore.
+      Assert.Contains(text, "_"); // check that we have produced at least 1 underscore.
     }
 
     [Fact]
@@ -615,12 +615,12 @@ namespace TestDataGenerator.Tests
       string text = AlphaNumericGenerator.GenerateFromTemplate(template);
       Console.WriteLine(@"'{0}' produced '{1}'", template, text);
       Assert.Matches(new Regex(@"^[a-c1-3_*?ABC]{100}$"), text);
-      Assert.True(text.Contains("_"));
-      Assert.True(text.Contains("*"));
-      Assert.True(text.Contains("?"));
-      Assert.True(text.Contains("A"));
-      Assert.True(text.Contains("B"));
-      Assert.True(text.Contains("C"));
+      Assert.Contains(text, "_");
+      Assert.Contains(text, "*");
+      Assert.Contains(text, "?");
+      Assert.Contains(text, "A");
+      Assert.Contains(text, "B");
+      Assert.Contains(text, "C");
     }
 
     #endregion
@@ -1608,7 +1608,7 @@ namespace TestDataGenerator.Tests
       string text = AlphaNumericGenerator.GenerateFromTemplate(template);
       Console.WriteLine(@"'{0}' produced '{1}'", template, text);
 
-      Assert.Equal(text, "Generated LZ");
+      Assert.Equal("Generated LZ", text);
     }
 
     [Fact]
@@ -1671,9 +1671,9 @@ namespace TestDataGenerator.Tests
       var text = AlphaNumericGenerator.GenerateFromPattern(pattern);
       Console.WriteLine(@"'{0}' produced '{1}'", pattern, text);
       Assert.Equal(3, text.Length);
-      Assert.True(text.Contains("A"));
-      Assert.True(text.Contains("B"));
-      Assert.True(text.Contains("C"));
+      Assert.Contains(text, "A");
+      Assert.Contains(text, "B");
+      Assert.Contains(text, "C");
     }
 
     [Fact]
@@ -1687,7 +1687,7 @@ namespace TestDataGenerator.Tests
       Assert.Equal(input.Length, text.Length);
       foreach (var ch in input.ToCharArray())
       {
-        Assert.True(text.Contains(ch.ToString()));
+        Assert.Contains(text, ch.ToString());
       }
     }
 
