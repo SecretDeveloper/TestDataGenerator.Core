@@ -1,5 +1,5 @@
-﻿/*
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
 using TestDataGenerator.Core;
@@ -16,10 +16,17 @@ namespace TestDataGenerator.Tests
     }
   }
 
+
+  [SimpleJob(RuntimeMoniker.Net48)]
+  [SimpleJob(RuntimeMoniker.Mono)]
+  [SimpleJob(RuntimeMoniker.NetCoreApp21)]
+  [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+  [RPlotExporter, RankColumn]
   public class TDGBenchmarks
   {
     public GenerationConfig _GenerationConfig;
 
+    [GlobalSetup]
     public void SetupData()
     {
       _GenerationConfig = new GenerationConfig();
@@ -257,5 +264,3 @@ namespace TestDataGenerator.Tests
 
   }
 }
-
-*/
